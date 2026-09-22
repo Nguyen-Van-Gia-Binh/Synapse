@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0F1016;
+    --bg-card: rgba(29, 30, 44, 0.7);
+    --border-subtle: rgba(244, 241, 222, 0.12);
+    --text-parchment: #F4F1DE;
+    --accent-gold: #E9C46A;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-parchment);
+    font-family: 'Be Vietnam Pro', sans-serif;
+  }
+
+  h1, h2, h3, .font-serif-heritage {
+    font-family: 'Cinzel', 'Playfair Display', serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    background: rgba(29, 30, 44, 0.65);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(244, 241, 222, 0.12);
+  }
+
+  .glass-panel {
+    background: rgba(15, 16, 22, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(244, 241, 222, 0.08);
+  }
+
+  .heritage-gradient-text {
+    background: linear-gradient(135deg, #F4F1DE 0%, #E9C46A 50%, #9E2A2B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .gold-gradient-btn {
+    background: linear-gradient(135deg, #E9C46A 0%, #D4A373 100%);
+    color: #1D1E2C;
+    transition: all 0.2s ease;
+  }
+
+  .gold-gradient-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 16, 22, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 241, 222, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(233, 196, 106, 0.4);
+}
