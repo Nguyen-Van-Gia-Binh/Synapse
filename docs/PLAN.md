@@ -149,6 +149,68 @@ Kế thừa trọn vẹn mô hình UX của **Canva Editor** (chuẩn mực ứn
   6. Điểm số & Huy hiệu: Điểm hòa sắc (0-100) + Huy hiệu "Chuẩn văn hóa".
   7. Tương tác: Nút "Tải ảnh PNG về máy" + "Sao chép Link chia sẻ".
 
+### 3.6. Cấu Trúc Thư Mục Dự Án Toàn Diện (Project Architecture Blueprint)
+
+Hệ thống được tổ chức theo mô hình tách bạch giữa Giao diện (Frontend), Xử lý dịch vụ (Backend) và Tài liệu kỹ thuật chuẩn (Docs):
+
+```text
+Synapse/
+├── docs/                                # Kho tài liệu đặc tả chuẩn Agile & RUP
+│   ├── PLAN.md                          # Kế hoạch tổng thể & Kiến trúc kiến tạo
+│   ├── USER-STORY.md                    # 9 User Stories theo chuẩn BDD (Given-When-Then)
+│   ├── USE-CASE.md                      # 8 Use Cases đặc tả chi tiết kèm sơ đồ UML
+│   ├── API-CONTRACTS.md                 # Đặc tả 4 nhóm REST API, DTOs & Error Codes
+│   └── BUSINESS-LOGIC-SPECIFICATION.md  # Thuật toán Canvas 60 FPS, Harmony Scorer, Guardrails
+├── frontend/                            # Ứng dụng Giao diện (React 18 + Vite + TypeScript)
+│   ├── public/                          # Static assets, fonts, favicon
+│   ├── src/
+│   │   ├── assets/                      # Ảnh Mannequin fallback, icons, logos
+│   │   ├── canvas/                      # [Core Canvas Paper-Doll Engine]
+│   │   │   ├── engine.ts                # Bộ xếp lớp Z-Index 6 slot tọa độ (0, 0)
+│   │   │   ├── tinting.ts               # Bộ hòa trộn màu Dual Offscreen Canvas Multiply
+│   │   │   └── export.ts                # Render xuất ảnh Blob / PNG chuẩn 9:16
+│   │   ├── components/
+│   │   │   ├── studio/                  # Workspace chính: CanvasViewport, DockBar, ItemDrawer, ColorBar
+│   │   │   ├── cultural/                # CulturalFactcard, GuardrailToast, HarmonyRadar
+│   │   │   ├── lookbook/                # LookbookModal, LookbookCard (9:16), ShareButtons
+│   │   │   └── ui/                      # Button, Modal, Tooltip, Accordion dùng chung
+│   │   ├── store/                       # [Quản trị Trạng thái Toàn cục]
+│   │   │   └── useOutfitStore.ts        # Zustand Store quản lý 6 slot, màu sắc, undo/redo
+│   │   ├── services/                    # [Tầng Gọi API Tương tác]
+│   │   │   └── api.ts                   # Axios / Fetch client kết nối backend REST API
+│   │   ├── types/                       # Shared Interfaces kế thừa từ API-CONTRACTS.md
+│   │   ├── App.tsx                      # Root App điều phối chuyển cảnh Onboarding <-> Studio
+│   │   ├── main.tsx                     # Entry point React Vite
+│   │   └── index.css                    # Design System Heritage Futurism (Tailwind / CSS)
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+├── backend/                             # Dịch vụ API & Xử lý Nghiệp vụ (Node.js + Express + TS)
+│   ├── src/
+│   │   ├── controllers/                 # ItemsController, RulesController, LookbooksController
+│   │   ├── services/                    # ItemsService, GuardrailsService, LookbooksService
+│   │   ├── routes/                      # items.routes.ts, rules.routes.ts, lookbooks.routes.ts
+│   │   ├── config/                      # Supabase Client, biến môi trường (PORT, SUPABASE_URL)
+│   │   ├── types/                       # Shared DTOs từ API-CONTRACTS.md
+│   │   └── index.ts                     # Entrypoint HTTP Server port 5000
+│   ├── package.json
+│   └── tsconfig.json
+├── CONTRIBUTING.md                      # Quy chuẩn Commit, Branching & PR
+└── GEMINI.md                            # Ngữ cảnh chỉ dẫn tối cao cho AI Coding Agent
+```
+
+### 3.7. Kiến Trúc Quản Trị Trạng Thái Frontend (Zustand Store)
+
+Frontend sử dụng **Zustand** (`useOutfitStore.ts`) làm State Manager duy nhất:
+* **Nhẹ & Không Re-render thừa:** Cập nhật độc lập giữa các Slot, tối ưu 60 FPS khi đổi màu vải áo.
+* **State Cốt Lõi:**
+  * `gender`: `'MALE' | 'FEMALE'`
+  * `slots`: `Record<SlotType, { item: ItemDto; color: string } | null>`
+  * `activeFactcard`: `CulturalFactDto | null`
+  * `guardrailViolations`: `RuleViolation[]`
+  * `harmonyScore`: `ColorScoreResult`
+  * `history`: Hỗ trợ tính năng `undo()` và `redo()` cho trải nghiệm sáng tạo chuyên nghiệp.
+
 ---
 
 ## 4. CƠ SỞ DỮ LIỆU CỐT LÕI (CORE DATABASE SCHEMA)
@@ -182,7 +244,7 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
 * `rule_code` (VARCHAR): Mã luật (vd: `RULE_AODAI_01`).
 * `trigger_slot` (VARCHAR): Slot kích hoạt (vd: `TOP`).
 * `trigger_tag` (VARCHAR): Tag kích hoạt (vd: `ao_ngu_than`).
-* `condition` (JSONB): Điều kiện vi phạm (vd: `{"missing_slot": "BOTTOM"}`).
+* `condition` (JSONB): Điều kiện vi phạm (vd: `{"type": "MISSING_SLOT", "required_slot": "BOTTOM"}`).
 * `severity` (ENUM): `INFO` | `WARNING`.
 * `message` (TEXT): Thông điệp nhắc nhở văn minh, tinh tế.
 
@@ -201,74 +263,85 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
 
 1. Có Mannequin Nam & Nữ chuẩn phom dáng.
 2. Người dùng có thể click chọn và đổi đồ trực quan trên Canvas theo 6 slot cơ bản.
-3. Thay đổi được màu sắc vải của áo/quần cơ bản.
+3. Thay đổi được màu sắc vải của áo/quần cơ bản (Thuật toán Multiply 60 FPS).
 4. Chọn đồ đến đâu, Thẻ tri thức văn hóa (Cultural Factcard) cập nhật thông tin tương ứng.
 5. Cảnh báo hiển thị khi vi phạm quy tắc đơn giản đã cài sẵn (vd: Áo dài ngũ thân không có quần).
-6. Xuất được ảnh Lookbook hoàn chỉnh để tải về hoặc chia sẻ.
-7. Triển khai thành công trên môi trường trực tuyến (Vercel + Render + Supabase) truy cập công khai.
+6. Chấm điểm hòa sắc tự động (Color Harmony Scorer 0-100) dựa trên bánh xe màu và ngũ hành.
+7. Xuất được ảnh Lookbook 9:16 hoàn chỉnh để tải về hoặc chia sẻ link trực tiếp.
+8. Triển khai thành công trên môi trường trực tuyến (Vercel + Render + Supabase) truy cập công khai.
 
 ---
 
 ## 6. PHÂN RÃ PRODUCT BACKLOG & KẾ HOẠCH TỪNG SPRINT (SPRINT BREAKDOWN)
 
-### SPRINT 0 (21/09 - 23/09): KHỞI TẠO NỀN TẢNG & CHUẨN HÓA DỮ LIỆU
+> Toàn bộ các Task dưới đây được đồng bộ 100% với **Notion Inline Database** (`📌 Synapse – Sprint Backlog & Task Tracker`), **USER-STORY.md** và **USE-CASE.md**.
 
-* **Mục tiêu:** Dựng xong khung repo, kết nối Database và ban hành template nhập liệu cho 2 bạn research.
-* **Nhiệm vụ của Leader (Dev):**
-  - [ ] Khởi tạo Monorepo hoặc 2 thư mục `frontend/` (React + Vite + TS) và `backend/` (Node.js + Express + TS).
-  - [ ] Tạo project trên Supabase, chạy script SQL tạo 4 bảng (`items`, `cultural_facts`, `cultural_rules`, `lookbooks`).
-  - [ ] Tạo mock data ban đầu (1 Mannequin Nam, 1 Mannequin Nữ, 1 Áo ngũ thân, 1 Quần, 1 Mũ mấn, 1 Quy tắc cảnh báo mẫu).
-  - [ ] Hướng dẫn 2 bạn research cách đăng nhập vào Supabase Table Editor để nhập liệu.
-* **Nhiệm vụ của 2 bạn Research:**
-  - [ ] Thu thập và bóc nền ảnh 2 Mannequin chuẩn (Nam & Nữ) theo khung `800 x 1200 px`.
-  - [ ] Chuẩn bị danh sách 4-6 trang phục tiêu biểu thời Nguyễn (Áo ngũ thân tay chẽn, Áo tấc, Áo Nhật bình).
-  - [ ] Viết nháp nội dung fact văn hóa và 2-3 quy tắc phối đồ cấm kỵ/chuẩn mực.
+### SPRINT 0 (21/09 - 23/09): KHỞI TẠO NỀN TẢNG & CHUẨN HÓA DỮ LIỆU
+* **Mục tiêu Sprint (Sprint Goal):** Dựng xong khung repo Monorepo/Multi-folder, kết nối CSDL Supabase và ban hành chuẩn ảnh 800x1200 cho team Research.
+
+* **[S0.1] Thiết lập Git Governance, CONTRIBUTING.md & GEMINI.md**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* Khung quản trị
+  * *DoD:* Branch protection rules (main, dev); tài liệu CONTRIBUTING.md và GEMINI.md chuẩn mực.
+* **[S0.2] Tạo CSDL Supabase & Migration 4 bảng cốt lõi**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-09, UC-08
+  * *DoD:* Tạo 4 bảng (`items`, `cultural_facts`, `cultural_rules`, `lookbooks`), RLS policies và Bucket Storage `item-assets`.
+* **[S0.3] Scaffold cấu trúc thư mục Frontend & Backend**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-01, UC-01
+  * *DoD:* Khởi tạo `frontend/` (React + Vite + TS + Tailwind) và `backend/` (Node Express + TS); cài đặt Zustand; build pass.
+* **[S0.4] Thu thập & Bóc nền 2 Mannequin Nam/Nữ chuẩn 800x1200 px**
+  * *Assignee:* Research Member 2 (Assets) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-01, UC-01
+  * *DoD:* 2 ảnh PNG trong suốt 800x1200 px tỉ lệ 2:3, bóc nền sạch, căn chuẩn vị trí trung tâm Canvas `(0, 0)`.
+* **[S0.5] Soạn thảo Fact văn hóa & 2-3 quy tắc cảnh báo mẫu thời Nguyễn**
+  * *Assignee:* Research Member 1 (Content) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-05, US-06
+  * *DoD:* Fact văn hóa có trích dẫn sử liệu (không bịa đặt), 2-3 quy tắc cảnh báo mang giọng điệu gợi ý tích cực.
 
 ---
 
 ### SPRINT 1 (24/09 - 29/09): CORE CANVAS ENGINE & CATALOG API
+* **Mục tiêu Sprint (Sprint Goal):** Hoàn thiện trải nghiệm phối đồ 6 slot trên màn hình, đổi màu bằng Dual Offscreen Canvas và tra cứu Cultural Factcard.
 
-* **Mục tiêu:** Hoàn thiện trải nghiệm phối đồ 6 slot trên màn hình, đổi màu và xem factcard.
-* **Nhiệm vụ của Leader (Dev):**
-  - [ ] **Backend:** Xây dựng các REST API:
-    * `GET /api/items?gender=...&slot=...` (Lấy danh mục trang phục).
-    * `GET /api/items/:id/facts` (Lấy thẻ thông tin văn hóa chi tiết).
-  - [ ] **Frontend:**
-    * Dựng khung UI Studio: Canvas ở giữa (800x1200 tỉ lệ 2:3 responsive), Drawer chọn đồ theo tab (`Áo`, `Quần`, `Họa tiết`, `Phụ kiện`, `Giày`, `Mũ`).
-    * Triển khai bộ xếp lớp (Paper-Doll Overlay Z-Index).
-    * Triển khai bộ chọn màu (8 Preset màu cổ phong + Color Picker tự do).
-    * Hiển thị Cultural Factcard bên cạnh khi người dùng chọn món đồ.
-* **Nhiệm vụ của 2 bạn Research:**
-  - [ ] Cắt và xuất toàn bộ ảnh trang phục theo đúng khung `800 x 1200 px`, up lên Cloud/Supabase Storage.
-  - [ ] Nhập đầy đủ nội dung lịch sử vào bảng `cultural_facts` trên Supabase.
+* **[S1.1] Xây dựng Core Canvas Paper-Doll Engine (Xếp lớp 6 slot)**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-02, UC-02
+  * *DoD:* Cơ chế vẽ xếp lớp 6 slot theo Z-Index (`HEADWEAR` 60, `ACCESSORY` 50, `PATTERN` 40, `TOP` 30, `BOTTOM` 20, `MANNEQUIN` 0) trên Canvas 800x1200; mượt 60 FPS.
+* **[S1.2] Phát triển API Catalog & Thẻ Cultural Factcard**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-05, UC-04, API Nhóm 1 & 2
+  * *DoD:* API `GET /api/items` và `GET /api/items/:id/facts`; UI Factcard popover hiển thị niên đại, ý nghĩa và tip phối Gen Z.
+* **[S1.3] Tích hợp Bảng 8 màu Cổ phong & Color Multiply Canvas**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-03, US-04, UC-03
+  * *DoD:* Bảng 8 màu Cổ phong + Hex Color Picker; thuật toán `renderTintedLayer` (Dual Offscreen Canvas) êm ái, không làm bệt nếp gấp vải.
+* **[S1.4] Số hóa & Bóc nền đợt 1: 4-6 trang phục tiêu biểu thời Nguyễn**
+  * *Assignee:* Research Member 2 (Assets) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-02, UC-02
+  * *DoD:* File PNG trong suốt 800x1200 px của Áo ngũ thân, Áo tấc, Áo Nhật bình, Quần lụa, Khăn đóng up lên Supabase Storage.
 
 ---
 
 ### SPRINT 2 (30/09 - 05/10): CULTURAL GUARDRAILS & LOOKBOOK EXPORT
+* **Mục tiêu Sprint (Sprint Goal):** Hoàn thiện bộ não cảnh báo văn hóa tinh tế, thuật toán chấm điểm hòa sắc mỹ thuật và xuất thẻ Lookbook 9:16 chia sẻ mạng xã hội.
 
-* **Mục tiêu:** Hoàn thiện bộ não cảnh báo văn hóa, chấm điểm màu và xuất ảnh Lookbook 9:16 chia sẻ.
-* **Nhiệm vụ của Leader (Dev):**
-  - [ ] **Backend:** Xây dựng API kiểm tra quy tắc văn hóa:
-    * `POST /api/rules/evaluate` (Nhận danh sách outfit hiện tại $\rightarrow$ Trả về danh sách cảnh báo `WARNING` / `INFO` nếu vi phạm).
-    * `POST /api/lookbooks` (Lưu bộ phối đồ của người dùng).
-  - [ ] **Frontend:**
-    * Tích hợp Cultural Guardrail: Hiện banner cảnh báo tinh tế khi người dùng phối sai quy tắc văn hóa.
-    * Tích hợp Color Harmony Scorer (Công thức tính độ hòa sắc từ các mã hex).
-    * Xây dựng V-Lookbook Card Component (Định dạng 9:16) và tính năng xuất ảnh HTML2Canvas / Canvas PNG download.
-* **Nhiệm vụ của 2 bạn Research:**
-  - [ ] Nhập bộ quy tắc văn hóa hoàn chỉnh vào bảng `cultural_rules`.
-  - [ ] Kiểm tra thực tế (User Testing): Tự tay phối thử trên web và đánh giá nội dung văn hóa hiển thị.
-  - [ ] Soạn tài liệu thuyết trình, video demo hoặc slide báo cáo đồ án.
+* **[S2.1] Xây dựng API & Toast Cảnh Báo Cultural Guardrails**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-06, UC-05, API Nhóm 3
+  * *DoD:* API `POST /api/rules/evaluate` theo Slot-Map Contract; Toast Alert màu hổ phách/vàng thân thiện khi phát hiện vi phạm (áo thiếu quần...).
+* **[S2.2] Triển khai Thuật toán Chấm Điểm Hòa Sắc (Color Harmony Scorer)**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-07, UC-06
+  * *DoD:* Hàm `calculateColorHarmony` tính điểm 0-100 dựa trên Hue spread, Luminance contrast và Heritage bonus; hiển thị trên Radar Chart.
+* **[S2.3] Xây dựng V-Lookbook Card Component & Tính Năng Xuất Ảnh 9:16**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-08, UC-07, API Nhóm 4
+  * *DoD:* Thẻ tỷ lệ 9:16 Cinematic; xuất file ảnh PNG tải về máy dưới 2 giây; API `POST /api/lookbooks` tạo link chia sẻ trực tiếp.
+* **[S2.4] Nhập liệu hoàn chỉnh bộ quy tắc văn hóa & User Testing**
+  * *Assignee:* Research Member 1 & 2 | *Priority:* `🟠 P1 - High` | *Liên kết:* US-06, US-09, UC-08
+  * *DoD:* Nhập tối thiểu 5-8 quy tắc vào bảng `cultural_rules`; tự tay test phối đồ và phản biện nội dung hiển thị.
 
 ---
 
 ### SPRINT 3 (06/10 - 07/10): TRIỂN KHAI CLOUD & TỔNG DUYỆT (HARDENING)
+* **Mục tiêu Sprint (Sprint Goal):** Đưa sản phẩm lên Internet công khai (Render + Vercel), kiểm thử tải trang di động/desktop và hoàn thiện hồ sơ dự thi Audition.
 
-* **Mục tiêu:** Đưa sản phẩm lên môi trường Internet công khai, fix bug và sẵn sàng bàn giao/bảo vệ.
-* **Nhiệm vụ của Leader (Dev):**
-  - [ ] Deploy Backend lên **Render.com** (Cấu hình biến môi trường kết nối Supabase).
-  - [ ] Deploy Frontend lên **Vercel** (Trỏ API về domain Render).
-  - [ ] Kiểm thử tải trang, giao diện trên điện thoại và máy tính.
-* **Nhiệm vụ chung cả Team:**
-  - [ ] Duyệt qua toàn bộ sản phẩm thực tế trên link Vercel.
-  - [ ] Đóng gói tài liệu, chuẩn bị bài thuyết trình ngày 07/10.
+* **[S3.1] Triển khai Backend lên Render.com & Frontend lên Vercel**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-01 -> US-08
+  * *DoD:* Web Service Render chạy ổn định kết nối Supabase; Vercel deploy HTTPS mượt mà, không lỗi CORS.
+* **[S3.2] Kiểm thử Tương thích Đa nền tảng & Tối ưu Hiệu năng**
+  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* Toàn bộ UC
+  * *DoD:* Responsive chuẩn trên cả Mobile (Canva Mobile style) và Desktop (Canva Desktop style); Canvas mượt 60 FPS.
+* **[S3.3] Tổng duyệt Kịch bản Demo & Hoàn thiện Hồ sơ Bài thi**
+  * *Assignee:* Cả Team (Leader + 2 Research) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* ProjectBrief.md
+  * *DoD:* Video demo ngắn (5-10 phút), Slide thuyết trình, link web live và mã nguồn GitHub sẵn sàng nộp bài.
