@@ -75,3 +75,25 @@ AI không được tự ý sửa đổi cấu trúc 4 bảng chính này nếu c
    - Tách biệt rõ ràng giữa logic Canvas Engine, tầng gọi API (Services), và tầng hiển thị Component UI.
    - Viết code dễ đọc, có chú thích giải nghĩa cho các thuật toán hòa sắc và xử lý pixel Canvas.
 3. **Tuân thủ Quy trình Git:** Mọi commit và Pull Request tạo bởi hoặc được gợi ý bởi AI phải tuân thủ chuẩn mực trong [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+## 6. Quy Trình Tự Động Hóa Duyệt Công Việc (Approval Workflow: "OK")
+
+Khi Người dùng phản hồi: **"OK"** (hoặc *"Duyệt"*, *"Đồng ý"*), AI Coding Agent hiểu rằng Người dùng đã duyệt công việc của task hiện tại và **tự động thực thi 100% chuỗi hành động sau qua GitHub CLI (`gh`) và Git**:
+
+1. **Đẩy nhánh lên Remote:** Đảm bảo toàn bộ commit của nhánh tính năng hiện tại (`feature/...`, `fix/...`, v.v.) đã được push lên `origin`.
+2. **Tạo Pull Request với mô tả chuẩn:**
+   - Dùng lệnh: `gh pr create --title "..." --body "..." --base main`.
+   - Tiêu đề chuẩn Conventional Commits (ví dụ: `feat(catalog): phát triển API Catalog & Thẻ Cultural Factcard (S1.2)`).
+   - Nội dung `body` gồm: Tổng quan, danh sách chi tiết tính năng FE/BE đã hoàn thành, kết quả kiểm thử (`npm test`, build status) và mã task liên kết (`Refs: ...`).
+3. **Squash and Merge:**
+   - Tự động thực thi lệnh: `gh pr merge --squash --delete-branch` để gộp toàn bộ commit thành 1 commit duy nhất trên `main` và xóa nhánh tính năng trên GitHub (remote).
+4. **Dọn dẹp và Đồng bộ Local:**
+   - Chuyển về nhánh chính: `git checkout main`.
+   - Cập nhật mã nguồn mới nhất: `git pull origin main`.
+   - Xóa nhánh tính năng ở máy local: `git branch -D <feature-branch>`.
+5. **Sẵn sàng cho task tiếp theo:**
+   - Thông báo ngắn gọn kết quả cho Người dùng.
+   - Khi bắt đầu task tiếp theo, luôn đứng từ `main` đã cập nhật để tạo nhánh mới: `git checkout -b <loại>/<mã-task>-<mô-tả-ngắn>`.
+
