@@ -75,6 +75,7 @@ AI không được tự ý sửa đổi cấu trúc 4 bảng chính này nếu c
    - Tách biệt rõ ràng giữa logic Canvas Engine, tầng gọi API (Services), và tầng hiển thị Component UI.
    - Viết code dễ đọc, có chú thích giải nghĩa cho các thuật toán hòa sắc và xử lý pixel Canvas.
 3. **Tuân thủ Quy trình Git:** Mọi commit và Pull Request tạo bởi hoặc được gợi ý bởi AI phải tuân thủ chuẩn mực trong [CONTRIBUTING.md](CONTRIBUTING.md).
+4. **Môi Trường Terminal Trên Windows:** Dù shell mặc định là PowerShell, AI luôn ưu tiên bọc câu lệnh qua `cmd /c "<lệnh>"` hoặc dùng `npm.cmd`/`npx.cmd` để tránh lỗi ExecutionPolicy (`.ps1`) và tương thích hoàn toàn cú pháp `&&`.
 
 ---
 
