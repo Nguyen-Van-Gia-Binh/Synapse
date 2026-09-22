@@ -1,38 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { useOutfitStore } from './store/useOutfitStore';
 import { CanvasViewport } from './components/studio/CanvasViewport';
+import { ItemDrawer } from './components/studio/ItemDrawer';
 import { CulturalFactcard } from './components/cultural/CulturalFactcard';
 import { LookbookModal } from './components/lookbook/LookbookModal';
 import { Button } from './components/ui/Button';
 import { apiClient } from './services/api';
+import { SlotType } from './types';
 import { 
   Sparkles, 
   RotateCcw, 
   RotateCw, 
   Share2, 
-  Layers, 
   Palette, 
   Crown, 
   Shirt, 
   Activity,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Pipette
 } from 'lucide-react';
 
 export const App: React.FC = () => {
   const { 
     gender, 
     setGender, 
-    selectItem, 
+    slots,
+    setItemColor, 
     resetOutfit, 
     undo, 
     redo,
-    setActiveFactcard,
     harmonyScore
   } = useOutfitStore();
 
-  const [isLookbookOpen, setIsLookbookOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
+  const [selectedSlotForColor, setSelectedSlotForColor] = useState<SlotType>('TOP');
+  const [isLookbookOpen, setIsLookbookOpen] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+
+  // Bảng 8 màu Cổ phong Việt Nam chuẩn mực theo GEMINI.md
+  const heritagePalette = [
+    { name: 'Đỏ điều', hex: '#9E2A2B' },
+    { name: 'Vàng mướp', hex: '#E9C46A' },
+    { name: 'Xanh chàm', hex: '#264653' },
+    { name: 'Xanh cổ vịt', hex: '#2A9D8F' },
+    { name: 'Tía ngọc', hex: '#5A189A' },
+    { name: 'Trắng ngà', hex: '#F4F1DE' },
+    { name: 'Đen mun', hex: '#1D1E2C' },
+    { name: 'Nâu sồng', hex: '#6F4E37' },
+  ];
 
   // Kiểm tra kết nối API Backend
   useEffect(() => {
@@ -47,16 +63,15 @@ export const App: React.FC = () => {
       .catch(() => setBackendStatus('disconnected'));
   }, []);
 
-  const heritagePalette = [
-    { name: 'Đỏ điều', hex: '#9E2A2B' },
-    { name: 'Vàng mướp', hex: '#E9C46A' },
-    { name: 'Xanh chàm', hex: '#264653' },
-    { name: 'Xanh cổ vịt', hex: '#2A9D8F' },
-    { name: 'Tía ngọc', hex: '#5A189A' },
-    { name: 'Trắng ngà', hex: '#F4F1DE' },
-    { name: 'Đen mun', hex: '#1D1E2C' },
-    { name: 'Nâu sồng', hex: '#6F4E37' },
-  ];
+  const handleColorChange = (hex: string) => {
+    // Đổi màu cho slot hiện tại (mặc định là TOP nếu đang mặc áo, hoặc slot đang chọn)
+    const targetSlot = slots[selectedSlotForColor] ? selectedSlotForColor : (slots.TOP ? 'TOP' : 'BOTTOM');
+    if (slots[targetSlot]) {
+      setItemColor(targetSlot, hex);
+    }
+  };
+
+  const currentColor = slots[selectedSlotForColor]?.color || slots.TOP?.color || '#9E2A2B';
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0F1016] text-[#F4F1DE]">
@@ -134,147 +149,134 @@ export const App: React.FC = () => {
       </header>
 
       {/* Main Studio Body */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         {/* Left Dock Icon Bar (70px) */}
-        <nav className="w-16 glass-panel border-r border-heritage-cream/10 flex flex-col items-center py-5 gap-6 z-20">
+        <nav className="w-16 glass-panel border-r border-heritage-cream/10 flex flex-col items-center py-5 gap-5 z-20 flex-shrink-0">
           <button 
-            title="Trang phục (TOP/BOTTOM)"
-            className="p-3 rounded-xl glass-card text-heritage-yellow hover:bg-heritage-yellow/10 transition-colors"
+            onClick={() => setIsDrawerOpen((prev) => !prev)}
+            title="Tủ đồ cổ phục (Nhấn để đóng/mở)"
+            className={`p-3 rounded-2xl transition-all ${
+              isDrawerOpen 
+                ? 'bg-heritage-yellow text-studio-bg shadow-lg shadow-heritage-yellow/20' 
+                : 'text-heritage-cream/60 hover:text-heritage-yellow hover:bg-white/5'
+            }`}
           >
             <Shirt className="w-5 h-5" />
           </button>
           <button 
+            onClick={() => {
+              setIsDrawerOpen(true);
+              setSelectedSlotForColor('HEADWEAR');
+            }}
             title="Mũ & Mấn (HEADWEAR)"
-            className="p-3 rounded-xl text-heritage-cream/60 hover:text-heritage-yellow hover:bg-heritage-yellow/10 transition-colors"
+            className="p-3 rounded-2xl text-heritage-cream/60 hover:text-heritage-yellow hover:bg-white/5 transition-colors"
           >
             <Crown className="w-5 h-5" />
           </button>
           <button 
-            title="Xếp lớp Layers"
-            className="p-3 rounded-xl text-heritage-cream/60 hover:text-heritage-yellow hover:bg-heritage-yellow/10 transition-colors"
-          >
-            <Layers className="w-5 h-5" />
-          </button>
-          <button 
-            title="Bảng màu Cổ phong"
-            className="p-3 rounded-xl text-heritage-cream/60 hover:text-heritage-yellow hover:bg-heritage-yellow/10 transition-colors"
+            onClick={() => {
+              setIsDrawerOpen(true);
+              setSelectedSlotForColor('TOP');
+            }}
+            title="Bảng màu nhuộm vải"
+            className="p-3 rounded-2xl text-heritage-cream/60 hover:text-heritage-yellow hover:bg-white/5 transition-colors"
           >
             <Palette className="w-5 h-5" />
           </button>
         </nav>
 
-        {/* Center Canvas Workspace */}
-        <main className="flex-1 flex flex-col items-center justify-between p-6 relative overflow-hidden bg-radial-gradient">
+        {/* Slide-out Item Drawer (Canva Style) */}
+        <ItemDrawer
+          isOpen={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          selectedSlotForColor={selectedSlotForColor}
+          onSelectSlotForColor={(slot) => setSelectedSlotForColor(slot)}
+        />
+
+        {/* Center Canvas Workspace Viewport */}
+        <main className="flex-1 flex flex-col items-center justify-between p-4 relative overflow-hidden bg-radial-gradient">
           {/* Quick Undo / Redo / Reset toolbar */}
-          <div className="flex items-center gap-2 glass-card px-3 py-1.5 rounded-full border border-heritage-cream/15 z-10 shadow-lg">
+          <div className="flex items-center gap-2 glass-card px-3.5 py-1.5 rounded-full border border-heritage-cream/15 z-10 shadow-lg">
             <button 
               onClick={undo}
-              className="p-1.5 text-heritage-cream/70 hover:text-white rounded-full hover:bg-white/5 transition-colors"
+              className="p-1.5 text-heritage-cream/70 hover:text-white rounded-full hover:bg-white/10 transition-colors"
               title="Hoàn tác (Undo)"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-3.5 h-3.5" />
             </button>
             <button 
               onClick={redo}
-              className="p-1.5 text-heritage-cream/70 hover:text-white rounded-full hover:bg-white/5 transition-colors"
+              className="p-1.5 text-heritage-cream/70 hover:text-white rounded-full hover:bg-white/10 transition-colors"
               title="Làm lại (Redo)"
             >
-              <RotateCw className="w-4 h-4" />
+              <RotateCw className="w-3.5 h-3.5" />
             </button>
-            <div className="w-[1px] h-4 bg-heritage-cream/20 mx-1" />
+            <div className="w-[1px] h-3.5 bg-heritage-cream/20 mx-1" />
             <button 
               onClick={resetOutfit}
-              className="text-xs text-heritage-cream/70 hover:text-heritage-red px-2 py-1 rounded transition-colors"
+              className="text-xs text-heritage-cream/70 hover:text-heritage-red px-2 py-0.5 rounded transition-colors"
             >
               Đặt lại
             </button>
           </div>
 
-          {/* Canvas Viewport Component */}
-          <div className="w-full flex-1 flex items-center justify-center my-3">
+          {/* Canvas Viewport Component (Paper-Doll Overlay 800x1200) */}
+          <div className="w-full flex-1 flex items-center justify-center my-1 overflow-hidden">
             <CanvasViewport />
           </div>
 
-          {/* Color Palette Bar */}
-          <div className="glass-card px-5 py-3 rounded-2xl border border-heritage-cream/15 flex items-center gap-3 z-10 shadow-xl">
-            <span className="text-xs text-heritage-cream/60 font-medium">Bảng 8 Màu Cổ Phong:</span>
+          {/* Interactive Heritage Color Bar (Dual Offscreen Canvas Tinting Controller) */}
+          <div className="glass-card px-5 py-2.5 rounded-2xl border border-heritage-cream/15 flex items-center gap-3.5 z-10 shadow-xl max-w-full overflow-x-auto">
+            <div className="flex items-center gap-1.5 text-xs text-heritage-cream/70 font-medium whitespace-nowrap">
+              <Palette className="w-3.5 h-3.5 text-heritage-yellow" />
+              <span>Màu [{selectedSlotForColor}]:</span>
+            </div>
+
             <div className="flex items-center gap-2">
               {heritagePalette.map((color) => (
                 <button
                   key={color.name}
-                  title={color.name}
-                  className="w-6 h-6 rounded-full border border-white/20 shadow-md transform hover:scale-125 transition-transform"
+                  onClick={() => handleColorChange(color.hex)}
+                  title={`${color.name} (${color.hex})`}
+                  className={`w-6 h-6 rounded-full border shadow-md transform hover:scale-125 transition-all relative ${
+                    currentColor.toUpperCase() === color.hex.toUpperCase()
+                      ? 'border-white scale-110 ring-2 ring-heritage-yellow'
+                      : 'border-white/20'
+                  }`}
                   style={{ backgroundColor: color.hex }}
                 />
               ))}
+
+              {/* Custom Hex Color Picker Input */}
+              <div className="relative flex items-center ml-1">
+                <input
+                  type="color"
+                  value={currentColor}
+                  onChange={(e) => handleColorChange(e.target.value)}
+                  className="w-6 h-6 rounded-full overflow-hidden cursor-pointer border border-white/40 p-0 bg-transparent opacity-0 absolute inset-0"
+                  title="Tùy chọn mã màu tự do (Custom Hex)"
+                />
+                <div 
+                  className="w-6 h-6 rounded-full border border-white/40 flex items-center justify-center pointer-events-none text-white/80"
+                  style={{ backgroundColor: currentColor }}
+                >
+                  <Pipette className="w-3 h-3 drop-shadow" />
+                </div>
+              </div>
             </div>
           </div>
         </main>
 
-        {/* Right Inspector Sidebar (320px) */}
-        <aside className="w-80 glass-panel border-l border-heritage-cream/10 p-5 flex flex-col gap-5 z-20 overflow-y-auto">
-          {/* Quick Demo Item Injector */}
-          <div className="glass-card p-4 rounded-2xl border border-heritage-cream/15 space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="font-serif-heritage text-heritage-yellow text-xs font-semibold flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                Mẫu Thử Nghiệm Sprint 0
-              </h4>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-heritage-teal/30 text-heritage-teal font-medium">
-                Zustand Store
-              </span>
-            </div>
-            <p className="text-xs text-heritage-cream/70 leading-relaxed">
-              Nhấn để thử nghiệm cập nhật Store xếp lớp trang phục và kích hoạt Thẻ tri thức văn hóa.
-            </p>
-            <div className="flex flex-col gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  selectItem('TOP', {
-                    id: 'mock-ao-ngu-than',
-                    name: 'Áo ngũ thân tay chẽn',
-                    gender,
-                    slot: 'TOP',
-                    layer_order: 30,
-                    image_url: '/assets/fallback/ao_ngu_than.png',
-                    color_customizable: true,
-                    default_color: '#9E2A2B',
-                    tags: ['nguyen', 'daily'],
-                  });
-                  setActiveFactcard({
-                    id: 'fact-01',
-                    item_id: 'mock-ao-ngu-than',
-                    era: 'Triều Nguyễn (Thế kỷ 19)',
-                    origin_story: 'Áo ngũ thân tượng trưng cho tứ thân phụ mẫu ôm ấp lấy thân con (tà con bên trong).',
-                    symbolic_meaning: 'Năm cúc áo đại diện cho Ngũ Thường (Nhân, Lễ, Nghĩa, Trí, Tín) của người quân tử.',
-                    modern_styling_tip: 'Phối cùng kính râm mắt tròn và sneaker trắng để tạo nét cá tính Heritage Futurism đương đại.',
-                  });
-                }}
-              >
-                + Mặc Áo ngũ thân (TOP)
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  selectItem('BOTTOM', {
-                    id: 'mock-quan-lua',
-                    name: 'Quần lụa trắng ngà',
-                    gender,
-                    slot: 'BOTTOM',
-                    layer_order: 20,
-                    image_url: '/assets/fallback/quan_lua.png',
-                    color_customizable: false,
-                    default_color: '#F4F1DE',
-                    tags: ['nguyen', 'silk'],
-                  });
-                }}
-              >
-                + Mặc Quần lụa (BOTTOM)
-              </Button>
-            </div>
+        {/* Right Inspector Sidebar (Cultural Factcard & Harmony Score) */}
+        <aside className="w-80 glass-panel border-l border-heritage-cream/10 p-5 flex flex-col gap-4 z-20 overflow-y-auto flex-shrink-0">
+          <div className="flex items-center justify-between pb-1 border-b border-heritage-cream/10">
+            <h4 className="font-serif-heritage text-heritage-yellow text-xs font-semibold flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              Cultural Inspector
+            </h4>
+            <span className="text-[10px] text-heritage-cream/50 uppercase tracking-wider">
+              Hồn Xưa Dáng Nay
+            </span>
           </div>
 
           {/* Cultural Factcard */}
@@ -289,7 +291,7 @@ export const App: React.FC = () => {
               </div>
             </div>
             <span className="px-2 py-1 rounded-md text-[11px] bg-heritage-yellow/20 text-heritage-yellow font-medium">
-              Chuẩn Ngũ Sắc
+              Ngũ Sắc Tương Sinh
             </span>
           </div>
         </aside>
