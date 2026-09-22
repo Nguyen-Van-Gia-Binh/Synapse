@@ -10,7 +10,8 @@ import {
   Trash2, 
   Palette,
   Layers,
-  Search
+  Search,
+  Info
 } from 'lucide-react';
 
 interface ItemDrawerProps {
@@ -25,113 +26,175 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
   selectedSlotForColor,
   onSelectSlotForColor,
 }) => {
-  const { gender, slots, selectItem, removeItem, setActiveFactcard } = useOutfitStore();
+  const { 
+    gender, 
+    slots, 
+    selectItem, 
+    removeItem, 
+    activeFactcardItem,
+    setActiveFactcard, 
+    setActiveFactcardItem, 
+    setIsFactcardLoading 
+  } = useOutfitStore();
 
   const [activeTab, setActiveTab] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [catalogItems, setCatalogItems] = useState<ItemDto[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // Danh mục 8 trang phục mẫu chuẩn 100% theo DATABASE-SCHEMA.sql
+  const fallbackItems: ItemDto[] = [
+    {
+      id: '11111111-0000-0000-0000-000000000001',
+      name: 'Áo tấc tay thụng thời Nguyễn',
+      gender: 'FEMALE',
+      slot: 'TOP',
+      layer_order: 30,
+      image_url: '/assets/mock/female_ao_tac_top.png',
+      color_customizable: true,
+      default_color: '#9E2A2B',
+      tags: ['nguyen', 'formal', 'ao_tac', 'le_hoi'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000002',
+      name: 'Áo ngũ thân tay chẽn Nam',
+      gender: 'MALE',
+      slot: 'TOP',
+      layer_order: 30,
+      image_url: '/assets/mock/male_ao_ngu_than_top.png',
+      color_customizable: true,
+      default_color: '#264653',
+      tags: ['nguyen', 'daily', 'ao_ngu_than', 'nam'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000003',
+      name: 'Áo Nhật bình thêu ngũ sắc',
+      gender: 'FEMALE',
+      slot: 'TOP',
+      layer_order: 30,
+      image_url: '/assets/mock/female_ao_nhat_binh.png',
+      color_customizable: false,
+      default_color: '#E9C46A',
+      tags: ['nguyen', 'royal', 'ao_nhat_binh', 'hoang_cung'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000004',
+      name: 'Quần lụa ống rộng truyền thống',
+      gender: 'UNISEX',
+      slot: 'BOTTOM',
+      layer_order: 20,
+      image_url: '/assets/mock/unisex_quan_lua.png',
+      color_customizable: true,
+      default_color: '#F4F1DE',
+      tags: ['nguyen', 'basic', 'quan_ong_rong', 'silk'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000005',
+      name: 'Khăn đóng xếp nếp truyền thống',
+      gender: 'MALE',
+      slot: 'HEADWEAR',
+      layer_order: 60,
+      image_url: '/assets/mock/male_khan_dong.png',
+      color_customizable: true,
+      default_color: '#1D1E2C',
+      tags: ['nguyen', 'formal', 'khan_dong'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000006',
+      name: 'Mấn nhung đính ngọc',
+      gender: 'FEMALE',
+      slot: 'HEADWEAR',
+      layer_order: 60,
+      image_url: '/assets/mock/female_man_nhung.png',
+      color_customizable: true,
+      default_color: '#5A189A',
+      tags: ['nguyen', 'royal', 'man_nhung'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000007',
+      name: 'Quạt lụa vẽ tranh thủy mặc',
+      gender: 'UNISEX',
+      slot: 'ACCESSORY',
+      layer_order: 50,
+      image_url: '/assets/mock/unisex_quat_lua.png',
+      color_customizable: false,
+      default_color: '#E9C46A',
+      tags: ['phu_kien', 'quat_lua', 'nghe_thuat'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000008',
+      name: 'Giày Sneaker tối giản Gen Z',
+      gender: 'UNISEX',
+      slot: 'FOOTWEAR',
+      layer_order: 10,
+      image_url: '/assets/mock/unisex_sneaker.png',
+      color_customizable: false,
+      default_color: '#FFFFFF',
+      tags: ['modern', 'streetwear', 'sneaker'],
+    },
+  ];
+
   // Tải danh mục trang phục từ API backend
   useEffect(() => {
     setIsLoading(true);
     apiClient.getItems({ gender })
-      .then((items) => setCatalogItems(items))
+      .then((items) => {
+        if (items && items.length > 0) {
+          setCatalogItems(items);
+        } else {
+          setCatalogItems(fallbackItems);
+        }
+      })
       .catch(() => {
-        // Fallback mock items nếu backend chưa chạy
-        setCatalogItems([
-          {
-            id: '11111111-0000-0000-0000-000000000001',
-            name: 'Áo tấc tay thụng',
-            gender: 'FEMALE',
-            slot: 'TOP',
-            layer_order: 30,
-            image_url: '/assets/mock/female_ao_tac_top.png',
-            color_customizable: true,
-            default_color: '#9E2A2B',
-            tags: ['nguyen', 'formal', 'ao_tac'],
-          },
-          {
-            id: '11111111-0000-0000-0000-000000000002',
-            name: 'Áo ngũ thân tay chẽn',
-            gender: 'MALE',
-            slot: 'TOP',
-            layer_order: 30,
-            image_url: '/assets/mock/male_ao_ngu_than_top.png',
-            color_customizable: true,
-            default_color: '#264653',
-            tags: ['nguyen', 'daily', 'ao_ngu_than'],
-          },
-          {
-            id: '11111111-0000-0000-0000-000000000004',
-            name: 'Quần lụa ống rộng',
-            gender: 'UNISEX',
-            slot: 'BOTTOM',
-            layer_order: 20,
-            image_url: '/assets/mock/unisex_quan_lua.png',
-            color_customizable: true,
-            default_color: '#F4F1DE',
-            tags: ['nguyen', 'basic', 'quan_ong_rong'],
-          },
-          {
-            id: '11111111-0000-0000-0000-000000000005',
-            name: 'Khăn đóng xếp nếp',
-            gender: 'MALE',
-            slot: 'HEADWEAR',
-            layer_order: 60,
-            image_url: '/assets/mock/male_khan_dong.png',
-            color_customizable: true,
-            default_color: '#1D1E2C',
-            tags: ['nguyen', 'khan_dong'],
-          },
-          {
-            id: '11111111-0000-0000-0000-000000000006',
-            name: 'Mấn nhung đính ngọc',
-            gender: 'FEMALE',
-            slot: 'HEADWEAR',
-            layer_order: 60,
-            image_url: '/assets/mock/female_man_nhung.png',
-            color_customizable: true,
-            default_color: '#5A189A',
-            tags: ['nguyen', 'man_nhung'],
-          },
-          {
-            id: '11111111-0000-0000-0000-000000000007',
-            name: 'Quạt lụa thủy mặc',
-            gender: 'UNISEX',
-            slot: 'ACCESSORY',
-            layer_order: 50,
-            image_url: '/assets/mock/unisex_quat_lua.png',
-            color_customizable: false,
-            default_color: '#E9C46A',
-            tags: ['phu_kien', 'quat_lua'],
-          },
-        ]);
+        setCatalogItems(fallbackItems);
       })
       .finally(() => setIsLoading(false));
   }, [gender]);
 
-  const handleSelectItem = async (item: ItemDto) => {
-    // 1. Mặc đồ vào Store
-    selectItem(item.slot, item);
-    onSelectSlotForColor(item.slot);
-
-    // 2. Tự động tra cứu Fact văn hóa cho món đồ
+  // Hàm tải Factcard văn hóa qua API
+  const fetchAndSetFactcard = async (item: ItemDto) => {
+    setActiveFactcardItem(item);
+    setIsFactcardLoading(true);
     try {
       const fact = await apiClient.getCulturalFact(item.id);
       if (fact) {
         setActiveFactcard(fact);
       }
-    } catch {
-      // Ignored
+    } catch (error) {
+      console.error('[ItemDrawer] Lỗi tải fact văn hóa:', error);
+    } finally {
+      setIsFactcardLoading(false);
     }
   };
 
+  const handleSelectItem = (item: ItemDto) => {
+    // 1. Mặc đồ vào Canvas Store
+    selectItem(item.slot, item);
+    onSelectSlotForColor(item.slot);
+
+    // 2. Kích hoạt cập nhật Factcard lên Right Sidebar
+    fetchAndSetFactcard(item);
+  };
+
+  const handleInspectFactOnly = (item: ItemDto, e: React.MouseEvent) => {
+    e.stopPropagation();
+    fetchAndSetFactcard(item);
+  };
+
+  // Helper sinh Micro-Tooltip ngắn gọn
+  const getMicroTooltipText = (item: ItemDto): string => {
+    if (item.tags.includes('royal')) return '🏛️ Cung đình Huế • Quý tộc';
+    if (item.tags.includes('formal')) return '✨ Lễ phục trang trọng Triều Nguyễn';
+    if (item.tags.includes('daily')) return '🌿 Thường phục truyền thống';
+    if (item.tags.includes('modern')) return '⚡ Điểm nhấn Gen Z đương đại';
+    return '📜 Di sản cổ phục Việt Nam';
+  };
+
   const filteredItems = catalogItems.filter((item) => {
-    // Lọc theo giới tính
+    // Lọc theo giới tính (UNISEX luôn hiển thị)
     if (item.gender !== 'UNISEX' && item.gender !== gender) return false;
 
-    // Lọc theo tab
+    // Lọc theo tab slot
     if (activeTab !== 'ALL' && item.slot !== activeTab) return false;
 
     // Lọc theo từ khóa tìm kiếm
@@ -183,6 +246,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
             { id: 'BOTTOM', label: 'Quần' },
             { id: 'HEADWEAR', label: 'Mũ/Mấn' },
             { id: 'ACCESSORY', label: 'Phụ kiện' },
+            { id: 'FOOTWEAR', label: 'Giày/Hài' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -207,17 +271,21 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
               <Layers className="w-3 h-3 text-heritage-teal" />
               Đang mặc ({activeSlotsList.length})
             </span>
-            <span className="text-[10px] text-heritage-yellow">Bấm để chỉnh màu</span>
+            <span className="text-[10px] text-heritage-yellow">Bấm để chỉnh màu & xem tri thức</span>
           </div>
           <div className="flex gap-1.5 flex-wrap">
             {activeSlotsList.map(([slotKey, data]) => {
               const isSelectedForColor = selectedSlotForColor === slotKey;
+              const isInspecting = activeFactcardItem?.id === data!.item.id;
               return (
                 <div
                   key={slotKey}
-                  onClick={() => onSelectSlotForColor(slotKey as SlotType)}
+                  onClick={() => {
+                    onSelectSlotForColor(slotKey as SlotType);
+                    fetchAndSetFactcard(data!.item);
+                  }}
                   className={`group flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs cursor-pointer transition-all border ${
-                    isSelectedForColor
+                    isSelectedForColor || isInspecting
                       ? 'bg-heritage-yellow/20 border-heritage-yellow text-heritage-yellow shadow-sm'
                       : 'bg-white/5 border-heritage-cream/10 text-heritage-cream/80 hover:bg-white/10'
                   }`}
@@ -248,7 +316,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
       <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
         {isLoading ? (
           <div className="flex items-center justify-center h-32 text-xs text-heritage-cream/50 animate-pulse">
-            Đang tải tủ đồ...
+            Đang tải tủ đồ cổ phong...
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="text-center py-8 text-xs text-heritage-cream/40">
@@ -257,12 +325,17 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
         ) : (
           filteredItems.map((item) => {
             const isWearing = slots[item.slot]?.item.id === item.id;
+            const isInspecting = activeFactcardItem?.id === item.id;
+            const tooltipText = getMicroTooltipText(item);
+
             return (
               <div
                 key={item.id}
                 onClick={() => handleSelectItem(item)}
                 className={`group relative p-3 rounded-2xl glass-card border transition-all cursor-pointer flex items-center gap-3 ${
-                  isWearing
+                  isInspecting
+                    ? 'border-heritage-yellow bg-heritage-yellow/10 shadow-lg ring-1 ring-heritage-yellow/60'
+                    : isWearing
                     ? 'border-heritage-teal bg-heritage-teal/15 shadow-md ring-1 ring-heritage-teal/50'
                     : 'border-heritage-cream/10 hover:border-heritage-yellow/40 hover:bg-white/5'
                 }`}
@@ -274,7 +347,6 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
                     alt={item.name}
                     className="w-full h-full object-contain p-1 transform group-hover:scale-110 transition-transform"
                     onError={(e) => {
-                      // Fallback icon nếu ảnh lỗi
                       e.currentTarget.style.display = 'none';
                     }}
                   />
@@ -283,25 +355,45 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
                   </div>
                 </div>
 
-                {/* Item Info */}
+                {/* Item Info & Micro-Tooltip */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-1">
                     <h4 className="text-xs font-medium text-heritage-cream group-hover:text-white truncate">
                       {item.name}
                     </h4>
-                    {isWearing && (
-                      <span className="p-1 rounded-full bg-heritage-teal text-white flex-shrink-0">
-                        <Check className="w-2.5 h-2.5" />
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      {/* Info Button (Xem trước Factcard không bắt buộc thay đồ) */}
+                      <button
+                        onClick={(e) => handleInspectFactOnly(item, e)}
+                        title="Xem Thẻ Tri Thức Văn Hóa"
+                        className="p-1 text-heritage-cream/40 hover:text-heritage-yellow hover:bg-white/10 rounded-full transition-colors"
+                      >
+                        <Info className="w-3 h-3" />
+                      </button>
+                      {isWearing && (
+                        <span className="p-0.5 rounded-full bg-heritage-teal text-white flex-shrink-0" title="Đang mặc">
+                          <Check className="w-2.5 h-2.5" />
+                        </span>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Micro-Tooltip / Subtitle badge */}
+                  <div className="text-[10px] text-heritage-cream/60 truncate mt-0.5">
+                    {tooltipText}
+                  </div>
+
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-black/30 text-heritage-yellow/80">
                       {item.slot}
                     </span>
-                    {item.color_customizable && (
+                    {item.color_customizable ? (
                       <span className="text-[10px] text-heritage-cream/50 flex items-center gap-0.5">
                         <Palette className="w-2.5 h-2.5 text-heritage-teal" /> Đổi màu
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-heritage-cream/40 italic">
+                        Màu nguyên bản
                       </span>
                     )}
                   </div>
