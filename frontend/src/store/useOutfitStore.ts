@@ -10,6 +10,8 @@ export interface OutfitStoreState {
   gender: Gender;
   slots: Record<SlotType, OutfitSlotState | null>;
   activeFactcard: CulturalFactDto | null;
+  activeFactcardItem: ItemDto | null;
+  isFactcardLoading: boolean;
   violations: RuleViolation[];
   harmonyScore: number;
   
@@ -23,6 +25,8 @@ export interface OutfitStoreState {
   removeItem: (slot: SlotType) => void;
   setItemColor: (slot: SlotType, color: string) => void;
   setActiveFactcard: (fact: CulturalFactDto | null) => void;
+  setActiveFactcardItem: (item: ItemDto | null) => void;
+  setIsFactcardLoading: (isLoading: boolean) => void;
   setViolations: (violations: RuleViolation[]) => void;
   setHarmonyScore: (score: number) => void;
   resetOutfit: () => void;
@@ -43,6 +47,8 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   gender: 'FEMALE',
   slots: initialSlots,
   activeFactcard: null,
+  activeFactcardItem: null,
+  isFactcardLoading: false,
   violations: [],
   harmonyScore: 85,
   history: [{ slots: initialSlots, gender: 'FEMALE' }],
@@ -57,6 +63,8 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         gender,
         slots: nextSlots,
         activeFactcard: null,
+        activeFactcardItem: null,
+        isFactcardLoading: false,
         violations: [],
         history: nextHistory,
         historyIndex: nextHistory.length - 1,
@@ -116,6 +124,8 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   },
 
   setActiveFactcard: (fact) => set({ activeFactcard: fact }),
+  setActiveFactcardItem: (item) => set({ activeFactcardItem: item }),
+  setIsFactcardLoading: (isLoading) => set({ isFactcardLoading: isLoading }),
   setViolations: (violations) => set({ violations }),
   setHarmonyScore: (harmonyScore) => set({ harmonyScore }),
 
@@ -126,6 +136,8 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
       return {
         slots: initialSlots,
         activeFactcard: null,
+        activeFactcardItem: null,
+        isFactcardLoading: false,
         violations: [],
         history: nextHistory,
         historyIndex: nextHistory.length - 1,
