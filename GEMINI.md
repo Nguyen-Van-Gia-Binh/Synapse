@@ -74,7 +74,9 @@ AI không được tự ý sửa đổi cấu trúc 4 bảng chính này nếu c
 2. **Kiến trúc Module hóa (Separation of Concerns):**
    - Tách biệt rõ ràng giữa logic Canvas Engine, tầng gọi API (Services), và tầng hiển thị Component UI.
    - Viết code dễ đọc, có chú thích giải nghĩa cho các thuật toán hòa sắc và xử lý pixel Canvas.
-3. **Tuân thủ Quy trình Git:** Mọi commit và Pull Request tạo bởi hoặc được gợi ý bởi AI phải tuân thủ chuẩn mực trong [CONTRIBUTING.md](CONTRIBUTING.md).
+3. **Quy Tắc Vàng Về Git — Tuyệt Đối Không Commit Thẳng Vào Main:**
+   - **CẤM tuyệt đối commit trực tiếp vào `main`**, dù là thay đổi nhỏ nhất (chỉnh sửa tài liệu `docs/`, cấu hình `chore/`, fix lỗi nhỏ `fix/`, hay tính năng `feature/`).
+   - Mọi thay đổi bắt buộc phải: Tách nhánh riêng từ `main` mới nhất $\rightarrow$ Commit trên nhánh $\rightarrow$ Đẩy lên remote $\rightarrow$ Mở Pull Request (`gh pr create`). Chỉ merge vào `main` sau khi có duyệt hoặc Người dùng gõ "OK".
 4. **Môi Trường Terminal Trên Windows:** Dù shell mặc định là PowerShell, AI luôn ưu tiên bọc câu lệnh qua `cmd /c "<lệnh>"` hoặc dùng `npm.cmd`/`npx.cmd` để tránh lỗi ExecutionPolicy (`.ps1`) và tương thích hoàn toàn cú pháp `&&`.
 
 ---
