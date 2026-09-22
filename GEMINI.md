@@ -83,9 +83,12 @@ AI không được tự ý sửa đổi cấu trúc 4 bảng chính này nếu c
 
 ## 6. Quy Trình Tự Động Hóa Duyệt Công Việc (Approval Workflow: "OK")
 
-Khi Người dùng phản hồi: **"OK"** (hoặc *"Duyệt"*, *"Đồng ý"*), AI Coding Agent hiểu rằng Người dùng đã duyệt công việc của task hiện tại và **tự động thực thi 100% chuỗi hành động sau qua GitHub CLI (`gh`) và Git**:
+- **Nguyên Tắc Gộp Nhánh (Task Batching):** Có thể gộp nhiều task/hạng mục công việc liên quan vào cùng một nhánh phát triển để tối ưu lịch sử Git, tránh tạo nhánh vụn vặt.
+- **Nguyên Tắc Thời Điểm Tạo PR:** Trong quá trình làm việc, AI chỉ commit cục bộ trên nhánh và báo cáo kết quả. **TUYỆT ĐỐI KHÔNG tự ý push hay tạo PR trước khi Người dùng duyệt**.
 
-1. **Đẩy nhánh lên Remote:** Đảm bảo toàn bộ commit của nhánh tính năng hiện tại (`feature/...`, `fix/...`, v.v.) đã được push lên `origin`.
+Chỉ khi Người dùng phản hồi: **"OK"** (hoặc *"Duyệt"*, *"Đồng ý"*), AI Coding Agent mới bắt đầu chuỗi tự động hóa 100%:
+
+1. **Đẩy nhánh lên Remote:** `git push -u origin <feature-branch>`.
 2. **Tạo Pull Request với mô tả chuẩn:**
    - Dùng lệnh: `gh pr create --title "..." --body "..." --base main`.
    - Tiêu đề chuẩn Conventional Commits (ví dụ: `feat(catalog): phát triển API Catalog & Thẻ Cultural Factcard (S1.2)`).
