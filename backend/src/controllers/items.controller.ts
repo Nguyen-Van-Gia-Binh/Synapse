@@ -77,7 +77,7 @@ export class ItemsController {
         res.status(404).json({
           success: false,
           error: {
-            code: 'FACT_NOT_FOUND',
+            code: 'ITEM_NOT_FOUND',
             message: 'Không tìm thấy thông tin văn hóa cho trang phục này.',
           },
           timestamp: new Date().toISOString(),
