@@ -53,4 +53,16 @@ describe('Outfit Store - Color Management & Cultural Guardrails', () => {
     store.setSelectedSlotForColor('BOTTOM');
     assert.equal(useOutfitStore.getState().selectedSlotForColor, 'BOTTOM');
   });
+
+  test('evaluateGuardrails phát hiện vi phạm khi chỉ mặc áo mà không mặc quần', async () => {
+    const store = useOutfitStore.getState();
+    store.resetOutfit();
+    store.selectItem('TOP', mockCustomizableItem);
+    await store.evaluateGuardrails();
+
+    const violations = useOutfitStore.getState().violations;
+    assert.ok(violations.length >= 1);
+    assert.equal(violations[0].trigger_slot, 'TOP');
+    assert.equal(violations[0].rule_code, 'RULE_AODAI_MISSING_BOTTOM');
+  });
 });
