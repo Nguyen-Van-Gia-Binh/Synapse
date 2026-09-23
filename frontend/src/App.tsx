@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useOutfitStore } from './store/useOutfitStore';
 import { CanvasViewport } from './components/studio/CanvasViewport';
 import { ItemDrawer } from './components/studio/ItemDrawer';
@@ -38,6 +38,7 @@ export const App: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
   const [isLookbookOpen, setIsLookbookOpen] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+  const studioCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Kiểm tra kết nối API Backend
   useEffect(() => {
@@ -227,7 +228,7 @@ export const App: React.FC = () => {
 
           {/* Canvas Viewport Component (Paper-Doll Overlay 800x1200) */}
           <div className="w-full flex-1 flex items-center justify-center my-1 overflow-hidden">
-            <CanvasViewport />
+            <CanvasViewport canvasRef={studioCanvasRef} />
           </div>
 
           {/* Interactive Heritage Color Bar (Dual Offscreen Canvas Tinting Controller) */}
@@ -261,6 +262,7 @@ export const App: React.FC = () => {
       <LookbookModal 
         isOpen={isLookbookOpen}
         onClose={() => setIsLookbookOpen(false)}
+        canvasRef={studioCanvasRef}
       />
     </div>
   );
