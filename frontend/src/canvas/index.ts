@@ -31,3 +31,4 @@ export interface RenderLayerOptions {
 
 export * from './tinting';
 export * from './engine';
+export * from './export';
