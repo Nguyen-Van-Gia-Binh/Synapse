@@ -4,9 +4,11 @@ import { CanvasViewport } from './components/studio/CanvasViewport';
 import { ItemDrawer } from './components/studio/ItemDrawer';
 import { ColorBar } from './components/studio/ColorBar';
 import { CulturalFactcard } from './components/cultural/CulturalFactcard';
+import { GuardrailToast } from './components/cultural/GuardrailToast';
 import { LookbookModal } from './components/lookbook/LookbookModal';
 import { Button } from './components/ui/Button';
 import { apiClient } from './services/api';
+import { SlotType } from './types';
 import { 
   Sparkles, 
   RotateCcw, 
@@ -24,6 +26,7 @@ export const App: React.FC = () => {
   const { 
     gender, 
     setGender, 
+    selectItem,
     resetOutfit, 
     undo, 
     redo,
@@ -47,6 +50,34 @@ export const App: React.FC = () => {
       })
       .catch(() => setBackendStatus('disconnected'));
   }, []);
+
+  const handleQuickSelectTag = (slot: SlotType, tags: string[]) => {
+    apiClient.getItems({ gender, slot })
+      .then((items) => {
+        const matching = items.find((item) => 
+          item.tags?.some((t) => tags.map((tg) => tg.toLowerCase()).includes(t.toLowerCase()))
+        ) || items[0];
+
+        if (matching) {
+          selectItem(slot, matching);
+        }
+      })
+      .catch(() => {
+        if (slot === 'BOTTOM') {
+          selectItem('BOTTOM', {
+            id: '22222222-0000-0000-0000-000000000001',
+            name: 'Quần lụa trắng ống rộng',
+            gender: 'UNISEX',
+            slot: 'BOTTOM',
+            layer_order: 20,
+            image_url: '/assets/mock/unisex_quan_lua.png',
+            color_customizable: true,
+            default_color: '#F4F1DE',
+            tags: ['silk', 'quan_lua', 'quan_ong_rong'],
+          });
+        }
+      });
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0F1016] text-[#F4F1DE]">
@@ -213,6 +244,9 @@ export const App: React.FC = () => {
               Hồn Xưa Dáng Nay
             </span>
           </div>
+
+          {/* Cultural Guardrail Toast Alert (US-06) */}
+          <GuardrailToast onQuickSelectTag={handleQuickSelectTag} />
 
           {/* Cultural Factcard */}
           <CulturalFactcard />

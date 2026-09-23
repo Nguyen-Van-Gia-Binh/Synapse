@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { Gender, SlotType, ItemDto, CulturalFactDto, RuleViolation, OutfitSlotState } from '../types';
+import { Gender, SlotType, ItemDto, CulturalFactDto, RuleViolation, OutfitSlotState, SlotMap } from '../types';
+import { apiClient } from '../services/api';
 
 export interface OutfitHistoryState {
   slots: Record<SlotType, OutfitSlotState | null>;
@@ -31,6 +32,7 @@ export interface OutfitStoreState {
   setIsFactcardLoading: (isLoading: boolean) => void;
   setViolations: (violations: RuleViolation[]) => void;
   setHarmonyScore: (score: number) => void;
+  evaluateGuardrails: () => Promise<void>;
   resetOutfit: () => void;
   undo: () => void;
   redo: () => void;
@@ -91,6 +93,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         historyIndex: nextHistory.length - 1,
       };
     });
+    get().evaluateGuardrails();
   },
 
   removeItem: (slot) => {
@@ -107,6 +110,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         historyIndex: nextHistory.length - 1,
       };
     });
+    get().evaluateGuardrails();
   },
 
   setItemColor: (slot, color) => {
@@ -137,6 +141,40 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   setIsFactcardLoading: (isLoading) => set({ isFactcardLoading: isLoading }),
   setViolations: (violations) => set({ violations }),
   setHarmonyScore: (harmonyScore) => set({ harmonyScore }),
+
+  evaluateGuardrails: async () => {
+    const { gender, slots } = get();
+    const slotMap: SlotMap = {
+      HEADWEAR: slots.HEADWEAR ? slots.HEADWEAR.item.id : null,
+      TOP: slots.TOP ? slots.TOP.item.id : null,
+      BOTTOM: slots.BOTTOM ? slots.BOTTOM.item.id : null,
+      PATTERN: slots.PATTERN ? slots.PATTERN.item.id : null,
+      ACCESSORY: slots.ACCESSORY ? slots.ACCESSORY.item.id : null,
+      FOOTWEAR: slots.FOOTWEAR ? slots.FOOTWEAR.item.id : null,
+    };
+
+    try {
+      const result = await apiClient.evaluateRules({ gender, slots: slotMap });
+      set({ violations: result.violations || [] });
+    } catch {
+      // Graceful fallback nếu Backend offline
+      const fallbackViolations: RuleViolation[] = [];
+      if (slots.TOP && !slots.BOTTOM) {
+        fallbackViolations.push({
+          rule_code: 'RULE_AODAI_MISSING_BOTTOM',
+          trigger_slot: 'TOP',
+          severity: 'WARNING',
+          message: 'Áo ngũ thân truyền thống thường đi cùng quần ống rộng để giữ dáng đứng trang nghiêm, bạn có muốn thử kết hợp thêm quần không?',
+          suggestion: {
+            target_slot: 'BOTTOM',
+            action: 'ADD_RECOMMENDED_ITEM',
+            recommended_tags: ['quan_lua', 'silk'],
+          },
+        });
+      }
+      set({ violations: fallbackViolations });
+    }
+  },
 
   resetOutfit: () => {
     set((state) => {
