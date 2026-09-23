@@ -100,3 +100,12 @@ Khi Người dùng phản hồi: **"OK"** (hoặc *"Duyệt"*, *"Đồng ý"*), 
    - Thông báo ngắn gọn kết quả cho Người dùng.
    - Khi bắt đầu task tiếp theo, luôn đứng từ `main` đã cập nhật để tạo nhánh mới: `git checkout -b <loại>/<mã-task>-<mô-tả-ngắn>`.
 
+---
+
+## 7. Ràng Buộc Model AI Chỉ Định (AI Model Enforcement Guardrail)
+
+- **Model quy định bắt buộc cho dự án Synapse:** **`Gemini 3.8 Pro`** (Tối ưu hóa cho suy luận logic phức tạp, kiến trúc hệ thống và bảo đảm độ chính xác văn hóa cao nhất).
+- **Cơ chế kiểm soát & cảnh báo (Model Guard):**
+  - Do Antigravity lưu cấu hình chọn model ở cấp độ ứng dụng toàn cục (Global Settings), khi Người dùng chuyển đổi model ở các dự án khác, phiên làm việc của Synapse có thể vô tình bị đổi theo.
+  - Khi bắt đầu phiên làm việc hoặc khi phát hiện model đang thực thi không phải là `Gemini 3.8 Pro` (nhận diện qua metadata hệ thống hoặc thông báo thay đổi model sang Flash, Claude, OpenAI...), AI Agent **bắt buộc phải dừng thực thi các tác vụ code/kiến trúc và thông báo lịch sự nhắc nhở Người dùng chuyển lại về model `Gemini 3.8 Pro`** trên thanh công cụ/dropdown model của Antigravity trước khi tiếp tục.
+
