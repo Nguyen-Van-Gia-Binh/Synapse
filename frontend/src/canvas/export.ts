@@ -4,6 +4,7 @@
  */
 
 import { HERITAGE_PALETTE, normalizeHex } from '../constants/heritageColors';
+import { Gender } from '../types';
 
 export const LOOKBOOK_CONFIG = {
   WIDTH: 1080,
@@ -17,7 +18,7 @@ export interface PaletteItem {
 
 export interface LookbookRenderOptions {
   title: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: Gender;
   mannequinCanvas: HTMLCanvasElement;
   paletteUsed: string[];
   factQuote?: {

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 import { calculatePaletteList } from '../../canvas/export';
+import { Gender } from '../../types';
 
 export interface LookbookCardProps {
   title: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: Gender;
   previewImageUrl: string | null;
   paletteUsed: string[];
   factQuote?: {
