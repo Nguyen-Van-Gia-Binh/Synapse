@@ -8,6 +8,7 @@ import { GuardrailToast } from './components/cultural/GuardrailToast';
 import { HarmonyRadar } from './components/cultural/HarmonyRadar';
 import { LookbookModal } from './components/lookbook/LookbookModal';
 import { Button } from './components/ui/Button';
+import { ServerWakeupBanner } from './components/ui/ServerWakeupBanner';
 import { apiClient } from './services/api';
 import { SlotType } from './types';
 import { 
@@ -83,6 +84,7 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0F1016] text-[#F4F1DE]">
+      <ServerWakeupBanner />
       {/* Topbar Header */}
       <header className="h-16 px-6 glass-panel border-b border-heritage-cream/10 flex items-center justify-between z-30 sticky top-0">
         <div className="flex items-center gap-3">

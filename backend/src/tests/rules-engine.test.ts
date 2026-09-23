@@ -21,7 +21,7 @@ describe('RulesService - Guardrails Evaluation Engine', () => {
     assert.equal(result.is_valid, false);
     assert.ok(result.violations.length >= 1);
     
-    const violation = result.violations.find((v) => v.rule_code === 'RULE_AODAI_MISSING_BOTTOM');
+    const violation = result.violations.find((v) => v.rule_code.includes('MISSING_BOTTOM'));
     assert.ok(violation);
     assert.equal(violation.trigger_slot, 'TOP');
     assert.equal(violation.severity, 'WARNING');

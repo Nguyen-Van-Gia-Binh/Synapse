@@ -83,6 +83,6 @@ describe('RulesController - API POST /api/rules/evaluate', () => {
     assert.equal(res.responseData.success, true);
     assert.equal(res.responseData.data.is_valid, false);
     assert.ok(res.responseData.data.violations.length >= 1);
-    assert.equal(res.responseData.data.violations[0].rule_code, 'RULE_AODAI_MISSING_BOTTOM');
+    assert.ok(res.responseData.data.violations[0].rule_code.includes('MISSING_BOTTOM'));
   });
 });

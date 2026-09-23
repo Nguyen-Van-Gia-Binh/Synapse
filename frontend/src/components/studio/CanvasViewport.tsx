@@ -149,7 +149,12 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ canvasRef: exter
           ref={canvasRef}
           width={CANVAS_CONFIG.WIDTH}
           height={CANVAS_CONFIG.HEIGHT}
-          className="w-full h-full object-contain pointer-events-none"
+          className="w-full h-full object-contain pointer-events-none transition-opacity duration-150"
+          style={{
+            touchAction: 'none',
+            userSelect: 'none',
+            WebkitUserSelect: 'none',
+          }}
         />
 
         {/* Slot Active Badges (Phía dưới Canvas) */}

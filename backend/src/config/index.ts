@@ -8,6 +8,9 @@ export const config = {
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
   supabase: {
     url: process.env.SUPABASE_URL || '',
-    anonKey: process.env.SUPABASE_ANON_KEY || '',
+    anonKey: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || '',
+    publishableKey: process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || '',
+    secretKey: process.env.SUPABASE_SECRET_KEY || '',
   },
 };
+

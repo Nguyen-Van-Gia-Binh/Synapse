@@ -87,10 +87,10 @@ export interface CulturalRuleEntity {
   condition: CulturalRuleCondition;
   severity: RuleSeverity;
   message: string;
-  suggestion: {
+  suggestion?: {
     target_slot: SlotType;
     action: string;
-    recommended_tags: string[];
+    recommended_tags?: string[];
   };
 }
 
