@@ -1,4 +1,5 @@
 import { ItemDto, CulturalFactDto, Gender, SlotType } from '../types';
+import { supabaseClient, isSupabaseConfigured } from '../config/supabase';
 
 export class ItemsService {
   /**
@@ -174,42 +175,89 @@ export class ItemsService {
   };
 
   /**
-   * Lấy danh sách trang phục theo bộ lọc
+   * Lấy danh sách trang phục theo bộ lọc (Ưu tiên Supabase, Fallback In-Memory)
    */
   async getItems(filters?: { gender?: Gender; slot?: SlotType; era?: string }): Promise<ItemDto[]> {
+    if (isSupabaseConfigured() && supabaseClient) {
+      try {
+        let query = supabaseClient.from('items').select('*').order('layer_order', { ascending: true });
+
+        if (filters?.gender && filters.gender !== 'UNISEX') {
+          query = query.in('gender', [filters.gender, 'UNISEX']);
+        }
+        if (filters?.slot) {
+          query = query.eq('slot', filters.slot);
+        }
+        if (filters?.era) {
+          query = query.contains('tags', JSON.stringify([filters.era.toLowerCase()]));
+        }
+
+        const { data, error } = await query;
+        if (!error && data && data.length > 0) {
+          return data as ItemDto[];
+        }
+        if (error) {
+          console.warn('[ItemsService] Supabase query error, falling back to In-Memory mock:', error.message);
+        }
+      } catch (err) {
+        console.warn('[ItemsService] Supabase query exception, falling back to In-Memory mock:', err);
+      }
+    }
+
+    // Fallback In-Memory Filter
     return this.mockItems.filter((item) => {
-      // 1. Lọc theo giới tính (Hỗ trợ UNISEX)
       if (filters?.gender && filters.gender !== 'UNISEX' && item.gender !== filters.gender && item.gender !== 'UNISEX') {
         return false;
       }
-
-      // 2. Lọc theo Slot vị trí
       if (filters?.slot && item.slot !== filters.slot) {
         return false;
       }
-
-      // 3. Lọc theo Thời kỳ / Triều đại (tags)
       if (filters?.era) {
         const eraQuery = filters.era.toLowerCase();
         const hasEra = item.tags.some((tag) => tag.toLowerCase() === eraQuery);
         if (!hasEra) return false;
       }
-
       return true;
     });
   }
 
   /**
-   * Lấy chi tiết một món đồ theo ID
+   * Lấy chi tiết một món đồ theo ID (Ưu tiên Supabase, Fallback In-Memory)
    */
   async getItemById(id: string): Promise<ItemDto | null> {
+    if (isSupabaseConfigured() && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient.from('items').select('*').eq('id', id).maybeSingle();
+        if (!error && data) {
+          return data as ItemDto;
+        }
+        if (error) {
+          console.warn('[ItemsService] Supabase getItemById error, falling back to In-Memory mock:', error.message);
+        }
+      } catch (err) {
+        console.warn('[ItemsService] Supabase getItemById exception, falling back to In-Memory mock:', err);
+      }
+    }
     return this.mockItems.find((item) => item.id === id) || null;
   }
 
   /**
-   * Lấy thẻ tri thức văn hóa theo Item ID
+   * Lấy thẻ tri thức văn hóa theo Item ID (Ưu tiên Supabase, Fallback In-Memory)
    */
   async getCulturalFact(itemId: string): Promise<CulturalFactDto | null> {
+    if (isSupabaseConfigured() && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient.from('cultural_facts').select('*').eq('item_id', itemId).maybeSingle();
+        if (!error && data) {
+          return data as CulturalFactDto;
+        }
+        if (error) {
+          console.warn('[ItemsService] Supabase getCulturalFact error, falling back to In-Memory mock:', error.message);
+        }
+      } catch (err) {
+        console.warn('[ItemsService] Supabase getCulturalFact exception, falling back to In-Memory mock:', err);
+      }
+    }
     return this.mockFacts[itemId] || null;
   }
 }
