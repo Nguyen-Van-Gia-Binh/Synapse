@@ -3,13 +3,24 @@ import { useOutfitStore } from '../../store/useOutfitStore';
 import { CANVAS_CONFIG, PaperDollCanvasEngine, RenderLayerOptions } from '../../canvas';
 import { ZoomIn, ZoomOut, RotateCcw, Download, Sparkles } from 'lucide-react';
 
-export const CanvasViewport: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+export interface CanvasViewportProps {
+  canvasRef?: React.MutableRefObject<HTMLCanvasElement | null> | React.RefObject<HTMLCanvasElement | null>;
+}
+
+export const CanvasViewport: React.FC<CanvasViewportProps> = ({ canvasRef: externalCanvasRef }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<PaperDollCanvasEngine | null>(null);
   const [zoomScale, setZoomScale] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { gender, slots } = useOutfitStore();
+
+  // Đồng bộ reference Canvas ra ngoài để phục vụ xuất V-Lookbook
+  useEffect(() => {
+    if (externalCanvasRef && canvasRef.current) {
+      (externalCanvasRef as React.MutableRefObject<HTMLCanvasElement | null>).current = canvasRef.current;
+    }
+  }, [externalCanvasRef]);
 
   // Khởi tạo Canvas Engine một lần duy nhất khi component mount
   useEffect(() => {
