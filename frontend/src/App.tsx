@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useOutfitStore } from './store/useOutfitStore';
 import { CanvasViewport } from './components/studio/CanvasViewport';
 import { ItemDrawer } from './components/studio/ItemDrawer';
+import { ColorBar } from './components/studio/ColorBar';
 import { CulturalFactcard } from './components/cultural/CulturalFactcard';
 import { LookbookModal } from './components/lookbook/LookbookModal';
 import { Button } from './components/ui/Button';
 import { apiClient } from './services/api';
-import { SlotType } from './types';
 import { 
   Sparkles, 
   RotateCcw, 
@@ -17,38 +17,23 @@ import {
   Shirt, 
   Activity,
   CheckCircle2,
-  AlertCircle,
-  Pipette
+  AlertCircle
 } from 'lucide-react';
 
 export const App: React.FC = () => {
   const { 
     gender, 
     setGender, 
-    slots,
-    setItemColor, 
     resetOutfit, 
     undo, 
     redo,
-    harmonyScore
+    harmonyScore,
+    setSelectedSlotForColor
   } = useOutfitStore();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
-  const [selectedSlotForColor, setSelectedSlotForColor] = useState<SlotType>('TOP');
   const [isLookbookOpen, setIsLookbookOpen] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
-
-  // Bảng 8 màu Cổ phong Việt Nam chuẩn mực theo GEMINI.md
-  const heritagePalette = [
-    { name: 'Đỏ điều', hex: '#9E2A2B' },
-    { name: 'Vàng mướp', hex: '#E9C46A' },
-    { name: 'Xanh chàm', hex: '#264653' },
-    { name: 'Xanh cổ vịt', hex: '#2A9D8F' },
-    { name: 'Tía ngọc', hex: '#5A189A' },
-    { name: 'Trắng ngà', hex: '#F4F1DE' },
-    { name: 'Đen mun', hex: '#1D1E2C' },
-    { name: 'Nâu sồng', hex: '#6F4E37' },
-  ];
 
   // Kiểm tra kết nối API Backend
   useEffect(() => {
@@ -62,16 +47,6 @@ export const App: React.FC = () => {
       })
       .catch(() => setBackendStatus('disconnected'));
   }, []);
-
-  const handleColorChange = (hex: string) => {
-    // Đổi màu cho slot hiện tại (mặc định là TOP nếu đang mặc áo, hoặc slot đang chọn)
-    const targetSlot = slots[selectedSlotForColor] ? selectedSlotForColor : (slots.TOP ? 'TOP' : 'BOTTOM');
-    if (slots[targetSlot]) {
-      setItemColor(targetSlot, hex);
-    }
-  };
-
-  const currentColor = slots[selectedSlotForColor]?.color || slots.TOP?.color || '#9E2A2B';
 
   return (
     <div className="flex flex-col min-h-screen bg-[#0F1016] text-[#F4F1DE]">
@@ -189,8 +164,6 @@ export const App: React.FC = () => {
         <ItemDrawer
           isOpen={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
-          selectedSlotForColor={selectedSlotForColor}
-          onSelectSlotForColor={(slot) => setSelectedSlotForColor(slot)}
         />
 
         {/* Center Canvas Workspace Viewport */}
@@ -226,45 +199,7 @@ export const App: React.FC = () => {
           </div>
 
           {/* Interactive Heritage Color Bar (Dual Offscreen Canvas Tinting Controller) */}
-          <div className="glass-card px-5 py-2.5 rounded-2xl border border-heritage-cream/15 flex items-center gap-3.5 z-10 shadow-xl max-w-full overflow-x-auto">
-            <div className="flex items-center gap-1.5 text-xs text-heritage-cream/70 font-medium whitespace-nowrap">
-              <Palette className="w-3.5 h-3.5 text-heritage-yellow" />
-              <span>Màu [{selectedSlotForColor}]:</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {heritagePalette.map((color) => (
-                <button
-                  key={color.name}
-                  onClick={() => handleColorChange(color.hex)}
-                  title={`${color.name} (${color.hex})`}
-                  className={`w-6 h-6 rounded-full border shadow-md transform hover:scale-125 transition-all relative ${
-                    currentColor.toUpperCase() === color.hex.toUpperCase()
-                      ? 'border-white scale-110 ring-2 ring-heritage-yellow'
-                      : 'border-white/20'
-                  }`}
-                  style={{ backgroundColor: color.hex }}
-                />
-              ))}
-
-              {/* Custom Hex Color Picker Input */}
-              <div className="relative flex items-center ml-1">
-                <input
-                  type="color"
-                  value={currentColor}
-                  onChange={(e) => handleColorChange(e.target.value)}
-                  className="w-6 h-6 rounded-full overflow-hidden cursor-pointer border border-white/40 p-0 bg-transparent opacity-0 absolute inset-0"
-                  title="Tùy chọn mã màu tự do (Custom Hex)"
-                />
-                <div 
-                  className="w-6 h-6 rounded-full border border-white/40 flex items-center justify-center pointer-events-none text-white/80"
-                  style={{ backgroundColor: currentColor }}
-                >
-                  <Pipette className="w-3 h-3 drop-shadow" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <ColorBar />
         </main>
 
         {/* Right Inspector Sidebar (Cultural Factcard & Harmony Score) */}

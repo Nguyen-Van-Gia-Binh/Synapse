@@ -17,13 +17,13 @@ import {
 interface ItemDrawerProps {
   isOpen: boolean;
   onClose?: () => void;
-  selectedSlotForColor: SlotType;
-  onSelectSlotForColor: (slot: SlotType) => void;
+  selectedSlotForColor?: SlotType;
+  onSelectSlotForColor?: (slot: SlotType) => void;
 }
 
 export const ItemDrawer: React.FC<ItemDrawerProps> = ({
   isOpen,
-  selectedSlotForColor,
+  onClose,
   onSelectSlotForColor,
 }) => {
   const { 
@@ -31,6 +31,8 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
     slots, 
     selectItem, 
     removeItem, 
+    selectedSlotForColor,
+    setSelectedSlotForColor,
     activeFactcardItem,
     setActiveFactcard, 
     setActiveFactcardItem, 
@@ -170,7 +172,8 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
   const handleSelectItem = (item: ItemDto) => {
     // 1. Mặc đồ vào Canvas Store
     selectItem(item.slot, item);
-    onSelectSlotForColor(item.slot);
+    setSelectedSlotForColor(item.slot);
+    onSelectSlotForColor?.(item.slot);
 
     // 2. Kích hoạt cập nhật Factcard lên Right Sidebar
     fetchAndSetFactcard(item);
@@ -221,9 +224,20 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
             <Sparkles className="w-4 h-4 text-heritage-yellow" />
             Tủ Đồ Cổ Phong
           </h3>
-          <span className="text-[10px] text-heritage-cream/60 px-2 py-0.5 rounded-full glass-card border border-heritage-cream/10">
-            {gender === 'FEMALE' ? 'Nữ Mẫu' : 'Nam Mẫu'}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-heritage-cream/60 px-2 py-0.5 rounded-full glass-card border border-heritage-cream/10">
+              {gender === 'FEMALE' ? 'Nữ Mẫu' : 'Nam Mẫu'}
+            </span>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="text-heritage-cream/50 hover:text-white text-xs px-1.5 py-0.5 rounded-md hover:bg-white/10 transition-colors"
+                title="Đóng tủ đồ"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Search Box */}
@@ -281,7 +295,8 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
                 <div
                   key={slotKey}
                   onClick={() => {
-                    onSelectSlotForColor(slotKey as SlotType);
+                    setSelectedSlotForColor(slotKey as SlotType);
+                    onSelectSlotForColor?.(slotKey as SlotType);
                     fetchAndSetFactcard(data!.item);
                   }}
                   className={`group flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs cursor-pointer transition-all border ${
