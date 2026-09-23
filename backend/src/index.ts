@@ -7,7 +7,11 @@ import { ApiResponse } from './types';
 const app = express();
 
 // Middlewares
-app.use(cors({ origin: config.clientUrl, credentials: true }));
+const corsOrigin = config.nodeEnv === 'development'
+  ? [config.clientUrl, /^http:\/\/localhost:\d+$/]
+  : config.clientUrl;
+
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
 
 // Health Check Endpoint
