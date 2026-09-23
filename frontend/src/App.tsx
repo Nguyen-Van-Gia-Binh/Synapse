@@ -5,6 +5,7 @@ import { ItemDrawer } from './components/studio/ItemDrawer';
 import { ColorBar } from './components/studio/ColorBar';
 import { CulturalFactcard } from './components/cultural/CulturalFactcard';
 import { GuardrailToast } from './components/cultural/GuardrailToast';
+import { HarmonyRadar } from './components/cultural/HarmonyRadar';
 import { LookbookModal } from './components/lookbook/LookbookModal';
 import { Button } from './components/ui/Button';
 import { apiClient } from './services/api';
@@ -30,7 +31,7 @@ export const App: React.FC = () => {
     resetOutfit, 
     undo, 
     redo,
-    harmonyScore,
+    harmonyDetail,
     setSelectedSlotForColor
   } = useOutfitStore();
 
@@ -251,18 +252,8 @@ export const App: React.FC = () => {
           {/* Cultural Factcard */}
           <CulturalFactcard />
 
-          {/* Color Harmony Score Badge */}
-          <div className="glass-card p-4 rounded-2xl border border-heritage-cream/15 flex items-center justify-between">
-            <div>
-              <span className="text-xs text-heritage-cream/60">Điểm hòa sắc:</span>
-              <div className="font-serif-heritage text-lg text-heritage-yellow font-bold">
-                {harmonyScore} / 100
-              </div>
-            </div>
-            <span className="px-2 py-1 rounded-md text-[11px] bg-heritage-yellow/20 text-heritage-yellow font-medium">
-              Ngũ Sắc Tương Sinh
-            </span>
-          </div>
+          {/* Real-time Color Harmony Radar (US-07, UC-06) */}
+          <HarmonyRadar harmony={harmonyDetail} />
         </aside>
       </div>
 

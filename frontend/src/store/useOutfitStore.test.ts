@@ -65,4 +65,33 @@ describe('Outfit Store - Color Management & Cultural Guardrails', () => {
     assert.equal(violations[0].trigger_slot, 'TOP');
     assert.equal(violations[0].rule_code, 'RULE_AODAI_MISSING_BOTTOM');
   });
+
+  test('Tự động tính toán điểm hòa sắc khi mặc cả TOP và BOTTOM', () => {
+    const store = useOutfitStore.getState();
+    store.resetOutfit();
+
+    // Mặc TOP (Đỏ điều #9E2A2B)
+    store.selectItem('TOP', mockCustomizableItem, '#9E2A2B');
+    assert.equal(useOutfitStore.getState().harmonyDetail, null);
+
+    // Mặc BOTTOM (Vàng hoa mướp #E9C46A)
+    const mockBottom: ItemDto = {
+      id: 'item-bottom-1',
+      name: 'Quần lụa',
+      gender: 'FEMALE',
+      slot: 'BOTTOM',
+      layer_order: 20,
+      image_url: '/assets/mock/female_silk_pants.png',
+      color_customizable: true,
+      default_color: '#E9C46A',
+      tags: ['quan_lua'],
+    };
+    store.selectItem('BOTTOM', mockBottom, '#E9C46A');
+
+    const detail = useOutfitStore.getState().harmonyDetail;
+    assert.ok(detail !== null);
+    assert.ok(detail.totalScore >= 85);
+    assert.equal(detail.isGeneratingWuXing, true);
+    assert.equal(useOutfitStore.getState().harmonyScore, detail.totalScore);
+  });
 });

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Gender, SlotType, ItemDto, CulturalFactDto, RuleViolation, OutfitSlotState, SlotMap } from '../types';
 import { apiClient } from '../services/api';
+import { HarmonyScoreDetail, calculateColorHarmony } from '../utils/harmonyScorer';
 
 export interface OutfitHistoryState {
   slots: Record<SlotType, OutfitSlotState | null>;
@@ -15,6 +16,7 @@ export interface OutfitStoreState {
   isFactcardLoading: boolean;
   violations: RuleViolation[];
   harmonyScore: number;
+  harmonyDetail: HarmonyScoreDetail | null;
   selectedSlotForColor: SlotType;
   
   // History for undo/redo
@@ -32,6 +34,7 @@ export interface OutfitStoreState {
   setIsFactcardLoading: (isLoading: boolean) => void;
   setViolations: (violations: RuleViolation[]) => void;
   setHarmonyScore: (score: number) => void;
+  updateHarmonyScore: () => void;
   evaluateGuardrails: () => Promise<void>;
   resetOutfit: () => void;
   undo: () => void;
@@ -55,6 +58,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   isFactcardLoading: false,
   violations: [],
   harmonyScore: 85,
+  harmonyDetail: null,
   selectedSlotForColor: 'TOP',
   history: [{ slots: initialSlots, gender: 'FEMALE' }],
   historyIndex: 0,
@@ -71,6 +75,8 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         activeFactcardItem: null,
         isFactcardLoading: false,
         violations: [],
+        harmonyScore: 85,
+        harmonyDetail: null,
         history: nextHistory,
         historyIndex: nextHistory.length - 1,
       };
@@ -94,6 +100,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
       };
     });
     get().evaluateGuardrails();
+    get().updateHarmonyScore();
   },
 
   removeItem: (slot) => {
@@ -111,6 +118,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
       };
     });
     get().evaluateGuardrails();
+    get().updateHarmonyScore();
   },
 
   setItemColor: (slot, color) => {
@@ -133,6 +141,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         historyIndex: nextHistory.length - 1,
       };
     });
+    get().updateHarmonyScore();
   },
 
   setSelectedSlotForColor: (slot) => set({ selectedSlotForColor: slot }),
@@ -141,6 +150,22 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   setIsFactcardLoading: (isLoading) => set({ isFactcardLoading: isLoading }),
   setViolations: (violations) => set({ violations }),
   setHarmonyScore: (harmonyScore) => set({ harmonyScore }),
+
+  updateHarmonyScore: () => {
+    const { slots } = get();
+    if (slots.TOP && slots.BOTTOM) {
+      const detail = calculateColorHarmony(slots.TOP.color, slots.BOTTOM.color);
+      set({
+        harmonyDetail: detail,
+        harmonyScore: detail.totalScore,
+      });
+    } else {
+      set({
+        harmonyDetail: null,
+        harmonyScore: 85,
+      });
+    }
+  },
 
   evaluateGuardrails: async () => {
     const { gender, slots } = get();
@@ -186,6 +211,8 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         activeFactcardItem: null,
         isFactcardLoading: false,
         violations: [],
+        harmonyScore: 85,
+        harmonyDetail: null,
         history: nextHistory,
         historyIndex: nextHistory.length - 1,
       };
@@ -201,6 +228,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         gender: prev.gender,
         historyIndex: historyIndex - 1,
       });
+      get().updateHarmonyScore();
     }
   },
 
@@ -213,6 +241,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         gender: next.gender,
         historyIndex: historyIndex + 1,
       });
+      get().updateHarmonyScore();
     }
   },
 }));
