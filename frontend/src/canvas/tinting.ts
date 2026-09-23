@@ -4,6 +4,7 @@
  */
 
 import { CANVAS_CONFIG } from './index';
+import { isValidHexColor, normalizeHex } from '../constants/heritageColors';
 
 // Reusable offscreen canvas to avoid GC overhead during 60 FPS slider dragging
 let cachedOffscreenCanvas: HTMLCanvasElement | null = null;
@@ -27,12 +28,14 @@ export function hexToRgb(hex: string): { r: number; g: number; b: number } | nul
     const r = parseInt(cleanHex[0] + cleanHex[0], 16);
     const g = parseInt(cleanHex[1] + cleanHex[1], 16);
     const b = parseInt(cleanHex[2] + cleanHex[2], 16);
+    if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
     return { r, g, b };
   }
   if (cleanHex.length === 6) {
     const r = parseInt(cleanHex.substring(0, 2), 16);
     const g = parseInt(cleanHex.substring(2, 4), 16);
     const b = parseInt(cleanHex.substring(4, 6), 16);
+    if (isNaN(r) || isNaN(g) || isNaN(b)) return null;
     return { r, g, b };
   }
   return null;
@@ -53,12 +56,13 @@ export function renderTintedLayer(
 ): void {
   const { WIDTH, HEIGHT } = CANVAS_CONFIG;
 
-  // Nếu không cho phép đổi màu hoặc không có mã màu, vẽ trực tiếp ảnh gốc
-  if (!customizable || !hexColor) {
+  // Nếu không cho phép đổi màu hoặc không có mã màu hợp lệ, vẽ trực tiếp ảnh gốc
+  if (!customizable || !hexColor || !isValidHexColor(hexColor)) {
     mainCtx.drawImage(image, 0, 0, WIDTH, HEIGHT);
     return;
   }
 
+  const validHex = normalizeHex(hexColor);
   const offscreen = getOffscreenCanvas();
   if (!offscreen) {
     mainCtx.drawImage(image, 0, 0, WIDTH, HEIGHT);
@@ -76,7 +80,7 @@ export function renderTintedLayer(
   offCtx.clearRect(0, 0, WIDTH, HEIGHT);
 
   // 2. Phủ màu nền đã chọn
-  offCtx.fillStyle = hexColor;
+  offCtx.fillStyle = validHex;
   offCtx.fillRect(0, 0, WIDTH, HEIGHT);
 
   // 3. Hòa trộn Multiply với ảnh gốc để giữ nếp gấp vải và bóng tự nhiên

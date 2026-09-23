@@ -14,6 +14,7 @@ export interface OutfitStoreState {
   isFactcardLoading: boolean;
   violations: RuleViolation[];
   harmonyScore: number;
+  selectedSlotForColor: SlotType;
   
   // History for undo/redo
   history: OutfitHistoryState[];
@@ -24,6 +25,7 @@ export interface OutfitStoreState {
   selectItem: (slot: SlotType, item: ItemDto, initialColor?: string) => void;
   removeItem: (slot: SlotType) => void;
   setItemColor: (slot: SlotType, color: string) => void;
+  setSelectedSlotForColor: (slot: SlotType) => void;
   setActiveFactcard: (fact: CulturalFactDto | null) => void;
   setActiveFactcardItem: (item: ItemDto | null) => void;
   setIsFactcardLoading: (isLoading: boolean) => void;
@@ -51,6 +53,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   isFactcardLoading: false,
   violations: [],
   harmonyScore: 85,
+  selectedSlotForColor: 'TOP',
   history: [{ slots: initialSlots, gender: 'FEMALE' }],
   historyIndex: 0,
 
@@ -83,6 +86,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
       nextHistory.push({ slots: newSlots, gender: state.gender });
       return {
         slots: newSlots,
+        selectedSlotForColor: item.color_customizable ? slot : state.selectedSlotForColor,
         history: nextHistory,
         historyIndex: nextHistory.length - 1,
       };
@@ -109,6 +113,10 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
     set((state) => {
       const current = state.slots[slot];
       if (!current) return state;
+      // Khóa đổi màu theo quy chế triều đình / văn hóa (US-03 Scenario 3.2)
+      if (current.item && current.item.color_customizable === false) {
+        return state;
+      }
       const newSlots = {
         ...state.slots,
         [slot]: { ...current, color },
@@ -123,6 +131,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
     });
   },
 
+  setSelectedSlotForColor: (slot) => set({ selectedSlotForColor: slot }),
   setActiveFactcard: (fact) => set({ activeFactcard: fact }),
   setActiveFactcardItem: (item) => set({ activeFactcardItem: item }),
   setIsFactcardLoading: (isLoading) => set({ isFactcardLoading: isLoading }),
