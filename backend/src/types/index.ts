@@ -72,6 +72,28 @@ export interface EvaluateRulesResponseDto {
   encouragement: string;
 }
 
+export interface CulturalRuleCondition {
+  type: 'MISSING_SLOT' | 'INCOMPATIBLE_TAGS' | 'REQUIRED_TAGS';
+  required_slot?: SlotType;
+  forbidden_tags?: string[];
+  required_tags?: string[];
+}
+
+export interface CulturalRuleEntity {
+  id: string;
+  rule_code: string;
+  trigger_slot: SlotType;
+  trigger_tag: string;
+  condition: CulturalRuleCondition;
+  severity: RuleSeverity;
+  message: string;
+  suggestion: {
+    target_slot: SlotType;
+    action: string;
+    recommended_tags: string[];
+  };
+}
+
 export interface LookbookOutfitData {
   slots: Record<SlotType, { item_id: string; color: string } | null>;
   palette_used: string[];
