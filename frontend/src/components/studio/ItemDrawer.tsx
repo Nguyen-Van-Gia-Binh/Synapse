@@ -201,7 +201,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <aside className="w-80 glass-panel border-r border-heritage-cream/10 flex flex-col z-20 overflow-hidden shadow-2xl flex-shrink-0">
+    <aside className="w-80 h-full glass-panel border-r border-heritage-cream/10 flex flex-col z-20 overflow-hidden shadow-2xl flex-shrink-0">
       {/* 1. Header Tab Phù Hợp Với LeftDock */}
       <div className="p-4 border-b border-heritage-cream/10 space-y-3">
         <div className="flex items-center justify-between">
@@ -331,7 +331,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
 
       {/* 3. Nội Dung Tab Tương Ứng */}
       {activeDockTab === 'TEMPLATES' && (
-        <div className="flex-1 overflow-y-auto scrollbar-none p-3 space-y-3">
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-none p-3 space-y-3">
           <p className="text-[11px] text-heritage-cream/60 italic">
             Các bộ phối cổ phục chuẩn mực cung đình & đương đại được thiết kế sẵn:
           </p>
@@ -390,7 +390,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
       )}
 
       {activeDockTab === 'TEXT' && (
-        <div className="flex-1 overflow-y-auto scrollbar-none p-4 space-y-4">
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-none p-4 space-y-4">
           <div className="p-4 rounded-2xl glass-card border border-heritage-cream/15 space-y-2">
             <h4 className="font-serif-heritage text-xs font-bold text-heritage-yellow flex items-center gap-1.5">
               <Type className="w-3.5 h-3.5" />
@@ -407,7 +407,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
       )}
 
       {activeDockTab === 'UPLOAD' && (
-        <div className="flex-1 overflow-y-auto scrollbar-none p-4 flex flex-col items-center justify-center text-center gap-3">
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-none p-4 flex flex-col items-center justify-center text-center gap-3">
           <div className="w-14 h-14 rounded-2xl bg-white/5 border border-dashed border-heritage-cream/30 flex items-center justify-center text-heritage-yellow/60">
             <Upload className="w-6 h-6 animate-bounce" />
           </div>
@@ -424,7 +424,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
       )}
 
       {activeDockTab === 'WARDROBE' && (
-        <div className="flex-1 overflow-y-auto scrollbar-none p-3 space-y-2.5">
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-none p-3 space-y-2.5">
         {isLoading ? (
           <div className="flex items-center justify-center h-32 text-xs text-heritage-cream/50 animate-pulse">
             Đang tải tủ đồ cổ phong...
