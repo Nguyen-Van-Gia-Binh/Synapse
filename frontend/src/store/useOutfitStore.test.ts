@@ -48,10 +48,13 @@ describe('Outfit Store - Color Management & Cultural Guardrails', () => {
     assert.equal(updated?.color, '#E9C46A'); // Vẫn giữ nguyên default_color hoàng cung
   });
 
-  test('Chuyển đổi selectedSlotForColor cập nhật chính xác slot cần nhuộm', () => {
+  test('Chuyển đổi selectedSlotForColor cập nhật chính xác slot cần nhuộm hoặc deselect về null', () => {
     const store = useOutfitStore.getState();
     store.setSelectedSlotForColor('BOTTOM');
     assert.equal(useOutfitStore.getState().selectedSlotForColor, 'BOTTOM');
+
+    store.setSelectedSlotForColor(null);
+    assert.equal(useOutfitStore.getState().selectedSlotForColor, null);
   });
 
   test('evaluateGuardrails phát hiện vi phạm khi chỉ mặc áo mà không mặc quần', async () => {

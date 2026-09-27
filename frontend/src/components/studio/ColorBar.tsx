@@ -17,7 +17,7 @@ const SLOT_NAMES: Record<SlotType, string> = {
 export const ColorBar: React.FC = () => {
   const { slots, selectedSlotForColor, setSelectedSlotForColor, setItemColor } = useOutfitStore();
 
-  const currentSlotData = slots[selectedSlotForColor];
+  const currentSlotData = selectedSlotForColor ? slots[selectedSlotForColor] : null;
   const isCustomizable = currentSlotData?.item.color_customizable ?? true;
   const currentColor = currentSlotData?.color || '#9E2A2B';
 
@@ -37,7 +37,7 @@ export const ColorBar: React.FC = () => {
   );
 
   const handleSelectColor = (hex: string) => {
-    if (!isCustomizable) return;
+    if (!isCustomizable || !selectedSlotForColor) return;
     const normalized = normalizeHex(hex);
     setItemColor(selectedSlotForColor, normalized);
     setHexInput(normalized);
@@ -47,7 +47,7 @@ export const ColorBar: React.FC = () => {
   const handleHexInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setHexInput(val);
-    if (isValidHexColor(val)) {
+    if (isValidHexColor(val) && selectedSlotForColor) {
       setHexError(false);
       setItemColor(selectedSlotForColor, normalizeHex(val));
     } else {
@@ -57,7 +57,7 @@ export const ColorBar: React.FC = () => {
 
   const handleApplyHex = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isCustomizable) return;
+    if (!isCustomizable || !selectedSlotForColor) return;
     if (isValidHexColor(hexInput)) {
       const normalized = normalizeHex(hexInput);
       setItemColor(selectedSlotForColor, normalized);

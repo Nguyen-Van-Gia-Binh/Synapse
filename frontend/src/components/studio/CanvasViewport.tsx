@@ -2,19 +2,44 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useOutfitStore } from '../../store/useOutfitStore';
 import { CANVAS_CONFIG, PaperDollCanvasEngine, RenderLayerOptions } from '../../canvas';
 import { SlotType } from '../../types';
-import { ZoomIn, ZoomOut, RotateCcw, Download, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export interface CanvasViewportProps {
   canvasRef?: React.MutableRefObject<HTMLCanvasElement | null> | React.RefObject<HTMLCanvasElement | null>;
+  zoomScale?: number;
 }
 
-export const CanvasViewport: React.FC<CanvasViewportProps> = ({ canvasRef: externalCanvasRef }) => {
+export const CanvasViewport: React.FC<CanvasViewportProps> = ({ 
+  canvasRef: externalCanvasRef,
+  zoomScale = 1
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<PaperDollCanvasEngine | null>(null);
-  const [zoomScale, setZoomScale] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [panOffset, setPanOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const dragStartRef = useRef<{
+    startX: number;
+    startY: number;
+    initialPanX: number;
+    initialPanY: number;
+    hasMoved: boolean;
+  }>({
+    startX: 0,
+    startY: 0,
+    initialPanX: 0,
+    initialPanY: 0,
+    hasMoved: false,
+  });
 
-  const { gender, slots } = useOutfitStore();
+  const { gender, slots, setSelectedSlotForColor, loadCulturalFactForItem } = useOutfitStore();
+
+  // Reset panOffset khi zoom trở về 100% hoặc nhỏ hơn
+  useEffect(() => {
+    if (zoomScale <= 1) {
+      setPanOffset({ x: 0, y: 0 });
+    }
+  }, [zoomScale]);
 
   // Đồng bộ reference Canvas ra ngoài để phục vụ xuất V-Lookbook
   useEffect(() => {
@@ -76,75 +101,127 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ canvasRef: exter
       .finally(() => setIsLoading(false));
   }, [gender, slots]);
 
-  const handleZoomIn = () => setZoomScale((prev) => Math.min(prev + 0.15, 1.4));
-  const handleZoomOut = () => setZoomScale((prev) => Math.max(prev - 0.15, 0.65));
-  const handleResetZoom = () => setZoomScale(1);
-
-  const handleExportQuickSnapshot = async () => {
-    if (!engineRef.current) return;
-    const blob = await engineRef.current.exportImageBlob();
-    if (!blob) return;
-
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.download = `synapse-snapshot-${Date.now()}.png`;
-    link.href = url;
-    link.click();
-    URL.revokeObjectURL(url);
+  // Xử lý Pan / Drag khi Zoom > 100%
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomScale > 1) {
+      dragStartRef.current = {
+        startX: e.clientX,
+        startY: e.clientY,
+        initialPanX: panOffset.x,
+        initialPanY: panOffset.y,
+        hasMoved: false,
+      };
+      setIsDragging(true);
+    }
   };
 
-  const activeLayersCount = Object.values(slots).filter(Boolean).length;
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || zoomScale <= 1) return;
+    const dx = e.clientX - dragStartRef.current.startX;
+    const dy = e.clientY - dragStartRef.current.startY;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      dragStartRef.current.hasMoved = true;
+    }
+    // Giới hạn biên độ pan để không bị trượt mất hút người mẫu khỏi khung
+    const maxPan = 350 * (zoomScale - 0.7);
+    const nextX = Math.max(-maxPan, Math.min(maxPan, dragStartRef.current.initialPanX + dx));
+    const nextY = Math.max(-maxPan, Math.min(maxPan, dragStartRef.current.initialPanY + dy));
+    setPanOffset({ x: nextX, y: nextY });
+  };
+
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+
+  // Click ra ngoài khoảng trống background -> Deselect về trạng thái Studio tổng thể
+  const handleBackgroundClick = (e: React.MouseEvent) => {
+    if (dragStartRef.current.hasMoved) {
+      dragStartRef.current.hasMoved = false;
+      return;
+    }
+    // Chỉ deselect nếu click trúng background container cha
+    if (e.target === e.currentTarget) {
+      setSelectedSlotForColor(null);
+    }
+  };
+
+  // Click trực tiếp lên vùng cơ thể Mannequin để chọn món đồ tương ứng (Canva style)
+  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (dragStartRef.current.hasMoved) {
+      dragStartRef.current.hasMoved = false;
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const xRatio = (e.clientX - rect.left) / rect.width;
+    const yRatio = (e.clientY - rect.top) / rect.height;
+
+    // Cơ thể người mẫu nằm ở vùng giữa (khoảng 18% đến 82% chiều ngang).
+    // Nếu click vào khoảng trống 2 bên lề trái/phải, xem như click ra ngoài -> Deselect!
+    if (xRatio < 0.18 || xRatio > 0.82) {
+      setSelectedSlotForColor(null);
+      return;
+    }
+
+    if (yRatio < 0.28) {
+      // Vùng Đầu (HEADWEAR: Mũ, Mấn, Khăn đóng)
+      if (slots.HEADWEAR) {
+        setSelectedSlotForColor('HEADWEAR');
+        loadCulturalFactForItem(slots.HEADWEAR.item);
+      } else {
+        setSelectedSlotForColor(null);
+      }
+    } else if (yRatio >= 0.28 && yRatio < 0.65) {
+      // Vùng Thân (TOP: Áo tấc, Áo ngũ thân, Áo Nhật bình)
+      if (slots.TOP) {
+        setSelectedSlotForColor('TOP');
+        loadCulturalFactForItem(slots.TOP.item);
+      } else {
+        setSelectedSlotForColor(null);
+      }
+    } else {
+      // Vùng Chân (BOTTOM: Quần lụa hoặc FOOTWEAR: Giày/Hài)
+      if (slots.BOTTOM) {
+        setSelectedSlotForColor('BOTTOM');
+        loadCulturalFactForItem(slots.BOTTOM.item);
+      } else if (slots.FOOTWEAR) {
+        setSelectedSlotForColor('FOOTWEAR');
+        loadCulturalFactForItem(slots.FOOTWEAR.item);
+      } else {
+        setSelectedSlotForColor(null);
+      }
+    }
+  };
 
   return (
-    <div className="relative flex flex-col items-center justify-center w-full h-full p-2 select-none">
-      {/* Top Floating Control Bar */}
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 glass-card px-3 py-1.5 rounded-full border border-heritage-cream/15 shadow-xl">
-        <button
-          onClick={handleZoomOut}
-          title="Thu nhỏ"
-          className="p-1.5 text-heritage-cream/70 hover:text-white rounded-full hover:bg-white/10 transition-colors"
-        >
-          <ZoomOut className="w-4 h-4" />
-        </button>
-        <span className="text-[11px] font-medium text-heritage-cream/80 min-w-[42px] text-center font-mono">
-          {Math.round(zoomScale * 100)}%
-        </span>
-        <button
-          onClick={handleZoomIn}
-          title="Phóng to"
-          className="p-1.5 text-heritage-cream/70 hover:text-white rounded-full hover:bg-white/10 transition-colors"
-        >
-          <ZoomIn className="w-4 h-4" />
-        </button>
-        <div className="w-[1px] h-3.5 bg-heritage-cream/20 mx-1" />
-        <button
-          onClick={handleResetZoom}
-          title="Vừa khung nhìn (100%)"
-          className="p-1.5 text-heritage-cream/70 hover:text-heritage-yellow rounded-full hover:bg-white/10 transition-colors"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-        </button>
-        <button
-          onClick={handleExportQuickSnapshot}
-          title="Tải nhanh ảnh Canvas PNG"
-          className="p-1.5 text-heritage-cream/70 hover:text-heritage-teal rounded-full hover:bg-white/10 transition-colors"
-        >
-          <Download className="w-3.5 h-3.5" />
-        </button>
-      </div>
-
-      {/* Main Canvas Container (Tỉ lệ chuẩn 2:3) */}
+    <div 
+      onClick={handleBackgroundClick}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      className={`relative flex flex-col items-center justify-center w-full h-full select-none ${
+        zoomScale > 1 ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'
+      }`}
+    >
+      {/* Main Canvas Container (Tỉ lệ chuẩn 2:3 - 800 x 1200) */}
       <div
-        className="relative overflow-hidden rounded-3xl glass-card border border-heritage-cream/15 shadow-2xl flex items-center justify-center transition-transform duration-200 ease-out"
+        onMouseDown={handleMouseDown}
+        onClick={handleCanvasClick}
+        title={zoomScale > 1 ? 'Giữ chuột kéo để di chuyển vùng nhìn • Nhấp để chọn trang phục' : 'Nhấp vào trang phục để tùy chỉnh'}
+        className="relative overflow-hidden rounded-3xl glass-card border border-heritage-cream/15 shadow-2xl flex items-center justify-center hover:border-heritage-yellow/40 group"
         style={{
-          width: 'min(100%, 380px)',
+          width: 'min(100%, 420px)',
           aspectRatio: `${CANVAS_CONFIG.ASPECT_RATIO}`,
-          transform: `scale(${zoomScale})`,
+          transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomScale})`,
+          transition: isDragging ? 'none' : 'transform 150ms ease-out',
         }}
       >
         {/* Loading Spinner Indicator */}
         {isLoading && (
-          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[2px] transition-opacity">
+          <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-[2px] transition-opacity pointer-events-none">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full glass-card text-xs text-heritage-yellow border border-heritage-yellow/20 animate-pulse">
               <Sparkles className="w-3.5 h-3.5 animate-spin" />
               <span>Đang xếp lớp...</span>
@@ -164,28 +241,6 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ canvasRef: exter
             WebkitUserSelect: 'none',
           }}
         />
-
-        {/* Slot Active Badges (Phía dưới Canvas) */}
-        <div className="absolute bottom-3 left-3 right-3 glass-panel p-2 rounded-xl text-xs flex justify-between items-center border border-heritage-cream/10 z-10">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {Object.entries(slots).map(([slotKey, slotData]) => (
-              <span
-                key={slotKey}
-                title={slotData ? `${slotKey}: ${slotData.item.name}` : `${slotKey}: Trống`}
-                className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all ${
-                  slotData
-                    ? 'bg-heritage-teal text-white shadow-sm ring-1 ring-white/20'
-                    : 'bg-black/50 text-heritage-cream/35'
-                }`}
-              >
-                {slotKey}
-              </span>
-            ))}
-          </div>
-          <span className="text-[10px] text-heritage-cream/50 pl-2 font-mono whitespace-nowrap">
-            {activeLayersCount}/6 lớp
-          </span>
-        </div>
       </div>
     </div>
   );

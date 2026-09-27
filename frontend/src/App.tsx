@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useOutfitStore } from './store/useOutfitStore';
 import { CanvasViewport } from './components/studio/CanvasViewport';
 import { ItemDrawer } from './components/studio/ItemDrawer';
-import { ColorBar } from './components/studio/ColorBar';
+import { LeftDock, DockTabType } from './components/studio/LeftDock';
+import { ContextualToolbar } from './components/studio/ContextualToolbar';
 import { CulturalFactcard } from './components/cultural/CulturalFactcard';
 import { GuardrailToast } from './components/cultural/GuardrailToast';
 import { HarmonyRadar } from './components/cultural/HarmonyRadar';
@@ -13,12 +14,7 @@ import { apiClient } from './services/api';
 import { SlotType } from './types';
 import { 
   Sparkles, 
-  RotateCcw, 
-  RotateCw, 
   Share2, 
-  Palette, 
-  Crown, 
-  Shirt, 
   Activity,
   CheckCircle2,
   AlertCircle
@@ -29,16 +25,15 @@ export const App: React.FC = () => {
     gender, 
     setGender, 
     selectItem,
-    resetOutfit, 
-    undo, 
-    redo,
     harmonyDetail,
-    setSelectedSlotForColor
+    setSelectedSlotForColor,
   } = useOutfitStore();
 
+  const [activeDockTab, setActiveDockTab] = useState<DockTabType>('WARDROBE');
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
   const [isLookbookOpen, setIsLookbookOpen] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+  const [zoomScale, setZoomScale] = useState<number>(1);
   const studioCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Kiểm tra kết nối API Backend
@@ -53,6 +48,23 @@ export const App: React.FC = () => {
       })
       .catch(() => setBackendStatus('disconnected'));
   }, []);
+
+  const handleZoomIn = () => setZoomScale((prev) => Math.min(prev + 0.15, 1.4));
+  const handleZoomOut = () => setZoomScale((prev) => Math.max(prev - 0.15, 0.65));
+  const handleResetZoom = () => setZoomScale(1);
+
+  const handleExportQuickSnapshot = () => {
+    if (!studioCanvasRef.current) return;
+    studioCanvasRef.current.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = `synapse-snapshot-${Date.now()}.png`;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png', 1.0);
+  };
 
   const handleQuickSelectTag = (slot: SlotType, tags: string[]) => {
     apiClient.getItems({ gender, slot })
@@ -83,10 +95,11 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0F1016] text-[#F4F1DE]">
+    <div className="flex flex-col h-screen overflow-hidden bg-[#0F1016] text-[#F4F1DE]">
       <ServerWakeupBanner />
-      {/* Topbar Header */}
-      <header className="h-16 px-6 glass-panel border-b border-heritage-cream/10 flex items-center justify-between z-30 sticky top-0">
+
+      {/* Topbar Header (Cố định trên cùng - h-16) */}
+      <header className="h-16 px-6 glass-panel border-b border-heritage-cream/10 flex items-center justify-between z-30 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-heritage-black border border-heritage-yellow flex items-center justify-center shadow-lg">
             <span className="font-serif-heritage text-heritage-yellow font-bold text-sm">S</span>
@@ -158,87 +171,59 @@ export const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Main Studio Body */}
+      {/* Main Studio Body (Chiếm trọn viewport bên dưới Header) */}
       <div className="flex flex-1 overflow-hidden relative">
-        {/* Left Dock Icon Bar (70px) */}
-        <nav className="w-16 glass-panel border-r border-heritage-cream/10 flex flex-col items-center py-5 gap-5 z-20 flex-shrink-0">
-          <button 
-            onClick={() => setIsDrawerOpen((prev) => !prev)}
-            title="Tủ đồ cổ phục (Nhấn để đóng/mở)"
-            className={`p-3 rounded-2xl transition-all ${
-              isDrawerOpen 
-                ? 'bg-heritage-yellow text-studio-bg shadow-lg shadow-heritage-yellow/20' 
-                : 'text-heritage-cream/60 hover:text-heritage-yellow hover:bg-white/5'
-            }`}
-          >
-            <Shirt className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={() => {
-              setIsDrawerOpen(true);
-              setSelectedSlotForColor('HEADWEAR');
-            }}
-            title="Mũ & Mấn (HEADWEAR)"
-            className="p-3 rounded-2xl text-heritage-cream/60 hover:text-heritage-yellow hover:bg-white/5 transition-colors"
-          >
-            <Crown className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={() => {
-              setIsDrawerOpen(true);
-              setSelectedSlotForColor('TOP');
-            }}
-            title="Bảng màu nhuộm vải"
-            className="p-3 rounded-2xl text-heritage-cream/60 hover:text-heritage-yellow hover:bg-white/5 transition-colors"
-          >
-            <Palette className="w-5 h-5" />
-          </button>
-        </nav>
+        {/* 1. Left Canva Dock (64px) */}
+        <LeftDock
+          activeTab={activeDockTab}
+          onSelectTab={setActiveDockTab}
+          isDrawerOpen={isDrawerOpen}
+          onToggleDrawer={() => setIsDrawerOpen((prev) => !prev)}
+        />
 
-        {/* Slide-out Item Drawer (Canva Style) */}
+        {/* 2. Slide-out Item Drawer (Cố định 320px, chống phình ngang) */}
         <ItemDrawer
           isOpen={isDrawerOpen}
+          activeDockTab={activeDockTab}
           onClose={() => setIsDrawerOpen(false)}
         />
 
-        {/* Center Canvas Workspace Viewport */}
-        <main className="flex-1 flex flex-col items-center justify-between p-4 relative overflow-hidden bg-radial-gradient">
-          {/* Quick Undo / Redo / Reset toolbar */}
-          <div className="flex items-center gap-2 glass-card px-3.5 py-1.5 rounded-full border border-heritage-cream/15 z-10 shadow-lg">
-            <button 
-              onClick={undo}
-              className="p-1.5 text-heritage-cream/70 hover:text-white rounded-full hover:bg-white/10 transition-colors"
-              title="Hoàn tác (Undo)"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
-            <button 
-              onClick={redo}
-              className="p-1.5 text-heritage-cream/70 hover:text-white rounded-full hover:bg-white/10 transition-colors"
-              title="Làm lại (Redo)"
-            >
-              <RotateCw className="w-3.5 h-3.5" />
-            </button>
-            <div className="w-[1px] h-3.5 bg-heritage-cream/20 mx-1" />
-            <button 
-              onClick={resetOutfit}
-              className="text-xs text-heritage-cream/70 hover:text-heritage-red px-2 py-0.5 rounded transition-colors"
-            >
-              Đặt lại
-            </button>
-          </div>
+        {/* 3. Center Canvas Workspace Viewport */}
+        <main 
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedSlotForColor(null);
+          }}
+          className="flex-1 flex flex-col items-center justify-start relative overflow-hidden bg-radial-gradient"
+        >
+          {/* Contextual Top Toolbar (Canva Style) */}
+          <ContextualToolbar
+            zoomScale={zoomScale}
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onResetZoom={handleResetZoom}
+            onExportSnapshot={handleExportQuickSnapshot}
+            onOpenColorPanel={() => {
+              setActiveDockTab('COLOR');
+              setIsDrawerOpen(true);
+            }}
+          />
 
           {/* Canvas Viewport Component (Paper-Doll Overlay 800x1200) */}
-          <div className="w-full flex-1 flex items-center justify-center my-1 overflow-hidden">
-            <CanvasViewport canvasRef={studioCanvasRef} />
+          <div 
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setSelectedSlotForColor(null);
+            }}
+            className="w-full flex-1 flex items-center justify-center p-4 overflow-hidden"
+          >
+            <CanvasViewport 
+              canvasRef={studioCanvasRef} 
+              zoomScale={zoomScale} 
+            />
           </div>
-
-          {/* Interactive Heritage Color Bar (Dual Offscreen Canvas Tinting Controller) */}
-          <ColorBar />
         </main>
 
-        {/* Right Inspector Sidebar (Cultural Factcard & Harmony Score) */}
-        <aside className="w-80 glass-panel border-l border-heritage-cream/10 p-5 flex flex-col gap-4 z-20 overflow-y-auto flex-shrink-0">
+        {/* 4. Right Inspector Sidebar (Cultural Factcard & Harmony Score) */}
+        <aside className="w-80 glass-panel border-l border-heritage-cream/10 p-5 flex flex-col gap-4 z-20 overflow-y-auto scrollbar-none flex-shrink-0">
           <div className="flex items-center justify-between pb-1 border-b border-heritage-cream/10">
             <h4 className="font-serif-heritage text-heritage-yellow text-xs font-semibold flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
@@ -260,7 +245,7 @@ export const App: React.FC = () => {
         </aside>
       </div>
 
-      {/* Lookbook Export Modal */}
+      {/* Lookbook Export Modal (9:16) */}
       <LookbookModal 
         isOpen={isLookbookOpen}
         onClose={() => setIsLookbookOpen(false)}

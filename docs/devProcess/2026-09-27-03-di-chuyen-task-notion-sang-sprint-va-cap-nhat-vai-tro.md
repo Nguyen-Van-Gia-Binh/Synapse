@@ -2,7 +2,7 @@
 
 - **Thời gian:** 19:15 - 22:30, ngày 27/09/2026
 - **Phiên số:** 03 trong ngày
-- **Người thực hiện:** Bình (Lead Dev), Thơ (Research), Nghi (Research) & AI Coding Agent
+- **Người thực hiện:** Bình (Lead Dev), Tho (Research), Nghi (Research) & AI Coding Agent
 - **Trạng thái:** ✅ Hoàn thành
 - **Pull Request / Commit:** [PR #14 (Nhánh docs/S1-S3-progress-tracking)](https://github.com/Nguyen-Van-Gia-Binh/Synapse/pull/14)
 
@@ -22,7 +22,7 @@ Dọn dẹp và hợp nhất quản trị công việc trên trang Notion Synaps
 - **Tài liệu & Chuẩn hóa Vai trò Thành viên:**
   - Cập nhật mục 1.2 và mục 6 trong `docs/PLAN.md`, ghi nhận rõ phân công:
     - **Bình**: Leader / Lead Dev & Product Owner (Phụ trách kiến trúc hệ thống, FE/BE, Canvas, CI/CD, Deployment).
-    - **Thơ**: Cultural Researcher & Asset Specialist (Nghiên cứu hình thức, thẩm định mỹ thuật phục chế, chuẩn hóa bộ ảnh 800x1200 và tư liệu hiện vật).
+    - **Tho**: Cultural Researcher & Asset Specialist (Nghiên cứu hình thức, thẩm định mỹ thuật phục chế, chuẩn hóa bộ ảnh 800x1200 và tư liệu hiện vật).
     - **Nghi**: Cultural Researcher & Content Specialist (Biên soạn Cultural facts, hệ thống quy tắc phối đồ Guardrails, xây dựng kịch bản personas).
   - Đồng bộ cập nhật vai trò vào `README.md`, `CONTRIBUTING.md`, `docs/USER-STORY.md` và `docs/USE-CASE.md`.
 - **Hệ thống Nhật ký Phát triển (Dev Process Logs):**

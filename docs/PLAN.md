@@ -18,7 +18,7 @@ Xây dựng công cụ thời trang sáng tạo (Fashion-Tech Studio) kết hợ
   * Thiết kế kiến trúc tổng thể hệ thống, phân rã backlog và quản trị kỹ thuật toàn dự án.
   * Trực tiếp làm việc cùng AI Coding Agent để phát triển toàn bộ Frontend (React 18+ Vite + TypeScript), Backend (Node.js Express REST API), Core Canvas Paper-Doll Engine (6 slot, High-DPI, Color Multiply Canvas) và tích hợp cơ sở dữ liệu Supabase Cloud.
   * Thiết lập CI/CD, triển khai hạ tầng Cloud trên Vercel và Render.com, tối ưu hiệu năng 60 FPS và trải nghiệm người dùng (UX) chuẩn mực Canva.
-* **Thơ – Thành viên Nghiên cứu (Cultural Researcher & Asset Specialist):**
+* **Tho – Thành viên Nghiên cứu (Cultural Researcher & Asset Specialist):**
   * Nghiên cứu tư liệu lịch sử, thu thập và chuẩn hóa dữ liệu hình ảnh cổ phục Việt Nam (thời Nguyễn và dân gian).
   * Chịu trách nhiệm bóc nền ảnh trong suốt chuẩn kích thước khung `800 x 1200 px` (tỉ lệ 2:3), căn chuẩn tọa độ `(0, 0)` cho Mannequin Nam/Nữ và các chi tiết trang phục (Áo ngũ thân, Áo tấc, Áo Nhật bình, Quần lụa, Khăn đóng, Phụ kiện).
   * Quản lý kho tài nguyên đồ họa trên Supabase Storage bucket `item-assets`.
@@ -344,8 +344,8 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
   * *DoD:* Khởi tạo `frontend/` (React + Vite + TS + Tailwind) và `backend/` (Node Express + TS); cài đặt Zustand; build pass.
 * **[S0.4] Thu thập & Bóc nền 2 Mannequin Nam/Nữ chuẩn 800x1200 px**
 
-  * *Trạng thái:* <span style="color:orange">🟡 TẠM THỜI (DÙNG MOCK)</span> *(Chờ bàn giao tài nguyên đồ họa chính thức từ Thơ)*
-  * *Assignee:* **Thơ (Research - Assets)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-01, UC-01
+  * *Trạng thái:* <span style="color:orange">🟡 TẠM THỜI (DÙNG MOCK)</span> *(Chờ bàn giao tài nguyên đồ họa chính thức từ Tho)*
+  * *Assignee:* **Tho (Research - Assets)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-01, UC-01
   * *DoD:* 2 ảnh PNG trong suốt 800x1200 px tỉ lệ 2:3, bóc nền sạch, căn chuẩn vị trí trung tâm Canvas `(0, 0)`.
 * **[S0.5] Soạn thảo Fact văn hóa & 2-3 quy tắc cảnh báo mẫu thời Nguyễn**
 
@@ -355,7 +355,7 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
 * **[RES-01] Nghiên cứu lịch sử & bối cảnh 4 nhóm cổ phục Việt Nam**
 
   * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã ghi chép vào Notion)*
-  * *Assignee:* **Thơ (Research - Sử liệu)** | *Priority:* `🟠 P1 - High` | *Liên kết:* Nền tảng tri thức
+  * *Assignee:* **Tho (Research - Sử liệu)** | *Priority:* `🟠 P1 - High` | *Liên kết:* Nền tảng tri thức
   * *DoD:* Phân loại 4 nhóm thời kỳ: Giao lĩnh, Tứ thân/Yếm, Ngũ thân Nguyễn, Áo dài tân thời; đối chiếu sử liệu chuẩn xác.
 * **[RES-02] Phân rã cấu trúc & phân loại các thành phần cổ phục**
 
@@ -395,8 +395,8 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
   * *DoD:* Bảng 8 màu Cổ phong + Hex Color Picker; thuật toán `renderTintedLayer` (Dual Offscreen Canvas) êm ái, không làm bệt nếp gấp vải; hiển thị hành tương ứng.
 * **[S1.4] Số hóa & Bóc nền đợt 1: 4-6 trang phục tiêu biểu thời Nguyễn**
 
-  * *Trạng thái:* <span style="color:orange">🟡 TẠM THỜI (DÙNG MOCK)</span> *(Đã có 8 mock assets silhouette 800x1200, chờ đồ họa hoa văn phục dựng từ Thơ)*
-  * *Assignee:* **Thơ (Research - Assets)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-02, UC-02
+  * *Trạng thái:* <span style="color:orange">🟡 TẠM THỜI (DÙNG MOCK)</span> *(Đã có 8 mock assets silhouette 800x1200, chờ đồ họa hoa văn phục dựng từ Tho)*
+  * *Assignee:* **Tho (Research - Assets)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-02, UC-02
   * *DoD:* File PNG trong suốt 800x1200 px của Áo ngũ thân, Áo tấc, Áo Nhật bình, Quần lụa, Khăn đóng up lên Supabase Storage.
 
 ---
@@ -427,7 +427,7 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
 * **[S2.4] Nhập liệu hoàn chỉnh bộ quy tắc văn hóa & User Testing**
 
   * *Trạng thái:* <span style="color:blue">🔵 READY TO DEV</span> *(Hiện CSDL có 3 quy tắc cơ bản, cần nhập thêm 5-8 quy tắc lịch sử và test tương tác)*
-  * *Assignee:* **Nghi & Thơ (Research Members)** | *Priority:* `🟠 P1 - High` | *Liên kết:* US-06, US-09, UC-08
+  * *Assignee:* **Nghi & Tho (Research Members)** | *Priority:* `🟠 P1 - High` | *Liên kết:* US-06, US-09, UC-08
   * *DoD:* Nhập tối thiểu 5-8 quy tắc vào bảng `cultural_rules`; tự tay test phối đồ và phản biện nội dung hiển thị.
 
 ---
@@ -448,5 +448,5 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
 * **[S3.3] Tổng duyệt Kịch bản Demo & Hoàn thiện Hồ sơ Bài thi**
 
   * *Trạng thái:* <span style="color:default">⚪ BACKLOG (CHỜ SPRINT 3)</span> *(Cần chuẩn bị Slide thuyết trình, Video demo 5-10 phút & README)*
-  * *Assignee:* **Cả Team (Bình - Leader, Thơ & Nghi - Research)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* [srs/ProjectBrief.md](srs/ProjectBrief.md)
+  * *Assignee:* **Cả Team (Bình - Leader, Tho & Nghi - Research)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* [srs/ProjectBrief.md](srs/ProjectBrief.md)
   * *DoD:* Video demo ngắn (5-10 phút), Slide thuyết trình, link web live và mã nguồn GitHub sẵn sàng nộp bài.

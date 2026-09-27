@@ -2,7 +2,7 @@
 
 - **Thời gian:** 10:30 - 21:30, ngày 23/09/2026
 - **Phiên số:** 01 trong ngày
-- **Người thực hiện:** Bình (Lead Dev), Thơ (Research) & AI Coding Agent
+- **Người thực hiện:** Bình (Lead Dev), Tho (Research) & AI Coding Agent
 - **Trạng thái:** ✅ Hoàn thành
 - **Pull Request / Commit:** [PR #6 (S1.3)](https://github.com/Nguyen-Van-Gia-Binh/Synapse/pull/6) & [PR #10 (docs/rules)](https://github.com/Nguyen-Van-Gia-Binh/Synapse/pull/10)
 

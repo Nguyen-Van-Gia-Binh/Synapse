@@ -73,3 +73,12 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(233, 196, 106, 0.4);
 }
+
+/* Ẩn thanh cuộn nhưng vẫn giữ khả năng cuộn mượt bằng chuột/touch */
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
