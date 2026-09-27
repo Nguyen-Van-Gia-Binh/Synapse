@@ -2,7 +2,7 @@
 
 - **Thời gian:** 08:39 - 18:30, ngày 21/09/2026
 - **Phiên số:** 01 trong ngày
-- **Người thực hiện:** Bình (Lead Dev & PO), Thơ (Research), Nghi (Research) & AI Coding Agent
+- **Người thực hiện:** Bình (Lead Dev & PO), Tho (Research), Nghi (Research) & AI Coding Agent
 - **Trạng thái:** ✅ Hoàn thành
 - **Tài liệu sinh ra:** `docs/PLAN.md`, `docs/ProjectBrief.md`
 
