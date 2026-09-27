@@ -9,6 +9,13 @@ import { isValidHexColor, normalizeHex } from '../constants/heritageColors';
 // Reusable offscreen canvas to avoid GC overhead during 60 FPS slider dragging
 let cachedOffscreenCanvas: HTMLCanvasElement | null = null;
 
+/**
+ * Giải phóng bộ nhớ đệm của Offscreen Canvas khi unmount hoặc reset
+ */
+export function resetOffscreenCanvas(): void {
+  cachedOffscreenCanvas = null;
+}
+
 function getOffscreenCanvas(): HTMLCanvasElement | null {
   if (typeof document === 'undefined') return null;
   if (!cachedOffscreenCanvas) {
