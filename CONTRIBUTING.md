@@ -3,7 +3,7 @@
 > **Synapse – V-Heritage Studio** — quy trình nhánh, commit, Pull Request, review và điều kiện hoàn thành (DoD) cho nhóm 3 thành viên trong lộ trình Agile Fast-Track 16 ngày.
 >
 > Kế hoạch phát triển chi tiết: [docs/PLAN.md](docs/PLAN.md)  
-> Bối cảnh & Thử thách dự án: [docs/ProjectBrief.md](docs/ProjectBrief.md)  
+> Bối cảnh & Thử thách dự án: [docs/srs/ProjectBrief.md](docs/srs/ProjectBrief.md)  
 > Chỉ dẫn AI Coding Agent: [GEMINI.md](GEMINI.md)
 
 ---

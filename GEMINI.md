@@ -23,7 +23,7 @@ Dự án mang trọng trách gìn giữ và lan tỏa bản sắc văn hóa Vi�
 
 1. **Tuyệt đối không bịa đặt dữ liệu lịch sử (No Hallucination on Culture):**
    - Không tự suy diễn hoặc bịa đặt niên đại, nguồn gốc xuất xứ, hay ý nghĩa tâm linh/văn hóa của các trang phục (Áo dài ngũ thân, Áo tấc, Áo Nhật bình, Áo giao lĩnh, Khăn đóng, Nón quai thao...).
-   - Mọi tri thức văn hóa hiển thị trên giao diện phải được truy vấn từ bảng `cultural_facts` trong Supabase hoặc lấy từ tài liệu nghiên cứu đã duyệt trong [docs/PLAN.md](docs/PLAN.md) và [docs/ProjectBrief.md](docs/ProjectBrief.md).
+   - Mọi tri thức văn hóa hiển thị trên giao diện phải được truy vấn từ bảng `cultural_facts` trong Supabase hoặc lấy từ tài liệu nghiên cứu đã duyệt trong [docs/PLAN.md](docs/PLAN.md) và [docs/srs/ProjectBrief.md](docs/srs/ProjectBrief.md).
 2. **Giọng văn cảnh báo tích cực & lịch sự (Friendly Cultural Guidance):**
    - Khi tạo logic hoặc câu thông báo cho hệ thống cảnh báo (Cultural Guardrails), **tuyệt đối không dùng từ ngữ phán xét, gay gắt hay cấm đoán tiêu cực**.
    - Phải giữ giọng điệu tôn trọng sự sáng tạo của Gen Z, đóng vai trò như một người bạn đồng hành gợi ý văn hóa (vd: *"Áo ngũ thân truyền thống thường đi cùng quần ống rộng để giữ dáng đứng trang nghiêm, bạn có muốn thử kết hợp thêm quần không?"* thay vì *"Bạn phối đồ sai quy tắc lịch sử"*).
