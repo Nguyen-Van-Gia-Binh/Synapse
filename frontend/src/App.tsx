@@ -26,6 +26,7 @@ export const App: React.FC = () => {
     setGender, 
     selectItem,
     harmonyDetail,
+    setSelectedSlotForColor,
   } = useOutfitStore();
 
   const [activeDockTab, setActiveDockTab] = useState<DockTabType>('WARDROBE');
@@ -188,7 +189,12 @@ export const App: React.FC = () => {
         />
 
         {/* 3. Center Canvas Workspace Viewport */}
-        <main className="flex-1 flex flex-col items-center justify-start relative overflow-hidden bg-radial-gradient">
+        <main 
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedSlotForColor(null);
+          }}
+          className="flex-1 flex flex-col items-center justify-start relative overflow-hidden bg-radial-gradient"
+        >
           {/* Contextual Top Toolbar (Canva Style) */}
           <ContextualToolbar
             zoomScale={zoomScale}
@@ -196,10 +202,19 @@ export const App: React.FC = () => {
             onZoomOut={handleZoomOut}
             onResetZoom={handleResetZoom}
             onExportSnapshot={handleExportQuickSnapshot}
+            onOpenColorPanel={() => {
+              setActiveDockTab('COLOR');
+              setIsDrawerOpen(true);
+            }}
           />
 
           {/* Canvas Viewport Component (Paper-Doll Overlay 800x1200) */}
-          <div className="w-full flex-1 flex items-center justify-center p-4 overflow-hidden">
+          <div 
+            onClick={(e) => {
+              if (e.target === e.currentTarget) setSelectedSlotForColor(null);
+            }}
+            className="w-full flex-1 flex items-center justify-center p-4 overflow-hidden"
+          >
             <CanvasViewport 
               canvasRef={studioCanvasRef} 
               zoomScale={zoomScale} 

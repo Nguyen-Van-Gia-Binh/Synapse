@@ -1,7 +1,7 @@
 import React from 'react';
-import { LayoutTemplate, Shirt, Type, Upload } from 'lucide-react';
+import { LayoutTemplate, Shirt, Palette, Type, Upload } from 'lucide-react';
 
-export type DockTabType = 'TEMPLATES' | 'WARDROBE' | 'TEXT' | 'UPLOAD';
+export type DockTabType = 'TEMPLATES' | 'WARDROBE' | 'COLOR' | 'TEXT' | 'UPLOAD';
 
 export interface LeftDockProps {
   activeTab: DockTabType;
@@ -27,6 +27,11 @@ const DOCK_ITEMS: DockItem[] = [
     id: 'WARDROBE',
     label: 'Tủ đồ',
     icon: Shirt,
+  },
+  {
+    id: 'COLOR',
+    label: 'Màu sắc',
+    icon: Palette,
   },
   {
     id: 'TEXT',

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useOutfitStore } from '../../store/useOutfitStore';
 import { ItemDto, SlotType } from '../../types';
 import { apiClient } from '../../services/api';
+import { HERITAGE_PALETTE, isValidHexColor, normalizeHex } from '../../constants/heritageColors';
+import { getColorWuXing, WUXING_NAMES } from '../../utils/heritageWuXing';
 import { 
   Shirt, 
   Crown, 
@@ -14,7 +16,10 @@ import {
   Info,
   LayoutTemplate,
   Type,
-  Upload
+  Upload,
+  Plus,
+  Pipette,
+  Lock
 } from 'lucide-react';
 import { DockTabType } from './LeftDock';
 
@@ -22,9 +27,27 @@ interface ItemDrawerProps {
   isOpen: boolean;
   onClose?: () => void;
   activeDockTab?: DockTabType;
-  selectedSlotForColor?: SlotType;
-  onSelectSlotForColor?: (slot: SlotType) => void;
+  selectedSlotForColor?: SlotType | null;
+  onSelectSlotForColor?: (slot: SlotType | null) => void;
 }
+
+const EXTENDED_PALETTE = [
+  { name: 'Đỏ son', hex: '#E63946' },
+  { name: 'Cam san hô', hex: '#F77F00' },
+  { name: 'Vàng hổ phách', hex: '#FCBF49' },
+  { name: 'Lục ngọc bích', hex: '#2A9D8F' },
+  { name: 'Lục bảo', hex: '#10B981' },
+  { name: 'Thanh thiên', hex: '#457B9D' },
+  { name: 'Lam đậm', hex: '#1D3557' },
+  { name: 'Xanh lơ nhạt', hex: '#A8DADC' },
+  { name: 'Tía hoa cà', hex: '#7209B7' },
+  { name: 'Hồng sen', hex: '#F72585' },
+  { name: 'Hồng đào', hex: '#F4A261' },
+  { name: 'Trắng tinh khôi', hex: '#FFFFFF' },
+  { name: 'Xám khói', hex: '#94A3B8' },
+  { name: 'Xám than', hex: '#334155' },
+  { name: 'Đen tuyền', hex: '#0F172A' },
+];
 
 export const ItemDrawer: React.FC<ItemDrawerProps> = ({
   isOpen,
@@ -37,6 +60,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
     slots, 
     selectItem, 
     removeItem, 
+    setItemColor,
     selectedSlotForColor,
     setSelectedSlotForColor,
     activeFactcardItem,
@@ -47,6 +71,21 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [catalogItems, setCatalogItems] = useState<ItemDto[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // States cho Canva Color Panel
+  const [colorSearchQuery, setColorSearchQuery] = useState<string>('');
+  const [showCustomPicker, setShowCustomPicker] = useState<boolean>(false);
+  const selectedSlotData = selectedSlotForColor ? slots[selectedSlotForColor] : null;
+  const selectedSlotItem = selectedSlotData?.item;
+  const isSlotCustomizable = selectedSlotItem?.color_customizable ?? true;
+  const currentColor = selectedSlotData?.color || '#9E2A2B';
+  const [customHexValue, setCustomHexValue] = useState<string>(currentColor);
+
+  useEffect(() => {
+    if (selectedSlotData?.color) {
+      setCustomHexValue(selectedSlotData.color);
+    }
+  }, [selectedSlotData?.color, selectedSlotForColor]);
 
   // Danh mục 8 trang phục mẫu chuẩn 100% theo docs/shared/DATABASE-SCHEMA.sql
   const fallbackItems: ItemDto[] = [
@@ -198,6 +237,63 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
 
   const activeSlotsList = Object.entries(slots).filter(([_, data]) => data !== null);
 
+  // Handler áp dụng màu cho slot đang chọn (hoặc slot đầu tiên đang mặc)
+  const handleApplyColor = (hex: string) => {
+    const targetSlot = selectedSlotForColor || (slots.TOP ? 'TOP' : (Object.keys(slots).find((k) => slots[k as SlotType] !== null) as SlotType | undefined));
+    if (!targetSlot) return;
+
+    if (!selectedSlotForColor) {
+      setSelectedSlotForColor(targetSlot);
+      onSelectSlotForColor?.(targetSlot);
+    }
+
+    const currentSlot = slots[targetSlot];
+    if (currentSlot && currentSlot.item.color_customizable === false) {
+      return;
+    }
+
+    const normalized = normalizeHex(hex);
+    setItemColor(targetSlot, normalized);
+    setCustomHexValue(normalized);
+  };
+
+  const handleEyeDropper = async () => {
+    if ('EyeDropper' in window) {
+      try {
+        // @ts-expect-error EyeDropper is supported in Chromium browsers
+        const eyeDropper = new window.EyeDropper();
+        const result = await eyeDropper.open();
+        if (result?.sRGBHex) {
+          handleApplyColor(result.sRGBHex);
+        }
+      } catch {
+        // Người dùng hủy thao tác pipette
+      }
+    } else {
+      setShowCustomPicker(true);
+    }
+  };
+
+  // Trích xuất danh sách màu không trùng lặp từ tất cả các trang phục đang mặc
+  const documentColors = Array.from(
+    new Map(
+      activeSlotsList.map(([_, data]) => [data!.color.toUpperCase(), data!])
+    ).values()
+  );
+
+  // Lọc bảng màu theo từ khóa tìm kiếm (tên màu hoặc mã hex)
+  const filteredHeritagePalette = HERITAGE_PALETTE.filter((c) => {
+    if (!colorSearchQuery.trim()) return true;
+    const q = colorSearchQuery.toLowerCase();
+    return c.name.toLowerCase().includes(q) || c.hex.toLowerCase().includes(q);
+  });
+
+  const filteredExtendedPalette = EXTENDED_PALETTE.filter((c) => {
+    if (!colorSearchQuery.trim()) return true;
+    const q = colorSearchQuery.toLowerCase();
+    return c.name.toLowerCase().includes(q) || c.hex.toLowerCase().includes(q);
+  });
+
   if (!isOpen) return null;
 
   return (
@@ -208,11 +304,13 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
           <h3 className="font-serif-heritage text-heritage-yellow text-sm font-semibold flex items-center gap-1.5">
             {activeDockTab === 'TEMPLATES' && <LayoutTemplate className="w-4 h-4 text-heritage-yellow" />}
             {activeDockTab === 'WARDROBE' && <Sparkles className="w-4 h-4 text-heritage-yellow" />}
+            {activeDockTab === 'COLOR' && <Palette className="w-4 h-4 text-heritage-yellow" />}
             {activeDockTab === 'TEXT' && <Type className="w-4 h-4 text-heritage-yellow" />}
             {activeDockTab === 'UPLOAD' && <Upload className="w-4 h-4 text-heritage-yellow" />}
             <span>
               {activeDockTab === 'TEMPLATES' && 'Phối Mẫu Sẵn'}
               {activeDockTab === 'WARDROBE' && 'Tủ Đồ Cổ Phong'}
+              {activeDockTab === 'COLOR' && 'Màu Sắc'}
               {activeDockTab === 'TEXT' && 'Thư Pháp & Chú Thích'}
               {activeDockTab === 'UPLOAD' && 'Tải Lên Hoa Văn'}
             </span>
@@ -420,6 +518,287 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
           <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-heritage-red/20 text-heritage-red border border-heritage-red/30">
             Giai đoạn thử nghiệm
           </span>
+        </div>
+      )}
+
+      {/* 4. Canva Color Panel Tab (Màu Sắc Chuẩn Canva) */}
+      {activeDockTab === 'COLOR' && (
+        <div className="flex-1 min-h-0 overflow-y-auto scrollbar-none p-4 space-y-4">
+          {/* Ô Tìm Kiếm Mã Màu hoặc Tên Màu */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-heritage-cream/40" />
+            <input
+              type="text"
+              value={colorSearchQuery}
+              onChange={(e) => setColorSearchQuery(e.target.value)}
+              placeholder='Thử "màu lam" hoặc "#9E2A2B"'
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-black/40 text-xs text-heritage-cream placeholder:text-heritage-cream/40 border border-heritage-cream/15 focus:outline-none focus:border-heritage-yellow/50 transition-colors"
+            />
+          </div>
+
+          {/* Quick Apply nếu tìm theo mã hex hợp lệ */}
+          {isValidHexColor(colorSearchQuery.trim()) && (
+            <button
+              onClick={() => handleApplyColor(colorSearchQuery.trim())}
+              className="w-full flex items-center justify-between p-2.5 rounded-xl bg-heritage-yellow/15 border border-heritage-yellow/40 text-xs text-heritage-cream hover:bg-heritage-yellow/25 transition-all shadow-sm"
+            >
+              <div className="flex items-center gap-2">
+                <span 
+                  className="w-5 h-5 rounded-full border border-white/50 shadow" 
+                  style={{ backgroundColor: normalizeHex(colorSearchQuery.trim()) }} 
+                />
+                <span className="font-mono font-medium">Áp dụng {normalizeHex(colorSearchQuery.trim())}</span>
+              </div>
+              <Check className="w-4 h-4 text-heritage-yellow" />
+            </button>
+          )}
+
+          {/* Nhóm: Màu Đồ Họa / Trang Phục Đang Chọn */}
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-semibold text-heritage-cream flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5 text-heritage-yellow" />
+                <span>Màu đồ họa</span>
+              </h4>
+              {selectedSlotItem && (
+                <span className="text-[10px] text-heritage-cream/60 truncate max-w-[130px]">
+                  {selectedSlotItem.name}
+                </span>
+              )}
+            </div>
+
+            {/* Chưa chọn món nào trên mannequin */}
+            {!selectedSlotForColor || !selectedSlotData ? (
+              <div className="p-3 rounded-2xl bg-white/5 border border-heritage-cream/10 space-y-2">
+                <p className="text-[11px] text-heritage-cream/70 italic">
+                  Chọn một món đồ đang mặc để bắt đầu nhuộm màu:
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {activeSlotsList.map(([slotKey, data]) => (
+                    <button
+                      key={slotKey}
+                      onClick={() => {
+                        setSelectedSlotForColor(slotKey as SlotType);
+                        onSelectSlotForColor?.(slotKey as SlotType);
+                      }}
+                      className="px-2 py-1 rounded-lg text-[11px] bg-black/40 border border-heritage-cream/15 hover:border-heritage-yellow/50 text-heritage-cream flex items-center gap-1.5 transition-colors"
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: data!.color }} />
+                      <span className="truncate max-w-[90px]">{data!.item.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : !isSlotCustomizable ? (
+              /* Món đồ bị khóa theo quy chế triều đình */
+              <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs flex items-center gap-2">
+                <Lock className="w-4 h-4 text-heritage-yellow flex-shrink-0" />
+                <span className="italic text-[11px] leading-relaxed">
+                  Món đồ này giữ màu nguyên bản hoàng cung theo quy chế triều đình.
+                </span>
+              </div>
+            ) : (
+              /* Các nút màu đồ họa Canva: (+) Add Custom, Pipette, Current Color Swatch */
+              <div className="space-y-3">
+                <div className="flex items-center gap-2.5">
+                  {/* Nút (+) Thêm màu mới với vòng gradient 7 sắc cầu vồng */}
+                  <button
+                    onClick={() => setShowCustomPicker((prev) => !prev)}
+                    title="Thêm màu mới (Hex / Color Picker)"
+                    className="w-8 h-8 rounded-full p-[2px] shadow-md hover:scale-110 transition-transform flex-shrink-0 relative group"
+                    style={{
+                      background: 'conic-gradient(from 0deg, #ff0000, #ff7700, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000)',
+                    }}
+                  >
+                    <div className="w-full h-full rounded-full bg-[#181926] flex items-center justify-center text-white">
+                      <Plus className="w-4 h-4 stroke-[2.5]" />
+                    </div>
+                  </button>
+
+                  {/* Nút Bút Hút Màu (Eyedropper Pipette) */}
+                  <button
+                    onClick={handleEyeDropper}
+                    title="Lấy màu từ màn hình (Eyedropper)"
+                    className="w-8 h-8 rounded-full border border-heritage-cream/20 bg-white/5 hover:bg-white/10 hover:border-heritage-cream/40 flex items-center justify-center transition-all flex-shrink-0 group"
+                  >
+                    <Pipette className="w-4 h-4 text-heritage-cream/80 group-hover:text-white" />
+                  </button>
+
+                  {/* Swatch màu hiện tại của món đồ đang chọn */}
+                  <div
+                    title={`Màu hiện tại: ${currentColor}`}
+                    className="w-8 h-8 rounded-full border-2 border-white shadow-lg ring-2 ring-heritage-yellow/60 flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: currentColor }}
+                  >
+                    <Check className="w-3.5 h-3.5 text-white drop-shadow stroke-[3]" />
+                  </div>
+
+                  <div className="flex-1 min-w-0 pl-1">
+                    <span className="text-[11px] font-mono text-heritage-cream/70 block uppercase">
+                      {currentColor}
+                    </span>
+                    <span className="text-[10px] text-heritage-cream/50 truncate block">
+                      {selectedSlotItem?.name}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Khung Chỉnh Màu Mở Rộng Khi Bấm (+) */}
+                {showCustomPicker && (
+                  <div className="p-3 rounded-2xl bg-black/50 border border-heritage-cream/20 space-y-2.5 animate-fade-in">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-heritage-cream/70 font-medium">Bảng màu tùy chỉnh</span>
+                      <span className="text-[10px] font-mono text-heritage-yellow">{customHexValue}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={isValidHexColor(customHexValue) ? normalizeHex(customHexValue) : '#9E2A2B'}
+                        onChange={(e) => {
+                          const val = e.target.value.toUpperCase();
+                          setCustomHexValue(val);
+                          handleApplyColor(val);
+                        }}
+                        className="w-8 h-8 rounded-lg cursor-pointer border-0 p-0 bg-transparent flex-shrink-0"
+                      />
+                      <input
+                        type="text"
+                        value={customHexValue}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCustomHexValue(val);
+                          if (isValidHexColor(val)) {
+                            handleApplyColor(normalizeHex(val));
+                          }
+                        }}
+                        placeholder="#9E2A2B"
+                        className="flex-1 px-2.5 py-1.5 rounded-xl bg-black/60 text-xs font-mono text-heritage-cream border border-heritage-cream/20 uppercase focus:outline-none focus:border-heritage-yellow"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Nhóm: Màu Trong Thiết Kế Này (Document Colors) */}
+          {documentColors.length > 0 && (
+            <div className="space-y-2 pt-2 border-t border-heritage-cream/10">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold text-heritage-cream">
+                  Màu trong thiết kế này
+                </h4>
+                <span className="text-[10px] text-heritage-cream/50">
+                  {documentColors.length} màu
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {documentColors.map((docColor, idx) => {
+                  const isMatching = currentColor.toUpperCase() === docColor.color.toUpperCase();
+                  return (
+                    <button
+                      key={`${docColor.color}-${idx}`}
+                      onClick={() => handleApplyColor(docColor.color)}
+                      title={`${docColor.item.name} (${docColor.color})`}
+                      className={`w-7 h-7 rounded-full border shadow-sm transition-all hover:scale-110 relative ${
+                        isMatching
+                          ? 'border-white ring-2 ring-heritage-yellow scale-105'
+                          : 'border-white/20 hover:border-white/50'
+                      }`}
+                      style={{ backgroundColor: docColor.color }}
+                    >
+                      {isMatching && (
+                        <span className="absolute inset-0 flex items-center justify-center text-white drop-shadow">
+                          <Check className="w-3 h-3 stroke-[3]" />
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Nhóm: 8 Màu Cổ Phong Việt Nam */}
+          <div className="space-y-2 pt-2 border-t border-heritage-cream/10">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-semibold text-heritage-cream">
+                8 Màu Cổ Phong Việt Nam
+              </h4>
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-heritage-yellow/15 text-heritage-yellow font-serif-heritage">
+                Triều Nguyễn
+              </span>
+            </div>
+
+            <div className="grid grid-cols-4 gap-2">
+              {filteredHeritagePalette.map((color) => {
+                const isMatching = currentColor.toUpperCase() === color.hex.toUpperCase();
+                const elem = getColorWuXing(color.hex);
+                const elemName = elem ? WUXING_NAMES[elem] : '';
+
+                return (
+                  <button
+                    key={color.id}
+                    onClick={() => handleApplyColor(color.hex)}
+                    title={`${color.name} (${color.hex}) • Hành ${elemName}`}
+                    className={`flex flex-col items-center p-1.5 rounded-xl border transition-all text-center group ${
+                      isMatching
+                        ? 'bg-heritage-yellow/15 border-heritage-yellow shadow-md'
+                        : 'bg-white/5 border-heritage-cream/10 hover:border-heritage-cream/30 hover:bg-white/10'
+                    }`}
+                  >
+                    <div
+                      className={`w-7 h-7 rounded-full border shadow-sm transition-transform group-hover:scale-110 flex items-center justify-center relative ${
+                        isMatching ? 'border-white ring-1 ring-heritage-yellow' : 'border-white/20'
+                      }`}
+                      style={{ backgroundColor: color.hex }}
+                    >
+                      {isMatching && (
+                        <Check className="w-3 h-3 text-white drop-shadow stroke-[3]" />
+                      )}
+                    </div>
+                    <span className="text-[9px] text-heritage-cream/80 truncate w-full mt-1">
+                      {color.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Nhóm: Dải Màu Mở Rộng */}
+          <div className="space-y-2 pt-2 border-t border-heritage-cream/10">
+            <h4 className="text-xs font-semibold text-heritage-cream">
+              Dải màu mở rộng
+            </h4>
+
+            <div className="grid grid-cols-5 gap-2">
+              {filteredExtendedPalette.map((col, idx) => {
+                const isMatching = currentColor.toUpperCase() === col.hex.toUpperCase();
+                return (
+                  <button
+                    key={`${col.hex}-${idx}`}
+                    onClick={() => handleApplyColor(col.hex)}
+                    title={`${col.name} (${col.hex})`}
+                    className={`w-7 h-7 rounded-full border shadow-sm transition-all hover:scale-110 relative mx-auto ${
+                      isMatching
+                        ? 'border-white ring-2 ring-heritage-yellow scale-105'
+                        : 'border-white/20 hover:border-white/50'
+                    }`}
+                    style={{ backgroundColor: col.hex }}
+                  >
+                    {isMatching && (
+                      <span className="absolute inset-0 flex items-center justify-center text-white drop-shadow">
+                        <Check className="w-3 h-3 stroke-[3]" />
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       )}
 

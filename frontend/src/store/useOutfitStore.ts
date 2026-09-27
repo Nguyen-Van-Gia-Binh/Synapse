@@ -17,7 +17,7 @@ export interface OutfitStoreState {
   violations: RuleViolation[];
   harmonyScore: number;
   harmonyDetail: HarmonyScoreDetail | null;
-  selectedSlotForColor: SlotType;
+  selectedSlotForColor: SlotType | null;
   
   // History for undo/redo
   history: OutfitHistoryState[];
@@ -28,7 +28,7 @@ export interface OutfitStoreState {
   selectItem: (slot: SlotType, item: ItemDto, initialColor?: string) => void;
   removeItem: (slot: SlotType) => void;
   setItemColor: (slot: SlotType, color: string) => void;
-  setSelectedSlotForColor: (slot: SlotType) => void;
+  setSelectedSlotForColor: (slot: SlotType | null) => void;
   setActiveFactcard: (fact: CulturalFactDto | null) => void;
   setActiveFactcardItem: (item: ItemDto | null) => void;
   setIsFactcardLoading: (isLoading: boolean) => void;
@@ -62,7 +62,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   violations: [],
   harmonyScore: 85,
   harmonyDetail: null,
-  selectedSlotForColor: 'TOP',
+  selectedSlotForColor: null,
   history: [{ slots: initialSlots, gender: 'FEMALE' }],
   historyIndex: 0,
 
@@ -117,6 +117,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
       nextHistory.push({ slots: newSlots, gender: state.gender });
       return {
         slots: newSlots,
+        selectedSlotForColor: state.selectedSlotForColor === slot ? null : state.selectedSlotForColor,
         history: nextHistory,
         historyIndex: nextHistory.length - 1,
       };
@@ -255,6 +256,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
       nextHistory.push({ slots: initialSlots, gender: state.gender });
       return {
         slots: initialSlots,
+        selectedSlotForColor: null,
         activeFactcard: null,
         activeFactcardItem: null,
         isFactcardLoading: false,
