@@ -69,11 +69,7 @@ export class PaperDollCanvasEngine {
     }
 
     // Sắp xếp các lớp từ dưới lên trên theo Z-Index
-    const sortedLayers = [...layers].sort((a, b) => {
-      const zA = LAYER_Z_INDEX[a.slot] ?? 0;
-      const zB = LAYER_Z_INDEX[b.slot] ?? 0;
-      return zA - zB;
-    });
+    const sortedLayers = sortLayersByZIndex(layers);
 
     // Tải trước toàn bộ ảnh của các lớp đang cần vẽ
     const imageUrls = sortedLayers.map((l) => l.imageUrl).filter(Boolean);

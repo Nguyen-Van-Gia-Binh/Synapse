@@ -22,13 +22,28 @@ export const LAYER_Z_INDEX: Record<SlotType | 'MANNEQUIN', number> = {
 };
 
 export interface RenderLayerOptions {
-  id: string;
+  id?: string;
   slot: SlotType | 'MANNEQUIN';
   imageUrl: string;
   color?: string;
   customizable?: boolean;
+  zIndex?: number;
+}
+
+/**
+ * Lọc và sắp xếp các layer trang phục theo thứ tự Z-Index tăng dần
+ */
+export function sortLayersByZIndex(layers: RenderLayerOptions[]): RenderLayerOptions[] {
+  return layers
+    .filter((layer) => Boolean(layer.imageUrl && layer.imageUrl.trim().length > 0))
+    .map((layer) => ({
+      ...layer,
+      zIndex: layer.zIndex !== undefined ? layer.zIndex : (LAYER_Z_INDEX[layer.slot] ?? 0),
+    }))
+    .sort((a, b) => (a.zIndex ?? 0) - (b.zIndex ?? 0));
 }
 
 export * from './tinting';
 export * from './engine';
 export * from './export';
+
