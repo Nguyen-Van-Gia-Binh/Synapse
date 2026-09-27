@@ -25,7 +25,7 @@ const HERITAGE_WUXING_MAP: Record<string, WuXingElement> = {
   '#6F4E37': 'THO',  // Nâu sồng (Thổ)
 };
 
-const WUXING_NAMES: Record<WuXingElement, string> = {
+export const WUXING_NAMES: Record<WuXingElement, string> = {
   KIM: 'Hành Kim',
   MOC: 'Hành Mộc',
   THUY: 'Hành Thủy',

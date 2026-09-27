@@ -34,9 +34,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
     selectedSlotForColor,
     setSelectedSlotForColor,
     activeFactcardItem,
-    setActiveFactcard, 
-    setActiveFactcardItem, 
-    setIsFactcardLoading 
+    loadCulturalFactForItem,
   } = useOutfitStore();
 
   const [activeTab, setActiveTab] = useState<string>('ALL');
@@ -153,35 +151,16 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
       .finally(() => setIsLoading(false));
   }, [gender]);
 
-  // Hàm tải Factcard văn hóa qua API
-  const fetchAndSetFactcard = async (item: ItemDto) => {
-    setActiveFactcardItem(item);
-    setIsFactcardLoading(true);
-    try {
-      const fact = await apiClient.getCulturalFact(item.id);
-      if (fact) {
-        setActiveFactcard(fact);
-      }
-    } catch (error) {
-      console.error('[ItemDrawer] Lỗi tải fact văn hóa:', error);
-    } finally {
-      setIsFactcardLoading(false);
-    }
-  };
-
   const handleSelectItem = (item: ItemDto) => {
-    // 1. Mặc đồ vào Canvas Store
+    // 1. Mặc đồ vào Canvas Store (tự động kích hoạt loadCulturalFactForItem bên trong store)
     selectItem(item.slot, item);
     setSelectedSlotForColor(item.slot);
     onSelectSlotForColor?.(item.slot);
-
-    // 2. Kích hoạt cập nhật Factcard lên Right Sidebar
-    fetchAndSetFactcard(item);
   };
 
   const handleInspectFactOnly = (item: ItemDto, e: React.MouseEvent) => {
     e.stopPropagation();
-    fetchAndSetFactcard(item);
+    loadCulturalFactForItem(item);
   };
 
   // Helper sinh Micro-Tooltip ngắn gọn
@@ -297,7 +276,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
                   onClick={() => {
                     setSelectedSlotForColor(slotKey as SlotType);
                     onSelectSlotForColor?.(slotKey as SlotType);
-                    fetchAndSetFactcard(data!.item);
+                    loadCulturalFactForItem(data!.item);
                   }}
                   className={`group flex items-center gap-1.5 px-2 py-1 rounded-lg text-xs cursor-pointer transition-all border ${
                     isSelectedForColor || isInspecting

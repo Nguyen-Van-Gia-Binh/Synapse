@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { hexToRgb } from './tinting';
+import { hexToRgb, resetOffscreenCanvas } from './tinting';
 
 describe('Canvas Tinting & Color Utilities', () => {
   test('hexToRgb chuyển đổi chính xác mã hex 6 ký tự', () => {
@@ -17,5 +17,11 @@ describe('Canvas Tinting & Color Utilities', () => {
     assert.equal(hexToRgb('invalid-hex'), null);
     assert.equal(hexToRgb(''), null);
     assert.equal(hexToRgb('#12'), null);
+  });
+
+  test('resetOffscreenCanvas giải phóng bộ nhớ đệm canvas ẩn mà không gây lỗi', () => {
+    assert.doesNotThrow(() => {
+      resetOffscreenCanvas();
+    });
   });
 });

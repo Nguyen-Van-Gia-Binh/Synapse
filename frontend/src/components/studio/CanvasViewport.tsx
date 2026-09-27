@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useOutfitStore } from '../../store/useOutfitStore';
 import { CANVAS_CONFIG, PaperDollCanvasEngine, RenderLayerOptions } from '../../canvas';
+import { SlotType } from '../../types';
 import { ZoomIn, ZoomOut, RotateCcw, Download, Sparkles } from 'lucide-react';
 
 export interface CanvasViewportProps {
@@ -25,12 +26,19 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ canvasRef: exter
   // Khởi tạo Canvas Engine một lần duy nhất khi component mount
   useEffect(() => {
     if (!canvasRef.current) return;
-    const engine = new PaperDollCanvasEngine(canvasRef.current);
-    engineRef.current = engine;
+    try {
+      const engine = new PaperDollCanvasEngine(canvasRef.current);
+      engine.setupHighDPI();
+      engineRef.current = engine;
+    } catch (err) {
+      console.error('[CanvasViewport] Khởi tạo Canvas Engine thất bại:', err);
+    }
 
     return () => {
-      engine.destroy();
-      engineRef.current = null;
+      if (engineRef.current) {
+        engineRef.current.destroy();
+        engineRef.current = null;
+      }
     };
   }, []);
 
@@ -55,7 +63,7 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({ canvasRef: exter
       .filter(([_, slotData]) => slotData !== null)
       .map(([slot, slotData]) => ({
         id: slotData!.item.id,
-        slot: slot as any,
+        slot: slot as SlotType,
         imageUrl: slotData!.item.image_url,
         color: slotData!.color,
         customizable: slotData!.item.color_customizable,
