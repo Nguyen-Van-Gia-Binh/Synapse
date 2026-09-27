@@ -160,7 +160,7 @@ Một PR lý tưởng nên dưới **350 dòng thay đổi** (hoặc dưới 10 
 | Quy tắc | Nội dung chi tiết |
 | :--- | :--- |
 | **Số lượng phê duyệt** | Tối thiểu **1** thành viên duyệt chấp thuận (Approve) mới được phép merge vào `main`. |
-| **Phân quyền duyệt** | • **Lead Dev**: Duyệt toàn bộ PR liên quan đến mã nguồn Frontend, Backend, API và CSDL Supabase.<br>• **Research Members**: Duyệt các PR liên quan đến tính xác thực của Fact văn hóa, quy chuẩn ảnh trang phục và nội dung quy tắc cấm kỵ. |
+| **Phân quyền duyệt** | • **Lead Dev (Bình)**: Duyệt toàn bộ PR liên quan đến mã nguồn Frontend, Backend, API và CSDL Supabase.<br>• **Research Members (Thơ & Nghi)**: Duyệt các PR liên quan đến tính xác thực của Fact văn hóa, quy chuẩn ảnh trang phục và nội dung quy tắc cấm kỵ. |
 | **Thời gian phản hồi** | Trong vòng **12 đến 24 giờ** (do nhịp độ Sprint ngắn 16 ngày). |
 | **Cấm tự duyệt** | Tuyệt đối không ai được tự approve Pull Request của chính mình. |
 

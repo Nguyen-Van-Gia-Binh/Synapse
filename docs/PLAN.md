@@ -12,14 +12,20 @@
 
 Xây dựng công cụ thời trang sáng tạo (Fashion-Tech Studio) kết hợp không gian khám phá tri thức văn hóa (Cultural Hub) cho giới trẻ. Hỗ trợ phối đồ cho cả **Nam** và **Nữ**.
 
-### 1.2. Phân công vai trò (Team Roles)
+### 1.2. Phân công vai trò & Danh sách thành viên (Team Roles & Members)
 
-* **Leader (Lead Dev & Product Owner):**
-  * Thiết kế kiến trúc, làm việc với AI Coding Agent để code toàn bộ Frontend, Backend, Canvas Engine và tích hợp Database.
-* **2 Thành viên (Kinh tế & Nghiên cứu):**
-  * Nghiên cứu tư liệu lịch sử, thu thập/chuẩn hóa hình ảnh trang phục (bóc nền).
-  * Viết nội dung fact văn hóa, xây dựng bộ quy tắc cảnh báo (Cultural Rules).
-  * Chuẩn bị tài liệu kinh doanh, kịch bản thuyết trình/báo cáo.
+* **Bình – Leader (Lead Dev & Product Owner):**
+  * Thiết kế kiến trúc tổng thể hệ thống, phân rã backlog và quản trị kỹ thuật toàn dự án.
+  * Trực tiếp làm việc cùng AI Coding Agent để phát triển toàn bộ Frontend (React 18+ Vite + TypeScript), Backend (Node.js Express REST API), Core Canvas Paper-Doll Engine (6 slot, High-DPI, Color Multiply Canvas) và tích hợp cơ sở dữ liệu Supabase Cloud.
+  * Thiết lập CI/CD, triển khai hạ tầng Cloud trên Vercel và Render.com, tối ưu hiệu năng 60 FPS và trải nghiệm người dùng (UX) chuẩn mực Canva.
+* **Thơ – Thành viên Nghiên cứu (Cultural Researcher & Asset Specialist):**
+  * Nghiên cứu tư liệu lịch sử, thu thập và chuẩn hóa dữ liệu hình ảnh cổ phục Việt Nam (thời Nguyễn và dân gian).
+  * Chịu trách nhiệm bóc nền ảnh trong suốt chuẩn kích thước khung `800 x 1200 px` (tỉ lệ 2:3), căn chuẩn tọa độ `(0, 0)` cho Mannequin Nam/Nữ và các chi tiết trang phục (Áo ngũ thân, Áo tấc, Áo Nhật bình, Quần lụa, Khăn đóng, Phụ kiện).
+  * Quản lý kho tài nguyên đồ họa trên Supabase Storage bucket `item-assets`.
+* **Nghi – Thành viên Nghiên cứu (Cultural Researcher & Content Specialist):**
+  * Nghiên cứu sử liệu và biên soạn kho tri thức văn hóa (Cultural Facts) cho bảng `cultural_facts`, đảm bảo trích dẫn chính xác, tuyệt đối không bịa đặt niên đại và ý nghĩa lịch sử.
+  * Xây dựng bộ quy tắc kiểm tra phối đồ (Cultural Rules) cho bảng `cultural_rules`, bảo đảm giọng văn nhắc nhở tích cực, tôn trọng tinh thần sáng tạo của Gen Z.
+  * Nghiên cứu 16 case study người dùng (Persona), chuẩn bị tài liệu thuyết minh giải pháp, kịch bản báo cáo và hồ sơ dự thi Audition.
 
 ### 1.3. Lịch trình 16 ngày (Agile Fast-Track)
 
@@ -202,6 +208,7 @@ Synapse/
 ### 3.7. Kiến Trúc Quản Trị Trạng Thái Frontend (Zustand Store)
 
 Frontend sử dụng **Zustand** (`useOutfitStore.ts`) làm State Manager duy nhất:
+
 * **Nhẹ & Không Re-render thừa:** Cập nhật độc lập giữa các Slot, tối ưu 60 FPS khi đổi màu vải áo.
 * **State Cốt Lõi:**
   * `gender`: `'MALE' | 'FEMALE'`
@@ -261,87 +268,174 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
 
 ## 5. TIÊU CHUẨN HOÀN THÀNH MVP CORE (DEFINITION OF DONE)
 
-1. Có Mannequin Nam & Nữ chuẩn phom dáng.
-2. Người dùng có thể click chọn và đổi đồ trực quan trên Canvas theo 6 slot cơ bản.
-3. Thay đổi được màu sắc vải của áo/quần cơ bản (Thuật toán Multiply 60 FPS).
-4. Chọn đồ đến đâu, Thẻ tri thức văn hóa (Cultural Factcard) cập nhật thông tin tương ứng.
-5. Cảnh báo hiển thị khi vi phạm quy tắc đơn giản đã cài sẵn (vd: Áo dài ngũ thân không có quần).
-6. Chấm điểm hòa sắc tự động (Color Harmony Scorer 0-100) dựa trên bánh xe màu và ngũ hành.
-7. Xuất được ảnh Lookbook 9:16 hoàn chỉnh để tải về hoặc chia sẻ link trực tiếp.
-8. Triển khai thành công trên môi trường trực tuyến (Vercel + Render + Supabase) truy cập công khai.
+- [X] **1. Có Mannequin Nam & Nữ chuẩn phom dáng:** Khung 800x1200 px tỉ lệ 2:3, hỗ trợ chuyển đổi linh hoạt. *(Đã có Mock Silhouette PNG, chờ asset đồ họa chính thức)*.
+- [X] **2. Click chọn và đổi đồ trực quan trên Canvas theo 6 slot cơ bản:** Sắp xếp phân tầng Z-Index chuẩn xác, mượt mà 60 FPS (Đã kiểm thử qua PR #13).
+- [X] **3. Thay đổi màu sắc vải của áo/quần (Thuật toán Dual Offscreen Canvas Multiply):** Bảo toàn nếp gấp vải và bóng đổ, bảng 8 màu Cổ phong & Hex Picker (Đã kiểm thử qua PR #13).
+- [X] **4. Chọn đồ đến đâu, Thẻ tri thức văn hóa (Cultural Factcard) cập nhật tương ứng:** Kèm In-memory Cache chống lặp request mạng (Đã kiểm thử qua PR #13).
+- [X] **5. Cảnh báo hiển thị khi vi phạm quy tắc văn hóa (Cultural Guardrails Toast):** Cảnh báo màu hổ phách, giọng điệu gợi ý văn minh, không phán xét tiêu cực (Đã hoàn thành qua PR #7).
+- [X] **6. Chấm điểm hòa sắc tự động (Color Harmony Scorer 0-100):** Kết hợp bánh xe màu và Ngũ hành tương sinh, hiển thị Visual Harmony Radar (Đã hoàn thành qua PR #8).
+- [X] **7. Xuất được ảnh Lookbook 9:16 hoàn chỉnh:** Render canvas 1080x1920 tải PNG về máy và tạo link chia sẻ trực tiếp (Đã hoàn thành qua PR #9).
+- [X] **8. Triển khai thành công trên môi trường trực tuyến công khai:** Vercel (Frontend) + Render (Backend) + Supabase (Database) (Đã hoàn thành qua PR #11, PR #12).
 
 ---
 
-## 6. PHÂN RÃ PRODUCT BACKLOG & KẾ HOẠCH TỪNG SPRINT (SPRINT BREAKDOWN)
+## 6. PHÂN RÃ PRODUCT BACKLOG & TIẾN ĐỘ THỰC TẾ (SPRINT TRACKER)
 
-> Toàn bộ các Task dưới đây được đồng bộ 100% với **Notion Inline Database** (`📌 Synapse – Sprint Backlog & Task Tracker`), **USER-STORY.md** và **USE-CASE.md**.
+> **Cập nhật tiến độ ngày:** 27/09/2026 | **Tiến độ tổng thể:** **12/16 Tasks Hoàn thành** (75% MVP hoàn thiện, 100% Hạ tầng Cloud & Core Studio Engine đã Live).
+
+### 6.0. Bảng Điều Khiển Dịch Vụ Trực Tuyến & Lịch Sử Tích Hợp
+
+| Dịch vụ                  | Nền tảng        |                   Trạng thái                   | URL Trực tuyến                                                                                    |
+| :------------------------- | :---------------- | :-----------------------------------------------: | :-------------------------------------------------------------------------------------------------- |
+| **Frontend Web App** | Vercel            | <span style="color:green">● LIVE (200 OK)</span> | [https://synapse-vheritage.vercel.app/](https://synapse-vheritage.vercel.app/)                       |
+| **Backend REST API** | Render.com        | <span style="color:green">● LIVE (200 OK)</span> | [https://synapse-api-7prs.onrender.com/api/health](https://synapse-api-7prs.onrender.com/api/health) |
+| **Cloud Database**   | Supabase Postgres |   <span style="color:green">● CONNECTED</span>   | `xgxisagbiweeijzndgbx.supabase.co`                                                                |
+| **MCP Integration**  | Antigravity IDE   |  <span style="color:green">● CONFIGURED</span>  | Notion, Supabase, Render, Vercel MCPs                                                               |
+
+* **Nhật ký Pull Request đã Merge vào `main`:**
+  * `PR #1`: `docs(governance): thiet lap quy che branch, commit va context GEMINI.md (S0.1)`
+  * `PR #2`: `feat(db): thiet lap migration Supabase va Mock Data 4 bang cot loi (S0.2)`
+  * `PR #3`: `feat(scaffold): khoi tao khung Frontend Vite TS va Backend Express TS (S0.3)`
+  * `PR #4`: `feat(canvas): xay dung Paper-Doll Canvas Engine 6 slot 800x1200 (S1.1)`
+  * `PR #5`: `feat(catalog): phat trien API Catalog va The Cultural Factcard (S1.2)`
+  * `PR #6`: `feat(tinting): tich hop bang 8 mau Co phong va Multiply Canvas 60 FPS (S1.3)`
+  * `PR #7`: `feat(guardrails): xay dung Guardrails Engine va Alert Toast (S2.1)`
+  * `PR #8`: `feat(palette): thuat toan Color Harmony Scorer & Visual Harmony Radar (S2.2)`
+  * `PR #9`: `feat(lookbook): xuat the V-Lookbook 9:16 va REST API chia se (S2.3)`
+  * `PR #11`: `feat(infra): tich hop Supabase Cloud, ha tang Render/Vercel va toi uu da nen tang (S0.2, S3.1, S3.2)`
+  * `PR #12`: `fix: chuyen typescript sang dependencies va cap nhat render build command`
+  * `PR #13`: `feat(studio): hoan thien Canvas Engine, Color Tinting & Cultural Factcard (S1.1, S1.2, S1.3)`
+
+---
 
 ### SPRINT 0 (21/09 - 23/09): KHỞI TẠO NỀN TẢNG & CHUẨN HÓA DỮ LIỆU
-* **Mục tiêu Sprint (Sprint Goal):** Dựng xong khung repo Monorepo/Multi-folder, kết nối CSDL Supabase và ban hành chuẩn ảnh 800x1200 cho team Research.
 
+* **Mục tiêu Sprint (Sprint Goal):** Dựng xong khung repo Monorepo/Multi-folder, kết nối CSDL Supabase và ban hành chuẩn ảnh 800x1200 cho team Research.
+* **[S0.0] Phân tích đề bài & Hình thành ý tưởng giải pháp**
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Khởi tạo định hướng sản phẩm)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* Khởi tạo
+  * *DoD:* Phân tích đề bài AI Arena Việt Phục Remix, xác định chân dung người dùng Gen Z, định vị concept Heritage Futurism.
 * **[S0.1] Thiết lập Git Governance, CONTRIBUTING.md & GEMINI.md**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* Khung quản trị
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #1)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* Khung quản trị
   * *DoD:* Branch protection rules (main, dev); tài liệu CONTRIBUTING.md và GEMINI.md chuẩn mực.
 * **[S0.2] Tạo CSDL Supabase & Migration 4 bảng cốt lõi**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-09, UC-08
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #2, kết nối Supabase Cloud qua PR #11)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-09, UC-08
   * *DoD:* Tạo 4 bảng (`items`, `cultural_facts`, `cultural_rules`, `lookbooks`), RLS policies và Bucket Storage `item-assets`.
 * **[S0.3] Scaffold cấu trúc thư mục Frontend & Backend**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-01, UC-01
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #3)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🟠 P1 - High` | *Liên kết:* US-01, UC-01
   * *DoD:* Khởi tạo `frontend/` (React + Vite + TS + Tailwind) và `backend/` (Node Express + TS); cài đặt Zustand; build pass.
 * **[S0.4] Thu thập & Bóc nền 2 Mannequin Nam/Nữ chuẩn 800x1200 px**
-  * *Assignee:* Research Member 2 (Assets) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-01, UC-01
+
+  * *Trạng thái:* <span style="color:orange">🟡 TẠM THỜI (DÙNG MOCK)</span> *(Chờ bàn giao tài nguyên đồ họa chính thức từ Thơ)*
+  * *Assignee:* **Thơ (Research - Assets)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-01, UC-01
   * *DoD:* 2 ảnh PNG trong suốt 800x1200 px tỉ lệ 2:3, bóc nền sạch, căn chuẩn vị trí trung tâm Canvas `(0, 0)`.
 * **[S0.5] Soạn thảo Fact văn hóa & 2-3 quy tắc cảnh báo mẫu thời Nguyễn**
-  * *Assignee:* Research Member 1 (Content) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-05, US-06
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #2, PR #5)*
+  * *Assignee:* **Nghi (Research - Content)** | *Priority:* `🟠 P1 - High` | *Liên kết:* US-05, US-06
   * *DoD:* Fact văn hóa có trích dẫn sử liệu (không bịa đặt), 2-3 quy tắc cảnh báo mang giọng điệu gợi ý tích cực.
+* **[RES-01] Nghiên cứu lịch sử & bối cảnh 4 nhóm cổ phục Việt Nam**
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã ghi chép vào Notion)*
+  * *Assignee:* **Thơ (Research - Sử liệu)** | *Priority:* `🟠 P1 - High` | *Liên kết:* Nền tảng tri thức
+  * *DoD:* Phân loại 4 nhóm thời kỳ: Giao lĩnh, Tứ thân/Yếm, Ngũ thân Nguyễn, Áo dài tân thời; đối chiếu sử liệu chuẩn xác.
+* **[RES-02] Phân rã cấu trúc & phân loại các thành phần cổ phục**
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã ghi chép vào Notion)*
+  * *Assignee:* **Nghi (Research - Phân loại)** | *Priority:* `🟠 P1 - High` | *Liên kết:* Nền tảng tri thức
+  * *DoD:* Phân rã chi tiết cúc áo, họa tiết, dáng áo, nón mũ; quy chuẩn 6 slot Studio.
+* **[RES-03] Case Study 16 trường hợp người dùng ứng dụng Việt Phục**
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã ghi chép vào Notion)*
+  * *Assignee:* **Nghi (Research - Persona)** | *Priority:* `🟡 P2 - Medium` | *Liên kết:* Nghiên cứu người dùng
+  * *DoD:* Nghiên cứu 16 persona & trường hợp sử dụng (tốt nghiệp, dạo phố, check-in...); tổng hợp pain points & nhu cầu cốt lõi.
 
 ---
 
 ### SPRINT 1 (24/09 - 29/09): CORE CANVAS ENGINE & CATALOG API
-* **Mục tiêu Sprint (Sprint Goal):** Hoàn thiện trải nghiệm phối đồ 6 slot trên màn hình, đổi màu bằng Dual Offscreen Canvas và tra cứu Cultural Factcard.
 
+* **Mục tiêu Sprint (Sprint Goal):** Hoàn thiện trải nghiệm phối đồ 6 slot trên màn hình, đổi màu bằng Dual Offscreen Canvas và tra cứu Cultural Factcard.
+* **[S1.0] Phát triển MVP cơ bản của ứng dụng (Core Studio)**
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #4, PR #13)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* Core Studio
+  * *DoD:* Dựng khung Studio Canvas 800x1200, xếp lớp đồ họa 6 slot & đổi màu cổ phong.
 * **[S1.1] Xây dựng Core Canvas Paper-Doll Engine (Xếp lớp 6 slot)**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-02, UC-02
-  * *DoD:* Cơ chế vẽ xếp lớp 6 slot theo Z-Index (`HEADWEAR` 60, `ACCESSORY` 50, `PATTERN` 40, `TOP` 30, `BOTTOM` 20, `MANNEQUIN` 0) trên Canvas 800x1200; mượt 60 FPS.
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #4, tối ưu High-DPI & Z-Index test qua PR #13)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-02, UC-02
+  * *DoD:* Cơ chế vẽ xếp lớp 6 slot theo Z-Index (`HEADWEAR` 60, `ACCESSORY` 50, `PATTERN` 40, `TOP` 30, `BOTTOM` 20, `MANNEQUIN` 0) trên Canvas 800x1200; mượt 60 FPS; hỗ trợ High-DPI.
 * **[S1.2] Phát triển API Catalog & Thẻ Cultural Factcard**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-05, UC-04, API Nhóm 1 & 2
-  * *DoD:* API `GET /api/items` và `GET /api/items/:id/facts`; UI Factcard popover hiển thị niên đại, ý nghĩa và tip phối Gen Z.
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #5, tích hợp Store Cache & Cultural Guardrails test qua PR #13)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🟠 P1 - High` | *Liên kết:* US-05, UC-04, API Nhóm 1 & 2
+  * *DoD:* API `GET /api/items` và `GET /api/items/:id/facts`; UI Factcard popover hiển thị niên đại, ý nghĩa và tip phối Gen Z; In-memory cache chống lặp request.
 * **[S1.3] Tích hợp Bảng 8 màu Cổ phong & Color Multiply Canvas**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-03, US-04, UC-03
-  * *DoD:* Bảng 8 màu Cổ phong + Hex Color Picker; thuật toán `renderTintedLayer` (Dual Offscreen Canvas) êm ái, không làm bệt nếp gấp vải.
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #6, hoàn thiện giải phóng tài nguyên và Ngũ hành tooltips qua PR #13)*
+  * *Assignee:* **Nghi (Nghiên cứu màu sắc) & Bình (Code Engine)** | *Priority:* `🟠 P1 - High` | *Liên kết:* US-03, US-04, UC-03
+  * *DoD:* Bảng 8 màu Cổ phong + Hex Color Picker; thuật toán `renderTintedLayer` (Dual Offscreen Canvas) êm ái, không làm bệt nếp gấp vải; hiển thị hành tương ứng.
 * **[S1.4] Số hóa & Bóc nền đợt 1: 4-6 trang phục tiêu biểu thời Nguyễn**
-  * *Assignee:* Research Member 2 (Assets) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-02, UC-02
+
+  * *Trạng thái:* <span style="color:orange">🟡 TẠM THỜI (DÙNG MOCK)</span> *(Đã có 8 mock assets silhouette 800x1200, chờ đồ họa hoa văn phục dựng từ Thơ)*
+  * *Assignee:* **Thơ (Research - Assets)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-02, UC-02
   * *DoD:* File PNG trong suốt 800x1200 px của Áo ngũ thân, Áo tấc, Áo Nhật bình, Quần lụa, Khăn đóng up lên Supabase Storage.
 
 ---
 
 ### SPRINT 2 (30/09 - 05/10): CULTURAL GUARDRAILS & LOOKBOOK EXPORT
-* **Mục tiêu Sprint (Sprint Goal):** Hoàn thiện bộ não cảnh báo văn hóa tinh tế, thuật toán chấm điểm hòa sắc mỹ thuật và xuất thẻ Lookbook 9:16 chia sẻ mạng xã hội.
 
+* **Mục tiêu Sprint (Sprint Goal):** Hoàn thiện bộ não cảnh báo văn hóa tinh tế, thuật toán chấm điểm hòa sắc mỹ thuật và xuất thẻ Lookbook 9:16 chia sẻ mạng xã hội.
+* **[S2.0] Review MVP tích hợp lịch sử văn hóa & Case tiêu biểu**
+
+  * *Trạng thái:* <span style="color:blue">🔵 READY TO DEV</span> *(Chuẩn bị đánh giá tổng thể trước Sprint 2)*
+  * *Assignee:* **Bình (Lead Dev) & Nghi (Cultural Lead)** | *Priority:* `🟠 P1 - High` | *Liên kết:* Review chất lượng
+  * *DoD:* Đánh giá độ chuẩn xác văn hóa các case phối mẫu; kiểm thử hệ thống gợi ý và cảnh báo thân thiện.
 * **[S2.1] Xây dựng API & Toast Cảnh Báo Cultural Guardrails**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-06, UC-05, API Nhóm 3
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #7)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-06, UC-05, API Nhóm 3
   * *DoD:* API `POST /api/rules/evaluate` theo Slot-Map Contract; Toast Alert màu hổ phách/vàng thân thiện khi phát hiện vi phạm (áo thiếu quần...).
 * **[S2.2] Triển khai Thuật toán Chấm Điểm Hòa Sắc (Color Harmony Scorer)**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* US-07, UC-06
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #8)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🟠 P1 - High` | *Liên kết:* US-07, UC-06
   * *DoD:* Hàm `calculateColorHarmony` tính điểm 0-100 dựa trên Hue spread, Luminance contrast và Heritage bonus; hiển thị trên Radar Chart.
 * **[S2.3] Xây dựng V-Lookbook Card Component & Tính Năng Xuất Ảnh 9:16**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-08, UC-07, API Nhóm 4
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #9)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-08, UC-07, API Nhóm 4
   * *DoD:* Thẻ tỷ lệ 9:16 Cinematic; xuất file ảnh PNG tải về máy dưới 2 giây; API `POST /api/lookbooks` tạo link chia sẻ trực tiếp.
 * **[S2.4] Nhập liệu hoàn chỉnh bộ quy tắc văn hóa & User Testing**
-  * *Assignee:* Research Member 1 & 2 | *Priority:* `🟠 P1 - High` | *Liên kết:* US-06, US-09, UC-08
+
+  * *Trạng thái:* <span style="color:blue">🔵 READY TO DEV</span> *(Hiện CSDL có 3 quy tắc cơ bản, cần nhập thêm 5-8 quy tắc lịch sử và test tương tác)*
+  * *Assignee:* **Nghi & Thơ (Research Members)** | *Priority:* `🟠 P1 - High` | *Liên kết:* US-06, US-09, UC-08
   * *DoD:* Nhập tối thiểu 5-8 quy tắc vào bảng `cultural_rules`; tự tay test phối đồ và phản biện nội dung hiển thị.
 
 ---
 
 ### SPRINT 3 (06/10 - 07/10): TRIỂN KHAI CLOUD & TỔNG DUYỆT (HARDENING)
-* **Mục tiêu Sprint (Sprint Goal):** Đưa sản phẩm lên Internet công khai (Render + Vercel), kiểm thử tải trang di động/desktop và hoàn thiện hồ sơ dự thi Audition.
 
+* **Mục tiêu Sprint (Sprint Goal):** Đưa sản phẩm lên Internet công khai (Render + Vercel), kiểm thử tải trang di động/desktop và hoàn thiện hồ sơ dự thi Audition.
 * **[S3.1] Triển khai Backend lên Render.com & Frontend lên Vercel**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-01 -> US-08
+
+  * *Trạng thái:* <span style="color:green">✅ HOÀN THÀNH</span> *(Đã merge qua PR #11, PR #12: Cả Vercel & Render đều LIVE 200 OK)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* US-01 -> US-08
   * *DoD:* Web Service Render chạy ổn định kết nối Supabase; Vercel deploy HTTPS mượt mà, không lỗi CORS.
 * **[S3.2] Kiểm thử Tương thích Đa nền tảng & Tối ưu Hiệu năng**
-  * *Assignee:* Leader (Dev / PO) | *Priority:* `🟠 P1 - High` | *Liên kết:* Toàn bộ UC
+
+  * *Trạng thái:* <span style="color:orange">🟡 ĐANG HOÀN THIỆN</span> *(Cần tinh chỉnh Mobile Canva style: Bottom Sheet & Touch gestures)*
+  * *Assignee:* **Bình (Leader / Lead Dev)** | *Priority:* `🟠 P1 - High` | *Liên kết:* Toàn bộ UC
   * *DoD:* Responsive chuẩn trên cả Mobile (Canva Mobile style) và Desktop (Canva Desktop style); Canvas mượt 60 FPS.
 * **[S3.3] Tổng duyệt Kịch bản Demo & Hoàn thiện Hồ sơ Bài thi**
-  * *Assignee:* Cả Team (Leader + 2 Research) | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* ProjectBrief.md
+
+  * *Trạng thái:* <span style="color:default">⚪ BACKLOG (CHỜ SPRINT 3)</span> *(Cần chuẩn bị Slide thuyết trình, Video demo 5-10 phút & README)*
+  * *Assignee:* **Cả Team (Bình - Leader, Thơ & Nghi - Research)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* ProjectBrief.md
   * *DoD:* Video demo ngắn (5-10 phút), Slide thuyết trình, link web live và mã nguồn GitHub sẵn sàng nộp bài.

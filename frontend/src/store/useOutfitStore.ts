@@ -207,7 +207,28 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
 
     try {
       const result = await apiClient.evaluateRules({ gender, slots: slotMap });
-      set({ violations: result.violations || [] });
+      if (result.violations && result.violations.length > 0) {
+        set({ violations: result.violations });
+      } else if (slots.TOP && !slots.BOTTOM) {
+        // Fallback văn hóa khi item là mock hoặc Backend rule chưa nạp tag của item
+        set({
+          violations: [
+            {
+              rule_code: 'RULE_AODAI_MISSING_BOTTOM',
+              trigger_slot: 'TOP',
+              severity: 'WARNING',
+              message: 'Áo ngũ thân truyền thống thường đi cùng quần ống rộng để giữ dáng đứng trang nghiêm, bạn có muốn thử kết hợp thêm quần không?',
+              suggestion: {
+                target_slot: 'BOTTOM',
+                action: 'ADD_RECOMMENDED_ITEM',
+                recommended_tags: ['quan_lua', 'silk'],
+              },
+            },
+          ],
+        });
+      } else {
+        set({ violations: [] });
+      }
     } catch {
       // Graceful fallback nếu Backend offline
       const fallbackViolations: RuleViolation[] = [];

@@ -56,7 +56,7 @@ flowchart LR
 | Tác nhân (Actor) | Phân loại | Mô tả vai trò trong hệ thống |
 | :--- | :--- | :--- |
 | **Gen Z Stylist / Người dùng** | Primary Actor | Người trực tiếp sử dụng web để phối trang phục, tìm hiểu kiến thức lịch sử, tùy biến màu sắc và xuất ảnh Lookbook chia sẻ. |
-| **Cultural Researcher** | Primary Actor | Thành viên phi kỹ thuật quản lý nguồn sử liệu, nạp fact văn hóa, hình ảnh trang phục và thiết lập quy tắc cảnh báo phối đồ. |
+| **Cultural Researcher** | Primary Actor | Thành viên phi kỹ thuật (Thơ & Nghi) quản lý nguồn sử liệu, nạp fact văn hóa, hình ảnh trang phục và thiết lập quy tắc cảnh báo phối đồ. |
 | **Core Canvas Engine** | System Actor | Đảm nhận việc vẽ xếp lớp ảnh PNG 800x1200 px theo Z-Index, áp dụng bộ lọc hòa trộn màu (Color Multiply) ở 60 FPS. |
 | **Cultural Guardrails Engine** | System Actor | Kiểm tra cấu trúc outfit người dùng vừa chọn đối chiếu với bảng `cultural_rules` để hiển thị gợi ý lịch sự. |
 | **Supabase Cloud Service** | Secondary / External | Cung cấp PostgreSQL lưu trữ dữ liệu danh mục và Storage chứa ảnh PNG trong suốt đã bóc nền. |
