@@ -64,6 +64,12 @@ $$\mathbf{YYYY-MM-DD\text{-}NN\text{-}\langle\text{mo-ta-ngan-khong-dau}\rangle.
 
 | Ngày | Phiên | Tiêu đề phiên | Người thực hiện | Trạng thái | Tệp liên kết |
 | :---: | :---: | :--- | :---: | :---: | :--- |
+| 21/09/2026 | 01 | Thiết kế Kiến trúc SDLC & Đặc tả Nghiệp vụ | Bình, Thơ, Nghi & AI | ✅ Hoàn thành | [2026-09-21-01](2026-09-21-01-thiet-ke-kien-truc-sdlc-va-dac-ta-nghiep-vu.md) |
+| 22/09/2026 | 01 | Khởi tạo Repo, Git Governance & Đặc tả Nghiệp vụ | Bình, Nghi & AI Agent | ✅ Hoàn thành | [2026-09-22-01](2026-09-22-01-khoi-tao-repo-git-governance-va-dac-ta-nghiep-vu.md) |
+| 22/09/2026 | 02 | Scaffold Codebase & Core Canvas Engine | Bình & AI Agent | ✅ Hoàn thành | [2026-09-22-02](2026-09-22-02-scaffold-codebase-va-core-canvas-engine.md) |
+| 22/09/2026 | 03 | Catalog API & Thẻ Cultural Factcard | Bình, Nghi & AI Agent | ✅ Hoàn thành | [2026-09-22-03](2026-09-22-03-catalog-api-va-cultural-factcard.md) |
+| 23/09/2026 | 01 | Bảng 8 Màu Cổ Phong, Canvas Color Multiply & Ràng Buộc Model Gemini | Bình, Thơ & AI Agent | ✅ Hoàn thành | [2026-09-23-01](2026-09-23-01-bang-8-mau-co-phong-va-color-multiply.md) |
 | 27/09/2026 | 01 | Tích hợp hạ tầng Render & Đồng bộ Supabase Cloud | Bình & AI Agent | ✅ Hoàn thành | [2026-09-27-01](2026-09-27-01-tich-hop-ha-tang-render-va-dong-bo-supabase.md) |
 | 27/09/2026 | 02 | Tối ưu Canvas Engine, Color Tinting & Factcard Cache | Bình & AI Agent | ✅ Hoàn thành | [2026-09-27-02](2026-09-27-02-toi-uu-canvas-engine-tinting-va-factcard-cache.md) |
-| 27/09/2026 | 03 | Di chuyển Task Notion sang Sprint & Chuẩn hóa vai trò | Bình & AI Agent | ✅ Hoàn thành | [2026-09-27-03](2026-09-27-03-di-chuyen-task-notion-sang-sprint-va-cap-nhat-vai-tro.md) |
+| 27/09/2026 | 03 | Di chuyển Task Notion sang Sprint & Chuẩn hóa vai trò | Bình, Thơ, Nghi & AI | ✅ Hoàn thành | [2026-09-27-03](2026-09-27-03-di-chuyen-task-notion-sang-sprint-va-cap-nhat-vai-tro.md) |
+
