@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useOutfitStore } from '../../store/useOutfitStore';
 import { HERITAGE_PALETTE, isValidHexColor, normalizeHex } from '../../constants/heritageColors';
+import { getColorWuXing, WUXING_NAMES } from '../../utils/heritageWuXing';
 import { SlotType } from '../../types';
 import { Palette, Lock, Pipette, Check, AlertCircle } from 'lucide-react';
 
@@ -127,12 +128,14 @@ export const ColorBar: React.FC = () => {
             <div className="flex items-center gap-2">
               {HERITAGE_PALETTE.map((color) => {
                 const isActive = currentColor.toUpperCase() === color.hex.toUpperCase();
+                const elem = getColorWuXing(color.hex);
+                const elemText = elem ? ` • ${WUXING_NAMES[elem]}` : '';
 
                 return (
                   <button
                     key={color.id}
                     onClick={() => handleSelectColor(color.hex)}
-                    title={`${color.name} (${color.hex})\n${color.meaning} - ${color.description}`}
+                    title={`${color.name} (${color.hex})${elemText}\n${color.meaning} - ${color.description}`}
                     className={`w-6 h-6 rounded-full border shadow-md transform hover:scale-125 transition-all relative ${
                       isActive
                         ? 'border-white scale-110 ring-2 ring-heritage-yellow shadow-heritage-yellow/30'
