@@ -2,7 +2,7 @@
  * PaperDollCanvasEngine - Quản lý xếp lớp Canvas theo Z-Index và render 60 FPS
  */
 
-import { CANVAS_CONFIG, LAYER_Z_INDEX, RenderLayerOptions } from './index';
+import { CANVAS_CONFIG, RenderLayerOptions, sortLayersByZIndex } from './index';
 import { renderTintedLayer } from './tinting';
 
 export class PaperDollCanvasEngine {
@@ -23,6 +23,22 @@ export class PaperDollCanvasEngine {
     // Thiết lập kích thước pixel thật 800 x 1200
     this.canvas.width = CANVAS_CONFIG.WIDTH;
     this.canvas.height = CANVAS_CONFIG.HEIGHT;
+  }
+
+  /**
+   * Thiết lập High-DPI scaling (Retina / Mobile Display) bảo đảm nét 800x1200
+   */
+  public setupHighDPI(customDpr?: number): void {
+    const dpr = customDpr || (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1);
+    const { WIDTH, HEIGHT } = CANVAS_CONFIG;
+
+    this.canvas.width = WIDTH * dpr;
+    this.canvas.height = HEIGHT * dpr;
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
+
+    this.ctx.resetTransform?.();
+    this.ctx.scale(dpr, dpr);
   }
 
   /**
@@ -72,7 +88,7 @@ export class PaperDollCanvasEngine {
     const sortedLayers = sortLayersByZIndex(layers);
 
     // Tải trước toàn bộ ảnh của các lớp đang cần vẽ
-    const imageUrls = sortedLayers.map((l) => l.imageUrl).filter(Boolean);
+    const imageUrls = sortedLayers.map((l: RenderLayerOptions) => l.imageUrl).filter(Boolean);
     await this.preloadImages(imageUrls);
 
     if (this.isDestroyed) return;
