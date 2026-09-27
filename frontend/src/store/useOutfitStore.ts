@@ -36,6 +36,7 @@ export interface OutfitStoreState {
   setHarmonyScore: (score: number) => void;
   updateHarmonyScore: () => void;
   evaluateGuardrails: () => Promise<void>;
+  loadCulturalFactForItem: (item: ItemDto) => Promise<void>;
   resetOutfit: () => void;
   undo: () => void;
   redo: () => void;
@@ -49,6 +50,8 @@ const initialSlots: Record<SlotType, OutfitSlotState | null> = {
   ACCESSORY: null,
   FOOTWEAR: null,
 };
+
+const factCache = new Map<string, CulturalFactDto>();
 
 export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   gender: 'FEMALE',
@@ -101,6 +104,7 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
     });
     get().evaluateGuardrails();
     get().updateHarmonyScore();
+    get().loadCulturalFactForItem(item);
   },
 
   removeItem: (slot) => {
@@ -164,6 +168,29 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
         harmonyDetail: null,
         harmonyScore: 85,
       });
+    }
+  },
+
+  loadCulturalFactForItem: async (item: ItemDto) => {
+    set({ activeFactcardItem: item, isFactcardLoading: true });
+
+    // 1. Kiểm tra cache trong bộ nhớ
+    const cached = factCache.get(item.id);
+    if (cached) {
+      set({ activeFactcard: cached, isFactcardLoading: false });
+      return;
+    }
+
+    try {
+      const fact = await apiClient.getCulturalFact(item.id);
+      if (fact) {
+        factCache.set(item.id, fact);
+        set({ activeFactcard: fact });
+      }
+    } catch {
+      // Khi offline hoặc test môi trường không có backend, giữ nguyên trạng thái an toàn
+    } finally {
+      set({ isFactcardLoading: false });
     }
   },
 
