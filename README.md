@@ -90,10 +90,11 @@ Synapse/
 
 ---
 
-## 👥 Đội Ngũ Phát Triển
+## 👥 Đội Ngũ Phát Triển (Team Members)
 
-- **Leader (Lead Dev & Product Owner):** Thiết kế kiến trúc, Canvas Engine, phát triển Frontend/Backend và tích hợp CSDL.
-- **2 Thành viên (Research & Content):** Nghiên cứu tư liệu lịch sử, chuẩn hóa ảnh phục trang bóc nền `800x1200 px`, biên soạn Fact văn hóa và bộ quy tắc ứng xử di sản.
+- **Bình (Leader / Lead Dev & Product Owner):** Thiết kế kiến trúc tổng thể, Canvas Engine, phát triển Frontend/Backend, tích hợp Supabase Cloud và triển khai Vercel/Render.
+- **Thơ (Cultural Researcher & Asset Specialist):** Nghiên cứu tư liệu lịch sử, chuẩn hóa và bóc nền ảnh phục trang chuẩn `800x1200 px` cho Mannequin Nam/Nữ và hệ thống trang phục cổ phong.
+- **Nghi (Cultural Researcher & Content Specialist):** Biên soạn Cultural Facts văn hóa, xây dựng bộ quy tắc ứng xử di sản (Cultural Guardrails), nghiên cứu Persona người dùng và tài liệu báo cáo.
 
 ---
 
