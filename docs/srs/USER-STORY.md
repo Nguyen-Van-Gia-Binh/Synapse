@@ -190,7 +190,7 @@ mindmap
 ### EPIC 7: Quản Trị Nội Dung & Dữ Liệu Văn Hóa Không Cần Code
 
 #### [US-09] Thêm Mới & Chỉnh Sửa Dữ Liệu Qua Supabase Table Editor
-* **User Story:** Là một **thành viên Research (Thơ / Nghi)**, tôi muốn **dễ dàng thêm mới món đồ, cập nhật niên đại, câu chuyện văn hóa qua giao diện bảng Supabase như Excel**, để **tôi có thể cập nhật kho tri thức mà không cần nhờ lập trình viên sửa code**.
+* **User Story:** Là một **thành viên Research (Tho / Nghi)**, tôi muốn **dễ dàng thêm mới món đồ, cập nhật niên đại, câu chuyện văn hóa qua giao diện bảng Supabase như Excel**, để **tôi có thể cập nhật kho tri thức mà không cần nhờ lập trình viên sửa code**.
 * **Ưu tiên:** `🔴 P0 - Must Have` | **Story Points:** 3 SP | **Sprint:** `Sprint 0` & `Sprint 3`
 * **Acceptance Criteria (Gherkin):**
   * **Scenario 9.1:** Nhập món đồ mới vào Supabase
