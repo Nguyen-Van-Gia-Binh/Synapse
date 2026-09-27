@@ -1,6 +1,6 @@
 /**
  * Hệ thống ánh xạ Ngũ hành Tương sinh và Điểm thưởng Di sản (Heritage Bonus)
- * Tuân thủ quy chuẩn mỹ thuật cổ truyền Việt Nam trong docs/BUSINESS-LOGIC-SPECIFICATION.md (Mục 2.4)
+ * Tuân thủ quy chuẩn mỹ thuật cổ truyền Việt Nam trong docs/shared/BUSINESS-LOGIC-SPECIFICATION.md (Mục 2.4)
  */
 
 import { normalizeHex } from '../constants/heritageColors';

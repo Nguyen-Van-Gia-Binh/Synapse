@@ -42,7 +42,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
   const [catalogItems, setCatalogItems] = useState<ItemDto[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Danh mục 8 trang phục mẫu chuẩn 100% theo DATABASE-SCHEMA.sql
+  // Danh mục 8 trang phục mẫu chuẩn 100% theo docs/shared/DATABASE-SCHEMA.sql
   const fallbackItems: ItemDto[] = [
     {
       id: '11111111-0000-0000-0000-000000000001',

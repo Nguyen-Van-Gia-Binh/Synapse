@@ -16,7 +16,7 @@
   Dự án tham dự Thử thách <i>"Việt Phục Remix: Phối trang phục truyền thống theo phong cách Gen Z"</i>
 </p>
 
-[✨ Xem Kế Hoạch Dự Án](docs/PLAN.md) • [📖 Quy Chuẩn Đóng Góp](CONTRIBUTING.md) • [🤖 Chỉ Dẫn AI Agent](GEMINI.md) • [📌 Đề Bài & Thử Thách](docs/ProjectBrief.md)
+[✨ Xem Kế Hoạch Dự Án](docs/PLAN.md) • [📖 Quy Chuẩn Đóng Góp](CONTRIBUTING.md) • [🤖 Chỉ Dẫn AI Agent](GEMINI.md) • [📌 Đề Bài & Thử Thách](docs/srs/ProjectBrief.md)
 
 ---
 
@@ -66,18 +66,22 @@ Synapse Platform
 Synapse/
 ├── .github/                      # GitHub Issue & PR Templates
 │   └── PULL_REQUEST_TEMPLATE.md
-├── docs/                         # Tài liệu phân tích và kế hoạch
+├── docs/                         # Kho tài liệu đặc tả chuẩn Agile & RUP
 │   ├── PLAN.md                   # Kế hoạch chi tiết 16 ngày & cấu trúc CSDL
-│   ├── ProjectBrief.md           # Đề bài & biểu mẫu dự thi
-│   └── superpowers/              # Tài liệu thiết kế & kế hoạch kỹ thuật
+│   ├── srs/                      # Yêu cầu phần mềm (ProjectBrief, USER-STORY, USE-CASE, DoD)
+│   ├── shared/                   # Hợp đồng chung (API-CONTRACTS, BUSINESS-LOGIC, SCHEMA)
+│   ├── frontend/                 # Đặc tả UI/UX (DESIGN-SYSTEM, CANVAS-ARCHITECTURE)
+│   ├── backend/                  # Đặc tả kỹ thuật API (ARCHITECTURE, DEPLOYMENT)
+│   ├── devProcess/               # Nhật ký phát triển / PR hằng ngày
+│   └── superpowers/              # Tài liệu thiết kế & kế hoạch kỹ thuật tự sinh của AI
+├── frontend/                     # Ứng dụng Giao diện React 18 + Vite + TypeScript
+├── backend/                      # Dịch vụ API Node.js + Express + TypeScript
 ├── CONTRIBUTING.md               # Quy trình làm việc với Git, nhánh, commit & review
 ├── GEMINI.md                     # Chỉ dẫn bối cảnh & vùng cấm văn hóa cho AI Agent
 ├── .gitignore                    # Bộ lọc bảo mật và tệp build
 ├── LICENSE                       # Giấy phép nguồn mở MIT
 └── README.md                     # Trang giới thiệu tổng quan dự án
 ```
-
-*(Các thư mục mã nguồn `frontend/` và `backend/` sẽ được scaffold trong các task tiếp theo của Sprint 0).*
 
 ---
 

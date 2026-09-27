@@ -9,9 +9,11 @@
 ---
 
 ### 1. Mục tiêu phiên (Session Goal)
+
 Dọn dẹp và hợp nhất quản trị công việc trên trang Notion Synapse (chuyển toàn bộ 6 task từ inline DB `Task` sang `Sprint`, xóa inline DB `Task`), cập nhật tiến độ thực tế 12/16 task và làm rõ vai trò chuyên môn của từng thành viên trong tài liệu dự án và quy chuẩn ghi nhật ký phát triển `docs/devProcess/`.
 
 ### 2. Những việc đã làm (What Was Done)
+
 - **Quản trị Notion Database:**
   - Viết script tự động trích xuất đệ quy toàn bộ 163+ blocks (child blocks, toggles, callouts, tables) từ 6 task trong inline DB `Task`.
   - Tạo mới các trang tương ứng trong database `📌 Synapse – Sprint Backlog & Task Tracker` với đầy đủ properties (Assignee, Sprint, Priority, Status, Epic, Dates).
@@ -30,12 +32,14 @@ Dọn dẹp và hợp nhất quản trị công việc trên trang Notion Synaps
   - Bổ sung fallback kiểm tra cultural guardrail phía client trong `frontend/src/store/useOutfitStore.ts` khi chạy unit test ngoại tuyến với mock items.
 
 ### 3. Quyết định kỹ thuật & Giải pháp (Key Decisions & Fixes)
+
 - **Quyết định Notion Migration:** Sử dụng cơ chế recursive block fetching/creating qua Notion MCP API theo từng mẻ (batching) để tránh giới hạn payload của Notion API.
 - **Bảo mật Git (Secret Scanning):**
   - *Sự cố:* GitHub Push Protection chặn commit do phát hiện Notion API key trong script tạm.
   - *Giải pháp:* Tách biệt hoàn toàn mã bí mật, chỉ dùng biến môi trường tạm thời và xóa các file script tạm thời sau khi hoàn tất tác vụ migration. Không bao giờ commit token lên Git.
 
 ### 4. Kết quả kiểm thử (Verification)
+
 - **Kiểm thử tự động:**
   - Frontend: `38/38` unit tests pass (`npm test --prefix frontend`).
   - Backend: `25/25` unit tests pass (`npm test --prefix backend`).
@@ -45,5 +49,6 @@ Dọn dẹp và hợp nhất quản trị công việc trên trang Notion Synaps
   - Database `Task` cũ đã được dọn sạch hoàn toàn khỏi trang Notion.
 
 ### 5. Tồn đọng & Việc cần làm tiếp theo (Next Steps)
-- [ ] Merge PR #14 vào nhánh chính `main` sau khi người dùng duyệt ("OK").
+
+- [X] Merge PR #14 vào nhánh chính `main` sau khi người dùng duyệt ("OK").
 - [ ] Bắt đầu triển khai các task còn lại của Sprint 3 (S3.3: Visual Polish & Responsive, S3.4: Accessibility & SEO).

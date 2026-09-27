@@ -162,11 +162,22 @@ Hệ thống được tổ chức theo mô hình tách bạch giữa Giao diện
 ```text
 Synapse/
 ├── docs/                                # Kho tài liệu đặc tả chuẩn Agile & RUP
-│   ├── PLAN.md                          # Kế hoạch tổng thể & Kiến trúc kiến tạo
-│   ├── USER-STORY.md                    # 9 User Stories theo chuẩn BDD (Given-When-Then)
-│   ├── USE-CASE.md                      # 8 Use Cases đặc tả chi tiết kèm sơ đồ UML
-│   ├── API-CONTRACTS.md                 # Đặc tả 4 nhóm REST API, DTOs & Error Codes
-│   └── BUSINESS-LOGIC-SPECIFICATION.md  # Thuật toán Canvas 60 FPS, Harmony Scorer, Guardrails
+│   ├── PLAN.md                          # Kế hoạch tổng thể & Bản đồ điều hướng
+│   ├── srs/                             # Tài liệu Đặc tả Yêu cầu Phần mềm (SRS)
+│   │   ├── ProjectBrief.md              # Đề bài & Định vị giải pháp V-Heritage Studio
+│   │   ├── USER-STORY.md                # 4 Epics, 9 User Stories chuẩn BDD
+│   │   ├── USE-CASE.md                  # 8 Use Cases đặc tả luồng & sơ đồ tương tác
+│   │   └── TESTING-CHECKLIST.md         # Tiêu chí nghiệm thu DoD & Test cases
+│   ├── shared/                          # Kiến trúc & Hợp đồng dùng chung FE & BE
+│   │   ├── API-CONTRACTS.md             # Đặc tả 4 nhóm REST API, DTOs & Mã lỗi
+│   │   ├── BUSINESS-LOGIC-SPECIFICATION.md # Thuật toán Canvas 60 FPS, Hòa sắc, Guardrails
+│   │   └── DATABASE-SCHEMA.sql          # Thiết kế CSDL Supabase PostgreSQL & RLS
+│   ├── frontend/                        # Quy chuẩn Kỹ thuật Giao diện
+│   │   ├── DESIGN-SYSTEM.md             # Heritage Futurism: Bảng màu, Font, Glassmorphism
+│   │   └── CANVAS-ARCHITECTURE.md       # 6 Slot, Offscreen Canvas Multiply, Export 9:16
+│   └── backend/                         # Quy chuẩn Kỹ thuật Dịch vụ API
+│       ├── ARCHITECTURE.md              # Cấu trúc Controller-Service, Mock Fallback
+│       └── DEPLOYMENT.md                # Hướng dẫn Render.com, Supabase Sync
 ├── frontend/                            # Ứng dụng Giao diện (React 18 + Vite + TypeScript)
 │   ├── public/                          # Static assets, fonts, favicon
 │   ├── src/
@@ -437,5 +448,5 @@ Hệ thống quản lý thông qua 4 bảng chính trên Supabase:
 * **[S3.3] Tổng duyệt Kịch bản Demo & Hoàn thiện Hồ sơ Bài thi**
 
   * *Trạng thái:* <span style="color:default">⚪ BACKLOG (CHỜ SPRINT 3)</span> *(Cần chuẩn bị Slide thuyết trình, Video demo 5-10 phút & README)*
-  * *Assignee:* **Cả Team (Bình - Leader, Thơ & Nghi - Research)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* ProjectBrief.md
+  * *Assignee:* **Cả Team (Bình - Leader, Thơ & Nghi - Research)** | *Priority:* `🔴 P0 - Blocker` | *Liên kết:* [srs/ProjectBrief.md](srs/ProjectBrief.md)
   * *DoD:* Video demo ngắn (5-10 phút), Slide thuyết trình, link web live và mã nguồn GitHub sẵn sàng nộp bài.
