@@ -3,7 +3,7 @@ import { supabaseClient, isSupabaseConfigured } from '../config/supabase';
 
 export class ItemsService {
   /**
-   * Danh mục trang phục mock chuẩn 100% theo DATABASE-SCHEMA.sql
+   * Danh mục trang phục mock chuẩn 100% theo docs/shared/DATABASE-SCHEMA.sql
    */
   private mockItems: ItemDto[] = [
     {
@@ -105,7 +105,7 @@ export class ItemsService {
   ];
 
   /**
-   * Thẻ tri thức văn hóa lịch sử mock chuẩn 100% theo DATABASE-SCHEMA.sql
+   * Thẻ tri thức văn hóa lịch sử mock chuẩn 100% theo docs/shared/DATABASE-SCHEMA.sql
    */
   private mockFacts: Record<string, CulturalFactDto> = {
     '11111111-0000-0000-0000-000000000001': {

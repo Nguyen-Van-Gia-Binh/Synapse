@@ -1,6 +1,6 @@
 /**
  * Thư viện tính toán không gian màu và tỷ lệ tương phản WCAG 2.1
- * Đáp ứng đặc tả kỹ thuật docs/BUSINESS-LOGIC-SPECIFICATION.md (Mục 2)
+ * Đáp ứng đặc tả kỹ thuật docs/shared/BUSINESS-LOGIC-SPECIFICATION.md (Mục 2)
  */
 
 export interface RGB {

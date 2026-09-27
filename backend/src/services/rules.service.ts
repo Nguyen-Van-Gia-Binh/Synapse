@@ -26,7 +26,7 @@ export class RulesService {
 
   /**
    * Đánh giá outfit theo các quy tắc cấm kỵ văn hóa (Guardrails)
-   * Tuân thủ sơ đồ Matching Pipeline tại docs/BUSINESS-LOGIC-SPECIFICATION.md mục 3
+   * Tuân thủ sơ đồ Matching Pipeline tại docs/shared/BUSINESS-LOGIC-SPECIFICATION.md mục 3
    */
   async evaluateRules(dto: EvaluateRulesRequestDto): Promise<EvaluateRulesResponseDto> {
     const violations: RuleViolation[] = [];

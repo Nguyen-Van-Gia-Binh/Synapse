@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { itemsService } from '../services/items.service';
 
 describe('ItemsService - Catalog & Cultural Fact Logic', () => {
-  test('Lấy toàn bộ danh mục phải đủ 8 trang phục theo DATABASE-SCHEMA.sql', async () => {
+  test('Lấy toàn bộ danh mục phải đủ 8 trang phục theo docs/shared/DATABASE-SCHEMA.sql', async () => {
     const items = await itemsService.getItems();
     assert.equal(items.length, 8);
   });

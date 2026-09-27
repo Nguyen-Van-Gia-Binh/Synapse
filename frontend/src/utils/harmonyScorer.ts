@@ -1,6 +1,6 @@
 /**
  * Thuật toán tổng hợp tính điểm hòa sắc mỹ thuật và văn hóa di sản (0 - 100)
- * Tuân thủ 100% đặc tả tại docs/BUSINESS-LOGIC-SPECIFICATION.md (Mục 2)
+ * Tuân thủ 100% đặc tả tại docs/shared/BUSINESS-LOGIC-SPECIFICATION.md (Mục 2)
  */
 
 import {

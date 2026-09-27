@@ -1,6 +1,6 @@
 /**
  * Thuật toán nhuộm màu vải Dual Offscreen Canvas
- * Tuân thủ 100% đặc tả tại docs/BUSINESS-LOGIC-SPECIFICATION.md
+ * Tuân thủ 100% đặc tả tại docs/shared/BUSINESS-LOGIC-SPECIFICATION.md
  */
 
 import { CANVAS_CONFIG } from './index';
