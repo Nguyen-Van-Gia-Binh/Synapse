@@ -13,8 +13,6 @@ import {
   Lock, 
   Check, 
   Trash2, 
-  BookOpen, 
-  X, 
   Pipette,
   Layers
 } from 'lucide-react';
@@ -46,13 +44,11 @@ export const ContextualToolbar: React.FC<ContextualToolbarProps> = ({
   const { 
     slots, 
     selectedSlotForColor, 
-    setSelectedSlotForColor, 
     setItemColor, 
     removeItem, 
     undo, 
     redo, 
     resetOutfit,
-    loadCulturalFactForItem
   } = useOutfitStore();
 
   const currentSlotData = selectedSlotForColor ? slots[selectedSlotForColor] : null;
@@ -84,72 +80,69 @@ export const ContextualToolbar: React.FC<ContextualToolbarProps> = ({
   };
 
   return (
-    <div className="w-full flex items-center justify-between px-6 py-2 glass-panel border-b border-heritage-cream/10 z-20 min-h-[52px] select-none transition-all">
-      {/* KHỐI TRÁI & GIỮA: TỰ ĐỘNG CHUYỂN ĐỔI CHẾ ĐỘ NGỮ CẢNH */}
-      <div className="flex items-center gap-3 flex-wrap">
-        {!isItemSelected ? (
-          /* TRẠNG THÁI 1: CHẾ ĐỘ MẶC ĐỊNH (STUDIO TOOLS) */
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-heritage-cream/60 flex items-center gap-1 font-medium mr-1">
-              <Layers className="w-3.5 h-3.5 text-heritage-yellow" />
-              <span>Studio:</span>
-            </span>
+    <div className="w-full flex items-center justify-between px-6 py-2 glass-panel border-b border-heritage-cream/10 z-20 min-h-[52px] select-none flex-nowrap">
+      {/* 1. KHỐI TRÁI CỐ ĐỊNH 100%: STUDIO CONTROLS */}
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <span className="text-[11px] text-heritage-cream/60 flex items-center gap-1 font-medium mr-1">
+          <Layers className="w-3.5 h-3.5 text-heritage-yellow" />
+          <span>Studio:</span>
+        </span>
 
-            {/* Lịch sử Undo / Redo */}
-            <div className="flex items-center glass-card px-1.5 py-1 rounded-xl border border-heritage-cream/15">
-              <button
-                onClick={undo}
-                title="Hoàn tác (Undo)"
-                className="p-1 text-heritage-cream/70 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={redo}
-                title="Làm lại (Redo)"
-                className="p-1 text-heritage-cream/70 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
-              >
-                <RotateCw className="w-3.5 h-3.5" />
-              </button>
-            </div>
+        {/* Lịch sử Undo / Redo */}
+        <div className="flex items-center glass-card px-1.5 py-1 rounded-xl border border-heritage-cream/15">
+          <button
+            onClick={undo}
+            title="Hoàn tác (Undo)"
+            className="p-1 text-heritage-cream/70 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={redo}
+            title="Làm lại (Redo)"
+            className="p-1 text-heritage-cream/70 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <RotateCw className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
-            {/* Đặt lại trang phục */}
-            <button
-              onClick={resetOutfit}
-              title="Cởi bỏ toàn bộ trang phục đang mặc"
-              className="text-xs text-heritage-cream/70 hover:text-heritage-red px-2.5 py-1 rounded-xl glass-card border border-heritage-cream/10 hover:border-heritage-red/30 transition-all font-medium"
-            >
-              Đặt lại
-            </button>
-          </div>
-        ) : (
-          /* TRẠNG THÁI 2: CHẾ ĐỘ NGỮ CẢNH (KHI CHỌN 1 MÓN ĐỒ TRÊN NGƯỜI MẪU) */
-          <div className="flex items-center gap-3 animate-fade-in flex-wrap">
-            {/* Nhãn Tên & Slot Món Đồ Đang Chọn */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-heritage-yellow/15 border border-heritage-yellow/40 text-heritage-yellow text-xs font-medium shadow-sm">
+        {/* Đặt lại trang phục */}
+        <button
+          onClick={resetOutfit}
+          title="Cởi bỏ toàn bộ trang phục đang mặc"
+          className="text-xs text-heritage-cream/70 hover:text-heritage-red px-2.5 py-1 rounded-xl glass-card border border-heritage-cream/10 hover:border-heritage-red/30 transition-all font-medium"
+        >
+          Đặt lại
+        </button>
+      </div>
+
+      {/* 2. VÙNG Ở GIỮA: DYNAMIC THEO MÓN ĐỒ, CUỘN NGANG NỘI BỘ, KHÔNG HIỆN THANH CUỘN */}
+      <div className="flex-1 min-w-0 flex items-center justify-center mx-4 overflow-x-auto scrollbar-none flex-nowrap">
+        {isItemSelected && (
+          <div className="flex items-center gap-2.5 animate-fade-in flex-nowrap whitespace-nowrap py-0.5">
+            {/* Tên & Slot Món Đồ */}
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-heritage-yellow/15 border border-heritage-yellow/40 text-heritage-yellow text-xs font-medium shadow-sm flex-shrink-0">
               <span className="font-mono text-[10px] uppercase px-1.5 py-0.2 rounded bg-black/40 text-heritage-yellow">
                 {selectedSlotForColor ? SLOT_NAMES[selectedSlotForColor] : ''}
               </span>
-              <span className="font-serif-heritage font-semibold max-w-[150px] truncate text-white">
+              <span className="font-serif-heritage font-semibold max-w-[140px] truncate text-white">
                 {currentItem?.name}
               </span>
             </div>
 
-            <div className="w-[1px] h-4 bg-heritage-cream/20" />
+            <div className="w-[1px] h-4 bg-heritage-cream/20 flex-shrink-0" />
 
-            {/* Bộ Hòa Sắc & Nhuộm Màu Ngữ Cảnh */}
+            {/* Bảng Màu & Nhuộm */}
             {!isCustomizable ? (
-              /* Đồ Quý Tộc / Hoàng Cung Khóa Màu */
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs">
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs flex-shrink-0">
                 <Lock className="w-3 h-3 text-heritage-yellow flex-shrink-0" />
                 <span className="font-serif-heritage italic text-[11px]">
                   Giữ màu gốc theo quy chế triều đình
                 </span>
               </div>
             ) : (
-              /* Bảng 8 Màu Cổ Phong Việt Nam */
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5 glass-card px-2.5 py-1 rounded-xl border border-heritage-cream/15">
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-1.5 glass-card px-2.5 py-1 rounded-xl border border-heritage-cream/15 flex-shrink-0">
                   <Palette className="w-3.5 h-3.5 text-heritage-yellow mr-1" />
                   {HERITAGE_PALETTE.map((color) => {
                     const isActive = currentColor.toUpperCase() === color.hex.toUpperCase();
@@ -193,7 +186,7 @@ export const ContextualToolbar: React.FC<ContextualToolbarProps> = ({
 
                 {/* Hex Picker Input Popover Inline */}
                 {showHexPicker && (
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl glass-card border border-heritage-cream/20 animate-fade-in text-xs">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl glass-card border border-heritage-cream/20 animate-fade-in text-xs flex-shrink-0">
                     <input
                       type="color"
                       value={currentColor}
@@ -213,42 +206,23 @@ export const ContextualToolbar: React.FC<ContextualToolbarProps> = ({
               </div>
             )}
 
-            <div className="w-[1px] h-4 bg-heritage-cream/20" />
+            <div className="w-[1px] h-4 bg-heritage-cream/20 flex-shrink-0" />
 
-            {/* Các Nút Thao Tác Ngữ Cảnh: Xem Factcard & Cởi Bỏ */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => currentItem && loadCulturalFactForItem(currentItem)}
-                title="Xem Thẻ Tri Thức Văn Hóa của món này"
-                className="px-2.5 py-1 rounded-xl glass-card border border-heritage-cream/15 hover:border-heritage-yellow/40 text-heritage-cream/80 hover:text-heritage-yellow text-xs flex items-center gap-1 transition-all"
-              >
-                <BookOpen className="w-3 h-3" />
-                <span className="text-[11px]">Tri thức</span>
-              </button>
-
-              <button
-                onClick={() => selectedSlotForColor && removeItem(selectedSlotForColor)}
-                title="Cởi bỏ món đồ này"
-                className="px-2.5 py-1 rounded-xl glass-card border border-heritage-cream/15 hover:border-rose-500/40 text-heritage-cream/80 hover:text-rose-400 text-xs flex items-center gap-1 transition-all"
-              >
-                <Trash2 className="w-3 h-3" />
-                <span className="text-[11px]">Cởi bỏ</span>
-              </button>
-
-              <button
-                onClick={() => setSelectedSlotForColor('TOP')}
-                title="Bỏ chọn (Trở về công cụ Studio)"
-                className="p-1 text-heritage-cream/40 hover:text-white rounded-lg hover:bg-white/10 transition-colors ml-1"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            {/* Nút Cởi Bỏ Món Đang Chọn */}
+            <button
+              onClick={() => selectedSlotForColor && removeItem(selectedSlotForColor)}
+              title="Cởi bỏ món đồ này"
+              className="px-2.5 py-1 rounded-xl glass-card border border-heritage-cream/15 hover:border-rose-500/40 text-heritage-cream/80 hover:text-rose-400 text-xs flex items-center gap-1 transition-all flex-shrink-0"
+            >
+              <Trash2 className="w-3 h-3" />
+              <span className="text-[11px]">Cởi bỏ</span>
+            </button>
           </div>
         )}
       </div>
 
-      {/* KHỐI PHẢI: BỘ ĐIỀU KHIỂN VIEWPORT & ZOOM (LUÔN CỐ ĐỊNH TINH TẾ GÓC PHẢI) */}
-      <div className="flex items-center gap-2">
+      {/* 3. KHỐI PHẢI CỐ ĐỊNH 100%: ZOOM & DOWNLOAD */}
+      <div className="flex items-center gap-2 flex-shrink-0">
         <div className="flex items-center gap-1 glass-card px-2.5 py-1 rounded-xl border border-heritage-cream/15 text-xs">
           <button
             onClick={onZoomOut}
