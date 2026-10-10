@@ -17,7 +17,7 @@ export const HarmonyRadar: React.FC<HarmonyRadarProps> = ({ harmony, className =
   if (!harmony) {
     return (
       <div
-        className={`p-4 rounded-xl border border-stone-800/80 bg-stone-900/40 backdrop-blur-md text-stone-400 text-center ${className}`}
+        className={`p-4 rounded-xl border border-stone-800/80 bg-stone-900/40 backdrop-blur-md text-stone-400 text-center flex-shrink-0 ${className}`}
       >
         <div className="w-10 h-10 mx-auto mb-2 rounded-full border border-stone-800 bg-stone-900/60 flex items-center justify-center text-stone-500">
           <Compass className="w-5 h-5 animate-pulse" />
@@ -73,7 +73,7 @@ export const HarmonyRadar: React.FC<HarmonyRadarProps> = ({ harmony, className =
 
   return (
     <div
-      className={`rounded-2xl border border-amber-500/25 bg-gradient-to-b from-stone-900/90 to-black/90 backdrop-blur-md p-4 shadow-xl shadow-black/50 transition-all duration-300 ${className}`}
+      className={`rounded-2xl border border-amber-500/25 bg-gradient-to-b from-stone-900/90 to-black/90 backdrop-blur-md p-4 shadow-xl shadow-black/50 transition-all duration-300 flex-shrink-0 ${className}`}
     >
       {/* Header: Tiêu đề và Điểm tròn */}
       <div className="flex items-center justify-between gap-3 mb-3 border-b border-amber-500/15 pb-3">
