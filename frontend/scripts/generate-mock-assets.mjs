@@ -282,6 +282,206 @@ function generateQuatLua() {
   return c.toPngBuffer();
 }
 
+// 9. Áo Nhật Bình Cung Đình (TOP - 800 x 1200 px) - Cổ hình chữ nhật ngũ sắc
+function generateAoNhatBinhFemale() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Thân áo gấm vàng hoa mướp
+  c.fillPolygon([
+    [374, 308], [426, 308], [535, 335], [575, 615], [475, 665],
+    [475, 860], [325, 860], [325, 665], [225, 615], [265, 335]
+  ], 233, 196, 106, 255);
+
+  // Cổ áo Nhật Bình to bản hình chữ nhật trước ngực
+  c.fillPolygon([[362, 305], [438, 305], [438, 540], [362, 540]], 158, 42, 43, 255); // Nền đỏ điều
+  // Dải viền ngũ sắc trên cổ áo (Xanh lam, vàng, xanh ngọc, trắng, tía)
+  c.fillPolygon([[370, 310], [376, 310], [376, 535], [370, 535]], 38, 70, 83, 255);
+  c.fillPolygon([[380, 310], [386, 310], [386, 535], [380, 535]], 244, 215, 100, 255);
+  c.fillPolygon([[414, 310], [420, 310], [420, 535], [414, 535]], 42, 157, 143, 255);
+  c.fillPolygon([[424, 310], [430, 310], [430, 535], [424, 535]], 90, 24, 154, 255);
+
+  // Viền ngũ sắc tay áo trái & phải
+  c.fillPolygon([[225, 600], [250, 600], [245, 625], [220, 625]], 158, 42, 43, 255);
+  c.fillPolygon([[230, 605], [255, 605], [250, 630], [225, 630]], 42, 157, 143, 255);
+  c.fillPolygon([[550, 600], [575, 600], [580, 625], [555, 625]], 158, 42, 43, 255);
+  c.fillPolygon([[545, 605], [570, 605], [575, 630], [550, 630]], 42, 157, 143, 255);
+
+  return c.toPngBuffer();
+}
+
+// 10. Giày Sneaker Tối Giản Gen Z (FOOTWEAR - 800 x 1200 px)
+function generateSneakerUnisex() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Chân trái
+  c.fillPolygon([[355, 1075], [395, 1075], [398, 1115], [350, 1115]], 248, 249, 250, 255);
+  c.fillPolygon([[350, 1108], [398, 1108], [398, 1116], [350, 1116]], 215, 218, 222, 255); // Đế giày
+  c.fillPolygon([[365, 1080], [385, 1080], [387, 1085], [367, 1085]], 180, 185, 190, 255); // Dây giày
+
+  // Chân phải
+  c.fillPolygon([[405, 1075], [445, 1075], [450, 1115], [402, 1115]], 248, 249, 250, 255);
+  c.fillPolygon([[402, 1108], [450, 1108], [450, 1116], [402, 1116]], 215, 218, 222, 255); // Đế giày
+  c.fillPolygon([[415, 1080], [435, 1080], [433, 1085], [413, 1085]], 180, 185, 190, 255); // Dây giày
+
+  return c.toPngBuffer();
+}
+
+// 11. Áo Giao Lĩnh Cổ Truyền (TOP - 800 x 1200 px) - Cổ vạt chéo sang phải, thắt đai lụa
+function generateAoGiaoLinhUnisex() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Dáng áo cổ giao vạt chéo buông dài
+  c.fillPolygon([
+    [370, 290], [430, 290], [535, 335], [565, 615], [475, 665],
+    [485, 885], [315, 885], [325, 665], [235, 615], [265, 335]
+  ], 248, 246, 242, 255);
+
+  // Cổ áo giao chéo (Vạt trái bắt chéo sang sườn phải)
+  c.fillPolygon([[370, 290], [385, 290], [435, 470], [420, 470]], 210, 205, 198, 255);
+  c.fillPolygon([[430, 290], [415, 290], [380, 410], [392, 410]], 220, 215, 208, 255);
+
+  // Thắt lưng lụa buộc ngang eo
+  c.fillPolygon([[342, 575], [458, 575], [458, 605], [342, 605]], 205, 198, 190, 255);
+  // Dải đai lụa buông dài rủ xuống tà áo
+  c.fillPolygon([[415, 605], [432, 605], [440, 770], [423, 770]], 195, 188, 180, 255);
+  c.fillPolygon([[425, 605], [442, 605], [452, 740], [435, 740]], 200, 193, 185, 255);
+
+  return c.toPngBuffer();
+}
+
+// 12. Áo Đối Khâm Cung Đình (TOP - 800 x 1200 px) - Hai vạt song song buông thẳng
+function generateAoDoiKhamFemale() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Vạt trái & tay trái
+  c.fillPolygon([
+    [360, 295], [394, 295], [394, 880], [320, 880], [325, 660],
+    [230, 610], [270, 335]
+  ], 248, 245, 240, 255);
+
+  // Vạt phải & tay phải
+  c.fillPolygon([
+    [406, 295], [440, 295], [530, 335], [570, 610], [475, 660],
+    [480, 880], [406, 880]
+  ], 248, 245, 240, 255);
+
+  // Lớp áo yếm/lót bên trong ở khe giữa
+  c.fillPolygon([[394, 340], [406, 340], [406, 560], [394, 560]], 230, 225, 220, 255);
+
+  // Đường viền nẹp cổ buông thẳng
+  c.fillPolygon([[386, 295], [394, 295], [394, 880], [386, 880]], 210, 205, 198, 255);
+  c.fillPolygon([[406, 295], [414, 295], [414, 880], [406, 880]], 210, 205, 198, 255);
+
+  return c.toPngBuffer();
+}
+
+// 13. Váy Quây Xếp Ly Cổ Truyền (BOTTOM - 800 x 1200 px) - Hạ y buông dài
+function generateVayQuayFemale() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Dáng chân váy xòe mềm mại từ eo tới mắt cá chân
+  c.fillPolygon([
+    [340, 580], [460, 580], [485, 1085], [315, 1085]
+  ], 246, 242, 236, 255);
+
+  // Các nếp sọc xếp ly dọc tạo độ rủ tự nhiên
+  const pleatXs = [350, 375, 400, 425, 450, 470];
+  pleatXs.forEach(x => {
+    c.fillPolygon([[x, 585], [x + 5, 585], [x + 8, 1080], [x + 3, 1080]], 218, 212, 202, 255);
+  });
+
+  return c.toPngBuffer();
+}
+
+// 14. Nón Ba Tầm (Nón Quai Thao) (HEADWEAR - 800 x 1200 px) - Vành tròn dẹt, quai thao buông rủ
+function generateNonBaTamFemale() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Quai thao bằng lụa rủ hai bên vai (vẽ trước vành nón để vành nón đè lên)
+  c.fillPolygon([[330, 180], [338, 180], [342, 490], [334, 490]], 45, 38, 35, 255); // Quai thao trái
+  c.fillPolygon([[462, 180], [470, 180], [466, 490], [458, 490]], 45, 38, 35, 255); // Quai thao phải
+  // Quả tua lụa ngũ sắc ở đuôi quai thao
+  c.fillEllipse(338, 500, 7, 14, 180, 45, 40, 255);
+  c.fillEllipse(462, 500, 7, 14, 180, 45, 40, 255);
+
+  // Vành nón tròn dẹt rộng bằng lá gồi khô
+  c.fillEllipse(400, 172, 138, 28, 228, 205, 155, 255);
+  c.fillEllipse(400, 172, 135, 25, 238, 215, 165, 255);
+  // Đường vành tang nón
+  c.fillEllipse(400, 172, 138, 7, 200, 175, 125, 255);
+  // Chóp nón khum nhẹ
+  c.fillEllipse(400, 164, 55, 12, 245, 225, 178, 255);
+
+  return c.toPngBuffer();
+}
+
+// 15. Họa Tiết Thủy Ba & Sóng Mây Triều Nguyễn (PATTERN - 800 x 1200 px)
+function generateHoaVanThuyBaUnisex() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Hoa văn sóng nước dập dềnh (thủy ba) tại gấu áo (y: 770 đến 855)
+  // Các lớp dải sóng ngũ sắc
+  c.fillPolygon([[325, 830], [475, 830], [475, 855], [325, 855]], 38, 70, 83, 255); // Xanh chàm thủy ba
+  c.fillPolygon([[325, 810], [475, 810], [475, 830], [325, 830]], 42, 157, 143, 255); // Xanh cổ vịt
+  c.fillPolygon([[325, 795], [475, 795], [475, 810], [325, 810]], 233, 196, 106, 255); // Vàng hoa mướp
+  c.fillPolygon([[325, 780], [475, 780], [475, 795], [325, 795]], 158, 42, 43, 255); // Đỏ điều
+
+  // Các ngọn sóng nhấp nhô hình tam giác & xoáy nước cách điệu
+  for (let x = 335; x <= 465; x += 25) {
+    c.fillPolygon([[x, 780], [x + 12, 765], [x + 24, 780]], 244, 241, 222, 255); // Sóng bọt trắng
+  }
+
+  // Cụm mây ngũ sắc cuộn xoắn hai bên gấu áo
+  c.fillEllipse(345, 770, 15, 10, 233, 196, 106, 255);
+  c.fillEllipse(455, 770, 15, 10, 233, 196, 106, 255);
+
+  return c.toPngBuffer();
+}
+
+// 16. Ngọc Bội Thao Thiết Như Ý (ACCESSORY - 800 x 1200 px)
+function generateNgocBoiUnisex() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Nút thắt cát tường bằng chỉ lụa đỏ bên hông phải (x: ~465, y: 555-580)
+  c.fillEllipse(468, 565, 8, 8, 175, 30, 35, 255);
+  c.fillPolygon([[465, 570], [471, 570], [470, 595], [466, 595]], 175, 30, 35, 255);
+
+  // Miếng ngọc bội cẩm thạch xanh ngọc bích chạm khắc hoa văn Như Ý
+  c.fillEllipse(468, 615, 18, 18, 50, 168, 120, 255);
+  c.fillEllipse(468, 615, 12, 12, 35, 140, 95, 255);
+  c.fillEllipse(468, 615, 5, 5, 235, 205, 120, 255); // Điểm xuyết hoa văn vàng
+
+  // Chùm tua rua buông rủ dài
+  c.fillPolygon([[463, 633], [473, 633], [476, 705], [460, 705]], 175, 30, 35, 255);
+  c.fillPolygon([[466, 633], [470, 633], [472, 715], [464, 715]], 235, 205, 120, 255);
+
+  return c.toPngBuffer();
+}
+
+// 17. Guốc Mộc Quai Vải Cổ Truyền (FOOTWEAR - 800 x 1200 px)
+function generateGuocMocUnisex() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Chân trái: Đế guốc gỗ hai tầng
+  c.fillPolygon([[355, 1085], [395, 1085], [398, 1115], [352, 1115]], 165, 115, 75, 255);
+  c.fillPolygon([[360, 1100], [390, 1100], [388, 1115], [362, 1115]], 80, 50, 30, 255); // Rãnh lõm giữa 2 guốc
+  c.fillEllipse(375, 1083, 18, 8, 175, 35, 40, 255); // Quai vải nhung đỏ
+
+  // Chân phải: Đế guốc gỗ hai tầng
+  c.fillPolygon([[405, 1085], [445, 1085], [448, 1115], [402, 1115]], 165, 115, 75, 255);
+  c.fillPolygon([[410, 1100], [440, 1100], [438, 1115], [412, 1115]], 80, 50, 30, 255); // Rãnh lõm giữa 2 guốc
+  c.fillEllipse(425, 1083, 18, 8, 175, 35, 40, 255); // Quai vải nhung đỏ
+
+  return c.toPngBuffer();
+}
+
+// 18. Hài Thêu Mũi Cong Cung Đình (FOOTWEAR - 800 x 1200 px)
+function generateHaiTheuFemale() {
+  const c = new CanvasBuffer(WIDTH, HEIGHT);
+  // Chân trái: Hài gấm đỏ mũi uốn cong vểnh lên
+  c.fillPolygon([[352, 1080], [396, 1080], [398, 1115], [350, 1115]], 168, 35, 45, 255);
+  c.fillPolygon([[346, 1073], [358, 1073], [355, 1095], [345, 1095]], 168, 35, 45, 255); // Mũi cong vểnh
+  c.fillEllipse(353, 1080, 5, 5, 245, 210, 95, 255); // Hoa mai vàng thêu kim tuyến
+
+  // Chân phải: Hài gấm đỏ mũi uốn cong vểnh lên đối xứng
+  c.fillPolygon([[404, 1080], [448, 1080], [450, 1115], [402, 1115]], 168, 35, 45, 255);
+  c.fillPolygon([[442, 1073], [454, 1073], [455, 1095], [445, 1095]], 168, 35, 45, 255); // Mũi cong vểnh
+  c.fillEllipse(447, 1080, 5, 5, 245, 210, 95, 255); // Hoa mai vàng thêu kim tuyến
+
+  return c.toPngBuffer();
+}
+
 // Main generation execution
 const outDir = path.resolve(__dirname, '../public/assets/mock');
 if (!fs.existsSync(outDir)) {
@@ -293,17 +493,29 @@ const assets = [
   { name: 'mannequin_male.png', fn: generateMannequinMale },
   { name: 'female_ao_tac_top.png', fn: generateAoTacFemale },
   { name: 'male_ao_ngu_than_top.png', fn: generateAoNguThanMale },
+  { name: 'female_ao_nhat_binh.png', fn: generateAoNhatBinhFemale },
   { name: 'unisex_quan_lua.png', fn: generateQuanLua },
   { name: 'male_khan_dong.png', fn: generateKhanDongMale },
   { name: 'female_man_nhung.png', fn: generateManNhungFemale },
   { name: 'unisex_quat_lua.png', fn: generateQuatLua },
+  { name: 'unisex_sneaker.png', fn: generateSneakerUnisex },
+  // 8 Món đồ mới chuẩn sử liệu
+  { name: 'unisex_ao_giao_linh.png', fn: generateAoGiaoLinhUnisex },
+  { name: 'female_ao_doi_kham.png', fn: generateAoDoiKhamFemale },
+  { name: 'female_vay_quay.png', fn: generateVayQuayFemale },
+  { name: 'female_non_ba_tam.png', fn: generateNonBaTamFemale },
+  { name: 'unisex_hoa_van_thuy_ba.png', fn: generateHoaVanThuyBaUnisex },
+  { name: 'unisex_ngoc_boi.png', fn: generateNgocBoiUnisex },
+  { name: 'unisex_guoc_moc.png', fn: generateGuocMocUnisex },
+  { name: 'female_hai_theu.png', fn: generateHaiTheuFemale },
 ];
 
-console.log('🎨 Đang sinh 8 file Mock Assets chuẩn 800 x 1200 px PNG...');
+console.log(`🎨 Đang sinh ${assets.length} file Mock Assets chuẩn 800 x 1200 px PNG...`);
 for (const asset of assets) {
   const buf = asset.fn();
   const filePath = path.join(outDir, asset.name);
   fs.writeFileSync(filePath, buf);
   console.log(`  ✓ Đã tạo ${asset.name} (${buf.length} bytes, 800x1200 px)`);
 }
-console.log('✅ Hoàn tất sinh Mock Assets!');
+console.log('✅ Hoàn tất sinh toàn bộ Mock Assets!');
+

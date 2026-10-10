@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { itemsService } from '../services/items.service';
 
 describe('ItemsService - Catalog & Cultural Fact Logic', () => {
-  test('Lấy toàn bộ danh mục phải đủ 8 trang phục theo docs/shared/DATABASE-SCHEMA.sql', async () => {
+  test('Lấy toàn bộ danh mục phải đủ 16 trang phục theo docs/shared/DATABASE-SCHEMA.sql', async () => {
     const items = await itemsService.getItems();
-    assert.equal(items.length, 8);
+    assert.equal(items.length, 16);
   });
 
   test('Lọc theo era = "nguyen" phải trả về các trang phục thời Nguyễn', async () => {
@@ -26,7 +26,7 @@ describe('ItemsService - Catalog & Cultural Fact Logic', () => {
 
   test('Lọc theo slot = "HEADWEAR" chỉ trả về HEADWEAR', async () => {
     const items = await itemsService.getItems({ slot: 'HEADWEAR' });
-    assert.ok(items.length >= 2);
+    assert.ok(items.length >= 3);
     items.forEach((item) => {
       assert.equal(item.slot, 'HEADWEAR');
     });
@@ -47,6 +47,14 @@ describe('ItemsService - Catalog & Cultural Fact Logic', () => {
     assert.equal(nhatBinhFact.era, 'Triều Nguyễn (Cung đình Huế)');
     assert.ok(nhatBinhFact.symbolic_meaning.includes('Ngũ hành'));
     assert.ok(nhatBinhFact.origin_story.includes('Nhật bình'));
+  });
+
+  test('Lấy thông tin Fact văn hóa của Áo Giao lĩnh mới thêm chuẩn xác', async () => {
+    const giaoLinhFact = await itemsService.getCulturalFact('11111111-0000-0000-0000-000000000009');
+    assert.ok(giaoLinhFact !== null);
+    assert.ok(giaoLinhFact.era.includes('Lý – Trần – Lê'));
+    assert.ok(giaoLinhFact.origin_story.includes('giao lĩnh'));
+    assert.ok(giaoLinhFact.symbolic_meaning.includes('âm dương'));
   });
 
   test('Fact văn hóa cho ID không tồn tại trả về null', async () => {

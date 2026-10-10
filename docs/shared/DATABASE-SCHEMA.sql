@@ -161,7 +161,31 @@ INSERT INTO items (id, name, gender, slot, layer_order, image_url, color_customi
 ('11111111-0000-0000-0000-000000000007', 'Quạt lụa vẽ tranh thủy mặc', 'UNISEX', 'ACCESSORY', 50, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/unisex_quat_lua.png', false, '#E9C46A', '["phu_kien", "quat_lua", "nghe_thuat"]'::jsonb),
 
 -- Giày Sneaker Trắng Gen Z
-('11111111-0000-0000-0000-000000000008', 'Giày Sneaker tối giản Gen Z', 'UNISEX', 'FOOTWEAR', 10, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/unisex_sneaker.png', false, '#FFFFFF', '["modern", "streetwear", "sneaker"]'::jsonb);
+('11111111-0000-0000-0000-000000000008', 'Giày Sneaker tối giản Gen Z', 'UNISEX', 'FOOTWEAR', 10, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/unisex_sneaker.png', false, '#FFFFFF', '["modern", "streetwear", "sneaker"]'::jsonb),
+
+-- Áo Giao Lĩnh Cổ Truyền
+('11111111-0000-0000-0000-000000000009', 'Áo Giao lĩnh cổ truyền', 'UNISEX', 'TOP', 30, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/unisex_ao_giao_linh.png', true, '#264653', '["ly_tran_le", "traditional", "giao_linh", "unisex"]'::jsonb),
+
+-- Áo Đối Khâm Cung Đình
+('11111111-0000-0000-0000-000000000010', 'Áo Đối khâm cung đình', 'FEMALE', 'TOP', 30, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/female_ao_doi_kham.png', true, '#9E2A2B', '["le_nguyen", "royal", "doi_kham", "nu"]'::jsonb),
+
+-- Váy Quây Xếp Ly Cổ Truyền
+('11111111-0000-0000-0000-000000000011', 'Váy quây xếp ly cổ truyền', 'FEMALE', 'BOTTOM', 20, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/female_vay_quay.png', true, '#1D1E2C', '["le_nguyen", "traditional", "vay_quay", "nu"]'::jsonb),
+
+-- Nón Ba Tầm (Nón Quai Thao)
+('11111111-0000-0000-0000-000000000012', 'Nón Ba Tầm (Nón Quai Thao)', 'FEMALE', 'HEADWEAR', 60, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/female_non_ba_tam.png', false, '#E9C46A', '["dan_gian", "kinh_bac", "non_quai_thao", "le_hoi"]'::jsonb),
+
+-- Hoa Văn Thủy Ba & Sóng Mây
+('11111111-0000-0000-0000-000000000013', 'Hoa văn Thủy Ba & Sóng Mây', 'UNISEX', 'PATTERN', 40, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/unisex_hoa_van_thuy_ba.png', false, '#2A9D8F', '["nguyen", "pattern", "thuy_ba", "cung_dinh"]'::jsonb),
+
+-- Ngọc Bội Thao Thiết Như Ý
+('11111111-0000-0000-0000-000000000014', 'Ngọc Bội Thao Thiết Như Ý', 'UNISEX', 'ACCESSORY', 50, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/unisex_ngoc_boi.png', false, '#2A9D8F', '["quy_toc", "accessory", "ngoc_boi", "cung_dinh"]'::jsonb),
+
+-- Guốc Mộc Quai Vải Cổ Truyền
+('11111111-0000-0000-0000-000000000015', 'Guốc Mộc quai vải cổ truyền', 'UNISEX', 'FOOTWEAR', 10, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/unisex_guoc_moc.png', true, '#6F4E37', '["dan_gian", "footwear", "guoc_moc", "unisex"]'::jsonb),
+
+-- Hài Thêu Mũi Cong Cung Đình
+('11111111-0000-0000-0000-000000000016', 'Hài Thêu Mũi Cong Cung Đình', 'FEMALE', 'FOOTWEAR', 10, 'https://raw.githubusercontent.com/Nguyen-Van-Gia-Binh/Synapse/main/assets/mock/female_hai_theu.png', false, '#9E2A2B', '["nguyen", "royal", "hai_theu", "cung_dinh"]'::jsonb);
 
 -- 6.2. SEED THẺ TRI THỨC VĂN HÓA (CULTURAL_FACTS)
 INSERT INTO cultural_facts (item_id, era, origin_story, symbolic_meaning, modern_styling_tip) VALUES
@@ -184,7 +208,63 @@ INSERT INTO cultural_facts (item_id, era, origin_story, symbolic_meaning, modern
  'Triều Nguyễn (Cung đình Huế)', 
  'Nguyên bản là thường phục của Hoàng hậu, Công chúa và mệnh phụ quý tộc triều Nguyễn. Tên gọi Nhật bình bắt nguồn từ dải cổ áo to bản ghép lại tạo thành hình chữ nhật trước ngực.', 
  'Dải ngũ sắc nơi tay áo tượng trưng cho Ngũ hành (Kim - Mộc - Thủy - Hỏa - Thổ). Hoa văn thêu loan phụng và mây sóng thủy ba biểu trưng cho sự tôn quý và an định đất nước.', 
- 'Nên giữ nguyên áo khoác ngoài Nhật bình kết hợp bên trong là áo lót trắng hoặc chân váy xòe xếp ly hiện đại khi tham dự triển lãm nghệ thuật.');
+ 'Nên giữ nguyên áo khoác ngoài Nhật bình kết hợp bên trong là áo lót trắng hoặc chân váy xòe xếp ly hiện đại khi tham dự triển lãm nghệ thuật.'),
+
+-- Fact cho Áo Giao Lĩnh
+('11111111-0000-0000-0000-000000000009',
+ 'Thời Lý – Trần – Lê (Thế kỷ 11 - 18)',
+ 'Áo giao lĩnh (tràng vạt) là kiểu áo cổ giao chéo vạt phải truyền thống của người Việt, từng có vị trí quan trọng trong cả đời sống dân gian lẫn lễ nghi tiền Nguyễn.',
+ 'Vạt áo giao nhau trước ngực tượng trưng cho sự giao hòa của đất trời và âm dương; thắt lưng lụa buộc eo mang phong thái tao nhã, tự tại của người xưa.',
+ 'Gen Z có thể khoác mở tà áo giao lĩnh bên ngoài áo phông basic, kết hợp quần ống suông hoặc thắt đai lụa bản mảnh tạo phong cách Neo-Heritage.'),
+
+-- Fact cho Áo Đối Khâm
+('11111111-0000-0000-0000-000000000010',
+ 'Thời Lê – Nguyễn (Cung đình)',
+ 'Áo đối khâm có hai vạt song song buông thẳng trước ngực, thường dùng làm áo khoác ngoài cho hoàng tộc, mệnh phụ và quý tộc trong các dịp lễ tiết.',
+ 'Hai vạt áo buông song song tượng trưng cho sự ngay thẳng, chính trực và vẻ đẹp đoan trang, đài các của phụ nữ chốn khuê các xưa.',
+ 'Mặc khoác ngoài chân váy xếp ly hiện đại hoặc đầm dài trơn màu như một chiếc áo choàng duster coat thanh lịch.'),
+
+-- Fact cho Váy Quây Xếp Ly
+('11111111-0000-0000-0000-000000000011',
+ 'Thời Lê – Nguyễn (Hạ y truyền thống)',
+ 'Váy quây đen hoặc chàm buông dài chấm gót là trang phục hạ y kinh điển của phụ nữ Việt thời Lê và vùng đồng bằng Bắc Bộ khi mặc cùng áo giao lĩnh hoặc tứ thân.',
+ 'Dáng váy xòe nhẹ xếp nếp tôn lên dáng vẻ e ấp, kín đáo và bước đi uyển chuyển, duyên dáng của người phụ nữ truyền thống.',
+ 'Kết hợp cùng áo croptop tối giản hoặc sơ vin cùng áo thun và mang bốt cổ thấp phong cách Bohemian Heritage.'),
+
+-- Fact cho Nón Ba Tầm
+('11111111-0000-0000-0000-000000000012',
+ 'Dân gian Kinh Bắc (Thời Lê – Nguyễn)',
+ 'Nón ba tầm có vành tròn dẹt rộng đan bằng lá gồi, kèm quai thao đính quả tua bằng lụa tơ tằm buông rủ, là nét văn hóa đặc sắc gắn liền với các liền chị quan họ Kinh Bắc.',
+ 'Vành nón rộng che chở dung nhan người thiếu nữ; dải quai thao mềm mại tượng trưng cho sự thủy chung, duyên dáng và tình tứ.',
+ 'Đội hơi nghiêng nhẹ hoặc cầm tay làm đạo cụ chụp hình Lookbook ngoại cảnh kết hợp cùng tà áo truyền thống hoặc áo cách tân.'),
+
+-- Fact cho Hoa Văn Thủy Ba
+('11111111-0000-0000-0000-000000000013',
+ 'Mỹ thuật Triều Nguyễn',
+ 'Họa tiết Thủy Ba (sóng nước cuộn trào) và mây ngũ sắc thêu tỉ mỉ nơi gấu áo thường phục và lễ phục triều Nguyễn, biểu hiện đỉnh cao của nghệ thuật thêu tay truyền thống.',
+ 'Sóng nước biểu trưng cho sự trù phú, an định lãnh thổ; mây ngũ sắc tượng trưng cho cát tường, hòa bình và sự trường tồn của giang sơn.',
+ 'Xếp lớp chồng lên các mẫu áo đơn sắc (áo tấc, áo ngũ thân) để tạo điểm nhấn thị giác đậm chất vương giả mà không làm rối mắt.'),
+
+-- Fact cho Ngọc Bội
+('11111111-0000-0000-0000-000000000014',
+ 'Cổ truyền & Cung đình',
+ 'Ngọc bội chạm ngọc cẩm thạch kết hợp nút thắt lụa cát tường là tín vật hộ thân và phụ kiện đeo bên hông tà áo của bậc văn nhân, quyền quý phương Đông.',
+ 'Ngọc quý tượng trưng cho 5 đức tính của người quân tử: Nhân, Nghĩa, Trí, Dũng, Khiết. Tiếng ngọc va nhẹ vào nhau nhắc nhở bước đi luôn đoan chính, ung dung.',
+ 'Treo bên hông tà áo dài hoặc móc vào thắt lưng quần tây, quai túi xách hiện đại tạo điểm nhấn văn hóa tinh tế.'),
+
+-- Fact cho Guốc Mộc
+('11111111-0000-0000-0000-000000000015',
+ 'Dân gian Việt Nam',
+ 'Guốc mộc đẽo từ gỗ mít, gỗ xoan hoặc thông với quai bằng vải nhung/cói là vật dụng đi chân phổ biến của người Việt từ kinh kỳ đến làng quê suốt nhiều thế kỷ.',
+ 'Biểu tượng của sự mộc mạc, gần gũi và nếp sống thanh bần mà tao nhã của người Việt xưa.',
+ 'Đi cùng tất lửng trắng hoặc phối cùng tà áo dài ngũ thân dạo phố mang lại cảm giác hoài cổ mộc mạc và chân thực.'),
+
+-- Fact cho Hài Thêu
+('11111111-0000-0000-0000-000000000016',
+ 'Triều Nguyễn (Cung đình Huế)',
+ 'Hài gấm mũi vuốt cong thêu hoa mai và chỉ kim tuyến là trang phục đi chân cao quý của các bậc hoàng thái hậu, hoàng hậu và công chúa triều Nguyễn khi vận triều phục, lễ phục.',
+ 'Mũi hài cong nhẹ biểu thị phong thái đài các và sự cao quý; hoa văn thêu tỉ mỉ tượng trưng cho phẩm hạnh và vẻ đẹp vương giả.',
+ 'Kết hợp cùng áo Nhật bình hoặc áo tấc để tái hiện trọn vẹn 100% diện mạo cung đình Huế chuẩn sử liệu.');
 
 -- 6.3. SEED QUY TẮC CẢNH BÁO VĂN HÓA (CULTURAL_RULES)
 INSERT INTO cultural_rules (rule_code, trigger_slot, trigger_tag, condition, severity, message) VALUES
