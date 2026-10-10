@@ -76,9 +76,12 @@
 
 /* Ẩn thanh cuộn nhưng vẫn giữ khả năng cuộn mượt bằng chuột/touch */
 .scrollbar-none {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;     /* Firefox */
+  overscroll-behavior-y: contain;
 }
 .scrollbar-none::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari, Opera */
+  display: none !important;             /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
 }
