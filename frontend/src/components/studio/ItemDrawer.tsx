@@ -177,6 +177,94 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
       default_color: '#FFFFFF',
       tags: ['modern', 'streetwear', 'sneaker'],
     },
+    {
+      id: '11111111-0000-0000-0000-000000000009',
+      name: 'Áo Giao lĩnh cổ truyền',
+      gender: 'UNISEX',
+      slot: 'TOP',
+      layer_order: 30,
+      image_url: '/assets/mock/unisex_ao_giao_linh.png',
+      color_customizable: true,
+      default_color: '#264653',
+      tags: ['ly_tran_le', 'traditional', 'giao_linh', 'unisex'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000010',
+      name: 'Áo Đối khâm cung đình',
+      gender: 'FEMALE',
+      slot: 'TOP',
+      layer_order: 30,
+      image_url: '/assets/mock/female_ao_doi_kham.png',
+      color_customizable: true,
+      default_color: '#9E2A2B',
+      tags: ['le_nguyen', 'royal', 'doi_kham', 'nu'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000011',
+      name: 'Váy quây xếp ly cổ truyền',
+      gender: 'FEMALE',
+      slot: 'BOTTOM',
+      layer_order: 20,
+      image_url: '/assets/mock/female_vay_quay.png',
+      color_customizable: true,
+      default_color: '#1D1E2C',
+      tags: ['le_nguyen', 'traditional', 'vay_quay', 'nu'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000012',
+      name: 'Nón Ba Tầm (Nón Quai Thao)',
+      gender: 'FEMALE',
+      slot: 'HEADWEAR',
+      layer_order: 60,
+      image_url: '/assets/mock/female_non_ba_tam.png',
+      color_customizable: false,
+      default_color: '#E9C46A',
+      tags: ['dan_gian', 'kinh_bac', 'non_quai_thao', 'le_hoi'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000013',
+      name: 'Hoa văn Thủy Ba & Sóng Mây',
+      gender: 'UNISEX',
+      slot: 'PATTERN',
+      layer_order: 40,
+      image_url: '/assets/mock/unisex_hoa_van_thuy_ba.png',
+      color_customizable: false,
+      default_color: '#2A9D8F',
+      tags: ['nguyen', 'pattern', 'thuy_ba', 'cung_dinh'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000014',
+      name: 'Ngọc Bội Thao Thiết Như Ý',
+      gender: 'UNISEX',
+      slot: 'ACCESSORY',
+      layer_order: 50,
+      image_url: '/assets/mock/unisex_ngoc_boi.png',
+      color_customizable: false,
+      default_color: '#2A9D8F',
+      tags: ['quy_toc', 'accessory', 'ngoc_boi', 'cung_dinh'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000015',
+      name: 'Guốc Mộc quai vải cổ truyền',
+      gender: 'UNISEX',
+      slot: 'FOOTWEAR',
+      layer_order: 10,
+      image_url: '/assets/mock/unisex_guoc_moc.png',
+      color_customizable: true,
+      default_color: '#6F4E37',
+      tags: ['dan_gian', 'footwear', 'guoc_moc', 'unisex'],
+    },
+    {
+      id: '11111111-0000-0000-0000-000000000016',
+      name: 'Hài Thêu Mũi Cong Cung Đình',
+      gender: 'FEMALE',
+      slot: 'FOOTWEAR',
+      layer_order: 10,
+      image_url: '/assets/mock/female_hai_theu.png',
+      color_customizable: false,
+      default_color: '#9E2A2B',
+      tags: ['nguyen', 'royal', 'hai_theu', 'cung_dinh'],
+    },
   ];
 
   // Tải danh mục trang phục từ API backend
@@ -210,6 +298,9 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
 
   // Helper sinh Micro-Tooltip ngắn gọn
   const getMicroTooltipText = (item: ItemDto): string => {
+    if (item.tags.includes('ly_tran_le')) return '📜 Y phục thời Lý – Trần – Lê';
+    if (item.tags.includes('kinh_bac')) return '🌸 Dân gian Kinh Bắc • Liền chị';
+    if (item.tags.includes('pattern')) return '🌊 Họa tiết Thủy Ba Cung Đình';
     if (item.tags.includes('royal')) return '🏛️ Cung đình Huế • Quý tộc';
     if (item.tags.includes('formal')) return '✨ Lễ phục trang trọng Triều Nguyễn';
     if (item.tags.includes('daily')) return '🌿 Thường phục truyền thống';
@@ -351,8 +442,9 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
               {[
                 { id: 'ALL', label: 'Tất cả' },
                 { id: 'TOP', label: 'Áo' },
-                { id: 'BOTTOM', label: 'Quần' },
+                { id: 'BOTTOM', label: 'Quần/Váy' },
                 { id: 'HEADWEAR', label: 'Mũ/Mấn' },
+                { id: 'PATTERN', label: 'Hoa văn' },
                 { id: 'ACCESSORY', label: 'Phụ kiện' },
                 { id: 'FOOTWEAR', label: 'Giày/Hài' },
               ].map((tab) => (
@@ -454,6 +546,20 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
               desc: 'Áo ngũ thân kết hợp giày sneaker năng động và quạt lụa nghệ thuật.',
               badge: 'Gen Z Heritage',
               itemIds: ['11111111-0000-0000-0000-000000000002', '11111111-0000-0000-0000-000000000004', '11111111-0000-0000-0000-000000000008', '11111111-0000-0000-0000-000000000007'],
+            },
+            {
+              id: 'set-kinh-bac',
+              title: 'Thiếu Nữ Kinh Bắc Trẩy Hội',
+              desc: 'Áo giao lĩnh cổ truyền kết hợp váy quây xếp ly, nón ba tầm quai thao và guốc mộc thanh nhã.',
+              badge: 'Dân Gian Kinh Bắc',
+              itemIds: ['11111111-0000-0000-0000-000000000009', '11111111-0000-0000-0000-000000000011', '11111111-0000-0000-0000-000000000012', '11111111-0000-0000-0000-000000000015'],
+            },
+            {
+              id: 'set-doi-kham',
+              title: 'Mệnh Phụ Cung Đình Huế',
+              desc: 'Áo đối khâm cung đình xẻ ngực, hoa văn sóng thủy ba, ngọc bội cẩm thạch và hài thêu mũi cong.',
+              badge: 'Cung Đình Quý Tộc',
+              itemIds: ['11111111-0000-0000-0000-000000000010', '11111111-0000-0000-0000-000000000011', '11111111-0000-0000-0000-000000000013', '11111111-0000-0000-0000-000000000014', '11111111-0000-0000-0000-000000000016'],
             },
           ].map((preset) => (
             <div

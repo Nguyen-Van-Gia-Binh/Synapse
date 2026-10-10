@@ -40,7 +40,7 @@ describe('ItemsController - Envelope & Status Codes', () => {
     const body = res.getBody();
     assert.equal(body.success, true);
     assert.ok(Array.isArray(body.data));
-    assert.equal(body.data.length, 8);
+    assert.equal(body.data.length, 16);
     assert.ok(body.timestamp);
   });
 
