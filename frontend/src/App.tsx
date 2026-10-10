@@ -80,15 +80,15 @@ export const App: React.FC = () => {
       .catch(() => {
         if (slot === 'BOTTOM') {
           selectItem('BOTTOM', {
-            id: '22222222-0000-0000-0000-000000000001',
-            name: 'Quần lụa trắng ống rộng',
+            id: '11111111-0000-0000-0000-000000000004',
+            name: 'Quần lụa ống rộng truyền thống',
             gender: 'UNISEX',
             slot: 'BOTTOM',
             layer_order: 20,
             image_url: '/assets/mock/unisex_quan_lua.png',
             color_customizable: true,
             default_color: '#F4F1DE',
-            tags: ['silk', 'quan_lua', 'quan_ong_rong'],
+            tags: ['silk', 'bottom', 'traditional', 'wide_leg', 'unisex', 'quan_lua', 'quan_ong_rong'],
           });
         }
       });
@@ -223,8 +223,8 @@ export const App: React.FC = () => {
         </main>
 
         {/* 4. Right Inspector Sidebar (Cultural Factcard & Harmony Score) */}
-        <aside className="w-80 glass-panel border-l border-heritage-cream/10 p-5 flex flex-col gap-4 z-20 overflow-y-auto scrollbar-none flex-shrink-0">
-          <div className="flex items-center justify-between pb-1 border-b border-heritage-cream/10">
+        <aside className="w-80 h-full max-h-full min-h-0 glass-panel border-l border-heritage-cream/10 p-5 pb-12 flex flex-col gap-4 z-20 overflow-y-auto scrollbar-none flex-shrink-0">
+          <div className="flex items-center justify-between pb-1 border-b border-heritage-cream/10 flex-shrink-0">
             <h4 className="font-serif-heritage text-heritage-yellow text-xs font-semibold flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
               Cultural Inspector
