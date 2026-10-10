@@ -17,7 +17,8 @@ import {
   Share2, 
   Activity,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  BookOpen
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -25,11 +26,13 @@ export const App: React.FC = () => {
     gender, 
     setGender, 
     selectItem,
+    harmonyScore,
     harmonyDetail,
     setSelectedSlotForColor,
   } = useOutfitStore();
 
   const [activeDockTab, setActiveDockTab] = useState<DockTabType>('WARDROBE');
+  const [inspectorTab, setInspectorTab] = useState<'FACTS' | 'RADAR' | 'ALL'>('FACTS');
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
   const [isLookbookOpen, setIsLookbookOpen] = useState<boolean>(false);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
@@ -223,7 +226,8 @@ export const App: React.FC = () => {
         </main>
 
         {/* 4. Right Inspector Sidebar (Cultural Factcard & Harmony Score) */}
-        <aside className="w-80 h-full max-h-full min-h-0 glass-panel border-l border-heritage-cream/10 p-5 pb-12 flex flex-col gap-4 z-20 overflow-y-auto scrollbar-none flex-shrink-0">
+        <aside className="w-80 h-full max-h-full min-h-0 glass-panel border-l border-heritage-cream/10 p-4 pb-12 flex flex-col gap-3.5 z-20 overflow-y-auto scrollbar-none flex-shrink-0">
+          {/* Header */}
           <div className="flex items-center justify-between pb-1 border-b border-heritage-cream/10 flex-shrink-0">
             <h4 className="font-serif-heritage text-heritage-yellow text-xs font-semibold flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
@@ -234,14 +238,56 @@ export const App: React.FC = () => {
             </span>
           </div>
 
+          {/* Segmented Mode Switcher: Sử Liệu Di Sản | Hòa Sắc | Tất Cả */}
+          <div className="flex p-0.5 rounded-xl bg-black/50 border border-heritage-cream/15 flex-shrink-0 text-[11px]">
+            <button
+              onClick={() => setInspectorTab('FACTS')}
+              className={`flex-1 py-1.5 px-2 rounded-lg font-medium transition-all text-center flex items-center justify-center gap-1.5 ${
+                inspectorTab === 'FACTS'
+                  ? 'bg-heritage-yellow/20 text-heritage-yellow border border-heritage-yellow/40 shadow-sm font-semibold'
+                  : 'text-heritage-cream/60 hover:text-heritage-cream/90'
+              }`}
+            >
+              <BookOpen className="w-3 h-3" />
+              <span>Sử Liệu Di Sản</span>
+            </button>
+            <button
+              onClick={() => setInspectorTab('RADAR')}
+              className={`flex-1 py-1.5 px-2 rounded-lg font-medium transition-all text-center flex items-center justify-center gap-1.5 ${
+                inspectorTab === 'RADAR'
+                  ? 'bg-heritage-yellow/20 text-heritage-yellow border border-heritage-yellow/40 shadow-sm font-semibold'
+                  : 'text-heritage-cream/60 hover:text-heritage-cream/90'
+              }`}
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>Hòa Sắc ({harmonyDetail?.totalScore ?? harmonyScore ?? 85})</span>
+            </button>
+            <button
+              onClick={() => setInspectorTab('ALL')}
+              className={`py-1.5 px-2.5 rounded-lg font-medium transition-all text-center flex items-center justify-center gap-1 ${
+                inspectorTab === 'ALL'
+                  ? 'bg-heritage-yellow/20 text-heritage-yellow border border-heritage-yellow/40 shadow-sm font-semibold'
+                  : 'text-heritage-cream/60 hover:text-heritage-cream/90'
+              }`}
+              title="Xem cả sử liệu và hòa sắc cùng lúc"
+            >
+              <span>Tất Cả</span>
+            </button>
+          </div>
+
           {/* Cultural Guardrail Toast Alert (US-06) */}
-          <GuardrailToast onQuickSelectTag={handleQuickSelectTag} />
+          <div className="flex-shrink-0">
+            <GuardrailToast onQuickSelectTag={handleQuickSelectTag} />
+          </div>
 
-          {/* Cultural Factcard */}
-          <CulturalFactcard />
+          {/* Content Views: Di sản / Hòa sắc / Tất cả */}
+          {(inspectorTab === 'FACTS' || inspectorTab === 'ALL') && (
+            <CulturalFactcard />
+          )}
 
-          {/* Real-time Color Harmony Radar (US-07, UC-06) */}
-          <HarmonyRadar harmony={harmonyDetail} />
+          {(inspectorTab === 'RADAR' || inspectorTab === 'ALL') && (
+            <HarmonyRadar harmony={harmonyDetail} />
+          )}
         </aside>
       </div>
 

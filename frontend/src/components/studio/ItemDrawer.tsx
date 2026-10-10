@@ -65,6 +65,7 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
     setSelectedSlotForColor,
     activeFactcardItem,
     loadCulturalFactForItem,
+    applyPresetOutfit,
   } = useOutfitStore();
 
   const [activeTab, setActiveTab] = useState<string>('ALL');
@@ -579,10 +580,14 @@ export const ItemDrawer: React.FC<ItemDrawerProps> = ({
               </p>
               <button
                 onClick={() => {
+                  const itemsToApply: ItemDto[] = [];
                   preset.itemIds.forEach((id) => {
                     const found = fallbackItems.find((it) => it.id === id);
-                    if (found) selectItem(found.slot, found);
+                    if (found) itemsToApply.push(found);
                   });
+                  if (itemsToApply.length > 0) {
+                    applyPresetOutfit(itemsToApply);
+                  }
                 }}
                 className="mt-1 py-1.5 px-3 rounded-xl bg-heritage-yellow text-studio-bg font-semibold text-xs hover:brightness-110 transition-all shadow-md"
               >

@@ -37,6 +37,7 @@ export interface OutfitStoreState {
   updateHarmonyScore: () => void;
   evaluateGuardrails: () => Promise<void>;
   loadCulturalFactForItem: (item: ItemDto) => Promise<void>;
+  applyPresetOutfit: (items: ItemDto[]) => void;
   resetOutfit: () => void;
   undo: () => void;
   redo: () => void;
@@ -51,7 +52,7 @@ const initialSlots: Record<SlotType, OutfitSlotState | null> = {
   FOOTWEAR: null,
 };
 
-const FALLBACK_CULTURAL_FACTS: Record<string, CulturalFactDto> = {
+export const FALLBACK_CULTURAL_FACTS: Record<string, CulturalFactDto> = {
   '11111111-0000-0000-0000-000000000001': {
     id: 'fact-01',
     item_id: '11111111-0000-0000-0000-000000000001',
@@ -304,35 +305,61 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
   },
 
   loadCulturalFactForItem: async (item: ItemDto) => {
-    set({ activeFactcardItem: item, isFactcardLoading: true });
-
-    // 1. Kiểm tra cache trong bộ nhớ
+    // 1. Kiểm tra cache trong bộ nhớ trước
     const cached = factCache.get(item.id);
     if (cached) {
-      set({ activeFactcard: cached, isFactcardLoading: false });
+      set({ activeFactcardItem: item, activeFactcard: cached, isFactcardLoading: false });
       return;
     }
 
+    // 2. Gán ngay fallback tức thì để người dùng xem thông tin lịch sử ngay lập tức (0ms delay)
+    const fallbackFact = FALLBACK_CULTURAL_FACTS[item.id] || null;
+    set({
+      activeFactcardItem: item,
+      activeFactcard: fallbackFact,
+      isFactcardLoading: fallbackFact ? false : true,
+    });
+
     try {
       const fact = await apiClient.getCulturalFact(item.id);
-      if (fact) {
+      if (fact && get().activeFactcardItem?.id === item.id) {
         factCache.set(item.id, fact);
         set({ activeFactcard: fact });
-        return;
       }
     } catch {
-      // Khi offline hoặc test môi trường không có backend, fallback sang dữ liệu dự phòng
+      // Khi offline hoặc chậm, fallback đã sẵn sàng
     } finally {
-      // Nếu chưa có fact từ backend, nạp từ từ điển dự phòng
-      if (!factCache.has(item.id)) {
-        const fallbackFact = FALLBACK_CULTURAL_FACTS[item.id] || null;
-        if (fallbackFact) {
-          factCache.set(item.id, fallbackFact);
-          set({ activeFactcard: fallbackFact });
-        }
+      if (get().activeFactcardItem?.id === item.id) {
+        set({ isFactcardLoading: false });
       }
-      set({ isFactcardLoading: false });
     }
+  },
+
+  applyPresetOutfit: (items: ItemDto[]) => {
+    set((state) => {
+      const nextSlots = { ...state.slots };
+      items.forEach((item) => {
+        nextSlots[item.slot] = {
+          item,
+          color: item.default_color || '#9E2A2B',
+        };
+      });
+      const nextHistory = state.history.slice(0, state.historyIndex + 1);
+      nextHistory.push({ slots: nextSlots, gender: state.gender });
+      return {
+        slots: nextSlots,
+        history: nextHistory,
+        historyIndex: nextHistory.length - 1,
+      };
+    });
+
+    // Tự động kích hoạt hiển thị thẻ tri thức của áo TOP (hoặc món đầu tiên)
+    const topItem = items.find((it) => it.slot === 'TOP') || items[0];
+    if (topItem) {
+      get().loadCulturalFactForItem(topItem);
+    }
+    get().evaluateGuardrails();
+    get().updateHarmonyScore();
   },
 
   evaluateGuardrails: async () => {
@@ -348,9 +375,17 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
 
     try {
       const result = await apiClient.evaluateRules({ gender, slots: slotMap });
-      if (result.violations && result.violations.length > 0) {
-        set({ violations: result.violations });
-      } else if (slots.TOP && !slots.BOTTOM) {
+      const currentSlots = get().slots;
+      let violations = result.violations || [];
+      
+      // Khắc phục race condition: Nếu người dùng đã mặc quần (BOTTOM), bỏ qua cảnh báo thiếu quần
+      if (currentSlots.BOTTOM) {
+        violations = violations.filter((v) => v.rule_code !== 'RULE_AODAI_MISSING_BOTTOM');
+      }
+
+      if (violations.length > 0) {
+        set({ violations });
+      } else if (currentSlots.TOP && !currentSlots.BOTTOM) {
         // Fallback văn hóa khi item là mock hoặc Backend rule chưa nạp tag của item
         set({
           violations: [
@@ -372,8 +407,9 @@ export const useOutfitStore = create<OutfitStoreState>((set, get) => ({
       }
     } catch {
       // Graceful fallback nếu Backend offline
+      const currentSlots = get().slots;
       const fallbackViolations: RuleViolation[] = [];
-      if (slots.TOP && !slots.BOTTOM) {
+      if (currentSlots.TOP && !currentSlots.BOTTOM) {
         fallbackViolations.push({
           rule_code: 'RULE_AODAI_MISSING_BOTTOM',
           trigger_slot: 'TOP',
